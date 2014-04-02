@@ -97,6 +97,21 @@ unsurprising way:</p>
 </pre></div>
 </div>
 </div></blockquote>
+<p>You can also construct from <tt class="docutils literal"><span class="pre">dict</span></tt> objects and other objects which
+implement <tt class="docutils literal"><span class="pre">collections.Mapping</span></tt> to a sufficient level:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">({</span><span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">17573</span><span class="p">,</span>
+<span class="go">                 &quot;name&quot;: &quot;maia&quot;})</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>One of the things that distinguishes <tt class="docutils literal"><span class="pre">normalize</span></tt> from other similar
+libraries is that it supports <strong>type information</strong> on properties,
+along with <strong>constraints</strong>.  These are not required, but allow some
+useful applications, such as validation and marshalling.  They also
+allow programming mistakes to be discovered earlier, by throwing an
+error when the first incorrect assignment is made, rather than later.</p>
 <p>The <tt class="docutils literal"><span class="pre">hip_id</span></tt> property was declared to be <em>required</em>, so
 unsurprisingly, if you try to create an object without it, you get an
 exception:</p>
@@ -107,7 +122,7 @@ exception:</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>(for the rest of this document, tracebacks will be omitted from the
+<p>(for brevity, in this document, tracebacks will be omitted from the
 python interpreter output).</p>
 <p>In addition to marking properties as <tt class="docutils literal"><span class="pre">required</span></tt>, you can pass a
 <em>check</em> function, which must return something true-ish for the value
@@ -124,21 +139,6 @@ to pass:</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>You can also construct from <tt class="docutils literal"><span class="pre">dict</span></tt> objects and other objects which
-implement <tt class="docutils literal"><span class="pre">collections.Mapping</span></tt> to a sufficient level:</p>
-<blockquote>
-<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">({</span><span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">17573</span><span class="p">,</span>
-<span class="go">                 &quot;name&quot;: &quot;maia&quot;})</span>
-<span class="go">&gt;&gt;&gt;</span>
-</pre></div>
-</div>
-</div></blockquote>
-<p>One of the things that distinguishes <tt class="docutils literal"><span class="pre">normalize</span></tt> from other similar
-libraries is that it supports <strong>type information</strong> on properties,
-along with <strong>constraints</strong>.  These are not required, but allow some
-useful applications, such as validation and marshalling.  They also
-allow programming mistakes to be discovered earlier, by throwing an
-error when the first incorrect assignment is made, rather than later.</p>
 <p>For instance, if we put a string into the <tt class="docutils literal"><span class="pre">hip_id</span></tt> field, then we
 can expect an error:</p>
 <blockquote>
@@ -163,8 +163,9 @@ started <em>coercion</em>.</p>
 </div>
 <div class="section" id="property-type-coercion">
 <span id="coercion"></span><h2>Property Type Coercion<a class="headerlink" href="#property-type-coercion" title="Permalink to this headline">¶</a></h2>
-<p>Every place where a value is set in a property goes through the same
-process.</p>
+<p>Whenever a value is set in a property (either during initial
+construction or when the attribute is assigned), the type is checked
+to be type safe according to its definition.  The rules are:</p>
 <ol class="arabic">
 <li><p class="first"><strong>is</strong> the value being assigned of the right type already?</p>
 <p>This is basically (literally) <tt class="docutils literal"><span class="pre">isinstance(value,</span> <span class="pre">isa)</span></tt> (where
@@ -179,11 +180,11 @@ formal API.</p>
 <tt class="docutils literal"><span class="pre">None</span></tt>) gets a pass here.  If you want to explicitly allow
 <tt class="docutils literal"><span class="pre">None</span></tt> as a value, then you must use a tuple which includes
 <tt class="docutils literal"><span class="pre">types.NoneType</span></tt>.  Otherwise, you can expect the declared type or
-<tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</p>
+<tt class="docutils literal"><span class="pre">AttributeError</span></tt> when you access the attribute.</p>
 </li>
 <li><p class="first">If the value is not already of the right type, try to <strong>coerce</strong> it.</p>
 <p>Each property has a coerce function for dealing with malfeasant
-values.  If you specified <tt class="docutils literal"><span class="pre">isa=</span></tt>, then the default is that,
+values.  If you specified <tt class="docutils literal"><span class="pre">isa=</span></tt>, then the default is the type,
 because in Python, types are also constructors.  This can lead to
 some confusion; see the gotcha section later in this introduction.</p>
 <p>For people coming from Perl&#8217;s Moose, this is one area where the
@@ -193,9 +194,12 @@ ultimately it is equivalent in functionality.</p>
 <li><p class="first">Once the value is of the right type, then <strong>check</strong> it is valid using
 any declared <tt class="docutils literal"><span class="pre">check=</span></tt> function.</p>
 <p>Most of the time you probably don&#8217;t need to bother with this, but
-it is there.</p>
+it is there if you need it.</p>
 <p>Note that the check method is called <em>after</em> type coercion, and it
-is always called when a value is set.</p>
+is <em>always</em> called when a property is set: either during
+construction or later by assignment.
+If an object is constructed without the property, then it is <em>not</em>
+called.</p>
 </li>
 </ol>
 <p>So, let&#8217;s go back to our example.  Let&#8217;s extend the definition with a
