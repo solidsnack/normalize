@@ -1,0 +1,219 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>the scope and purpose of normalize &mdash; normalize 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.0.4 documentation" href="index.html" />
+    <link rel="next" title="An introduction to using normalize" href="intro.html" />
+    <link rel="prev" title="the normalize library" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="intro.html" title="An introduction to using normalize"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="the normalize library"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-scope-and-purpose-of-normalize">
+<h1>the scope and purpose of <tt class="docutils literal"><span class="pre">normalize</span></tt><a class="headerlink" href="#the-scope-and-purpose-of-normalize" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-s-in-a-name">
+<h2>What&#8217;s in a name?<a class="headerlink" href="#what-s-in-a-name" title="Permalink to this headline">¶</a></h2>
+<p>It is called &#8220;normalize&#8221;, because what you do with it is akin to the
+first normal form of relational database modelling.</p>
+<p>&#8220;<strong>What&#8217;s the first normal form?</strong>&#8221;, I hear the sane among you ask.</p>
+<p>This is the simplest and most straightforward level which defines what
+are normally called &#8220;records&#8221; (or <em>rows</em>).</p>
+<p>A record is a defined collection of properties/attributes (<em>columns</em>),
+where you know roughly what to expect in each property/attribute, and
+can access them by some kind of descriptor (i.e., the attribute name).
+This is distinct from a <em>heirarchy</em>, which is a structured but largely
+unknown quantity of data.</p>
+<p>Think that document stores are a groundbreaking innovation and step
+forward?  Actually, data storage systems of the 1960&#8217;s were basically
+document stores, and it was problems in the practice of this that led
+to the principles of ACID, entity relationships and finally the
+&#8220;purity&#8221; of relational OLTP databases.</p>
+<p>Didn&#8217;t know that history?  I&#8217;m sorry that as an industry we&#8217;re
+repeating it.  But that&#8217;s where we are today, and there&#8217;s really no
+point in trying to fit the summit of the last technology cycle to
+today&#8217;s currency of JSON REST APIs, sharded stores and eventually
+consistent systems.  Let&#8217;s make the most of the situation, declare our
+facts and repeat the process of rational discovery of problem domains
+known as &#8220;normalization&#8221;, with faster machines, more memory and
+networked clusters faster than local disks.</p>
+<p>So, this is why I chose the name for the module, and <tt class="docutils literal"><span class="pre">Record</span></tt> as the
+name for the base class, but python already has a name for its
+attributes, so those are simply <tt class="docutils literal"><span class="pre">Property</span></tt>.</p>
+</div>
+<div class="section" id="what-s-wrong-with-collections-namedtuple-or-regular-python-objects">
+<h2>What&#8217;s wrong with <tt class="docutils literal"><span class="pre">collections.namedtuple</span></tt>?  Or regular python objects?<a class="headerlink" href="#what-s-wrong-with-collections-namedtuple-or-regular-python-objects" title="Permalink to this headline">¶</a></h2>
+<p>The main answer is type information, which enables more
+meta-programming.</p>
+<p>You can (but don&#8217;t have to) declare what type to expect inside each
+property that you declare.  This capability, along with <em>property
+traits</em>, leads to the ability to, for instance, interpret a data
+structure and match it against expected types.  This process is
+similar to validation, but it turns out that validation as well as a
+number of common operations performed on data structures are all types
+of <em>visitor</em> functions.</p>
+<p>Now, to be fair, a lot of this is already possible in Python.  Python
+already ships with a good amount of metaclass framework built in.  The
+<tt class="docutils literal"><span class="pre">type()</span></tt> keyword is great.  However, certain classes of visitor
+functions want to be able to get this from classes without an actual
+instance to inspect.</p>
+</div>
+<div class="section" id="what-s-wrong-with-schematics">
+<h2>What&#8217;s wrong with <tt class="docutils literal"><span class="pre">schematics</span></tt>?<a class="headerlink" href="#what-s-wrong-with-schematics" title="Permalink to this headline">¶</a></h2>
+<p>Not a whole lot.  This module started because I turned my nose up at
+the explicit &#8220;validate&#8221; step in schematics, the fact that the JSON API
+was baked into the core classes (euphamised as a &#8220;primitive&#8221; data
+API), and that it didn&#8217;t support some of the core features of python
+descriptors.</p>
+<p>In fact, it&#8217;s fair to say that what started out as a refactor of the
+descriptor classes in an internal equivalent of schematics turned into
+an open source release when we realized that my changes weren&#8217;t quite
+drop-in compatible enough to switch our internal code base all at once
+to it.</p>
+<p>The &#8220;attribute traits&#8221; feature, I really like and this is a big
+difference between the two modules.  The &#8220;required&#8221;, &#8220;coerce&#8221;, &#8220;isa&#8221;
+and &#8220;check&#8221; attribute features, blatantly stolen from a Perl module
+that in turn (allegedly) stole them from Smalltalk, represent a
+difference in focus and an obsession with falling back to type theory
+for ideas, even if the result is far from being as declarative and
+insanely powerful as ML.</p>
+<p>All in all, though, these are quite minor differences, and probably
+most people would prefer the stability and larger community
+surrounding <tt class="docutils literal"><span class="pre">schematics</span></tt> to this type-theory heavy package.</p>
+</div>
+<div class="section" id="so-what-is-normalize-really">
+<h2>So, what is <tt class="docutils literal"><span class="pre">normalize</span></tt>, really?<a class="headerlink" href="#so-what-is-normalize-really" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s a general purpose declarative class builder and meta-programming
+framework, which just happens to ship with JSON marshalling.</p>
+<p>Meta-programming frameworks might not be needed for every problem, but
+they crop up all over the place: validation libraries, database
+mappings &amp; ORM&#8217;s, API definitions and implementations, etc.
+It would be nice if they could all use the same definition and
+mappings could be built out separately.</p>
+<p>To enable this, this library&#8217;s guiding principle is that base class
+and metaclasses should be as clean as possible.
+No <tt class="docutils literal"><span class="pre">to_json</span></tt> on all objects unless you specifically inherit from
+the <tt class="docutils literal"><span class="pre">JsonRecord</span></tt> class, for instance.</p>
+<p>But the <tt class="docutils literal"><span class="pre">to_json</span></tt> function which it does ship with uses the
+visitor/meta-programming API, such that it can even work on classes
+that don&#8217;t inherit <tt class="docutils literal"><span class="pre">JsonRecord</span></tt>.</p>
+</div>
+<div class="section" id="what-about-higher-normalization-forms-3nf-etc">
+<h2>What about higher normalization forms?  3NF etc?<a class="headerlink" href="#what-about-higher-normalization-forms-3nf-etc" title="Permalink to this headline">¶</a></h2>
+<p>While there is some notion of primary keys in the module, mainly for
+the purposes of recognizing objects in collections for comparison,
+higher levels of normalization are an exercise left to the
+implementer.  It&#8217;s highly unlikely such features will be built into
+this package unless they really, really are the right thing for all
+conceivable use cases.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">the scope and purpose of <tt class="docutils literal"><span class="pre">normalize</span></tt></a><ul>
+<li><a class="reference internal" href="#what-s-in-a-name">What&#8217;s in a name?</a></li>
+<li><a class="reference internal" href="#what-s-wrong-with-collections-namedtuple-or-regular-python-objects">What&#8217;s wrong with <tt class="docutils literal"><span class="pre">collections.namedtuple</span></tt>?  Or regular python objects?</a></li>
+<li><a class="reference internal" href="#what-s-wrong-with-schematics">What&#8217;s wrong with <tt class="docutils literal"><span class="pre">schematics</span></tt>?</a></li>
+<li><a class="reference internal" href="#so-what-is-normalize-really">So, what is <tt class="docutils literal"><span class="pre">normalize</span></tt>, really?</a></li>
+<li><a class="reference internal" href="#what-about-higher-normalization-forms-3nf-etc">What about higher normalization forms?  3NF etc?</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">the <tt class="docutils literal"><span class="pre">normalize</span></tt> library</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="next chapter">An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/scope.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="intro.html" title="An introduction to using normalize"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="the normalize library"
+             >previous</a> |</li>
+        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>An introduction to using normalize &mdash; normalize 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.0.4 documentation" href="index.html" />
+    <link rel="next" title="normalize.property reference" href="property.html" />
+    <link rel="prev" title="the scope and purpose of normalize" href="scope.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="property.html" title="normalize.property reference"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="scope.html" title="the scope and purpose of normalize"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="an-introduction-to-using-normalize">
+<h1>An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt><a class="headerlink" href="#an-introduction-to-using-normalize" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-records-and-properties">
+<h2>Basic Records and Properties<a class="headerlink" href="#basic-records-and-properties" title="Permalink to this headline">¶</a></h2>
+<p><tt class="docutils literal"><span class="pre">normalize</span></tt> is built around two core concepts: records, and
+properties.</p>
+<p>To start, declare a class, based off <tt class="docutils literal"><span class="pre">Record</span></tt>, and its properties:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Record</span>
+
+<span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">hip_id</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">spectral_type</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Once you have done this, you can create instances in a hopefully
+unsurprising way:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">17573</span><span class="p">,</span>
+<span class="go">                name=&quot;maia&quot;,</span>
+<span class="go">                spectral_type=&quot;B8III&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span>
+<span class="go">Star(hip_id=17573, name=&#39;maia&#39;, spectral_type=&#39;B8III&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">eval</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">maia</span><span class="p">))</span> <span class="o">==</span> <span class="n">maia</span>
+<span class="go">True</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>The <tt class="docutils literal"><span class="pre">hip_id</span></tt> property was declared to be <em>required</em>, so
+unsurprisingly, if you try to create an object without it, you get an
+exception:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">Star</span><span class="p">()</span>
+<span class="go">ValueError: Star.hip_id is required</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>(for the rest of this document, tracebacks will be omitted from the
+python interpreter output).</p>
+<p>You can also construct from <tt class="docutils literal"><span class="pre">dict</span></tt> objects and other objects which
+implement <tt class="docutils literal"><span class="pre">collections.Mapping</span></tt> to a sufficient level:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">({</span><span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">17573</span><span class="p">,</span>
+<span class="go">                 &quot;name&quot;: &quot;maia&quot;})</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>One of the things that distinguishes <tt class="docutils literal"><span class="pre">normalize</span></tt> from other similar
+libraries is that it supports <strong>type information</strong> on properties,
+along with <strong>constraints</strong>.  These are not required, but allow some
+useful applications, such as validation and marshalling.  They also
+allow programming mistakes to be discovered earlier, by throwing an
+error when the first incorrect assignment is made, rather than later.</p>
+<p>For instance, if we put a string into the <tt class="docutils literal"><span class="pre">hip_id</span></tt> field, then we
+can expect an error:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="s">&quot;HIP17573&quot;</span>
+<span class="go">ValueError: invalid literal for int() with base 10: &#39;HIP17573&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Unless, that is, the value is accepted by the <tt class="docutils literal"><span class="pre">int</span></tt> constructor:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="s">&quot;17573&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span>
+<span class="go">17573</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>What happened was that the passed value did not satisfy the type
+constraint (ie, the type passed to <tt class="docutils literal"><span class="pre">isa</span></tt>).  So, the descriptor
+started <em>coercion</em>.</p>
+</div>
+<div class="section" id="property-type-coercion">
+<span id="coercion"></span><h2>Property Type Coercion<a class="headerlink" href="#property-type-coercion" title="Permalink to this headline">¶</a></h2>
+<p>Every place where a value is set in a property goes through the same
+process.</p>
+<ol class="arabic">
+<li><p class="first"><strong>is</strong> the value being assigned of the right type already?</p>
+<p>This is basically (literally) <tt class="docutils literal"><span class="pre">isinstance(value,</span> <span class="pre">isa)</span></tt> (where
+<tt class="docutils literal"><span class="pre">isa</span></tt> was the value you passed to <tt class="docutils literal"><span class="pre">isa=</span></tt> in the <tt class="docutils literal"><span class="pre">Property</span></tt>
+declaration). If so, then <em>the coerce function is not called</em>
+because the value is already considered to be of the correct type.</p>
+<p>You can pass a tuple of types to <tt class="docutils literal"><span class="pre">isa=</span></tt>, as well.  For a while,
+this worked entirely by accident.  But it has a good basis in type
+theory as a <em>type union</em>, so this happy accident is part of the
+formal API.</p>
+<p>If you didn&#8217;t declare anything to <tt class="docutils literal"><span class="pre">isa=</span></tt>, then <em>any</em> value (even
+<tt class="docutils literal"><span class="pre">None</span></tt>) gets a pass here.  If you want to explicitly allow
+<tt class="docutils literal"><span class="pre">None</span></tt> as a value, then you must use a tuple which includes
+<tt class="docutils literal"><span class="pre">types.NoneType</span></tt>.  Otherwise, you can expect the declared type or
+<tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</p>
+</li>
+<li><p class="first">If the value is not already of the right type, try to <strong>coerce</strong> it.</p>
+<p>Each property has a coerce function for dealing with malfeasant
+values.  If you specified <tt class="docutils literal"><span class="pre">isa=</span></tt>, then the default is that,
+because in Python, types are also constructors.  This can lead to
+some confusion; see the gotcha section later in this introduction.</p>
+<p>For people coming from Perl&#8217;s Moose, this is one area where the
+design is a bit different in how you construct your classes, but
+ultimately it is equivalent in functionality.</p>
+</li>
+<li><p class="first">Once the value is of the right type, then <strong>check</strong> it is valid using
+any declared <tt class="docutils literal"><span class="pre">check=</span></tt> function.</p>
+<p>Most of the time you probably don&#8217;t need to bother with this, but
+it is there.</p>
+<p>Note that the check method is called <em>after</em> type coercion, and it
+is always called when a value is set.</p>
+</li>
+</ol>
+<p>So, let&#8217;s go back to our example.  Let&#8217;s extend the definition with a
+<tt class="docutils literal"><span class="pre">check</span></tt> function and a custom <tt class="docutils literal"><span class="pre">coerce</span></tt> method:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="k">def</span> <span class="nf">fix_id</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">and</span> <span class="n">val</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;HIP&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s">&quot;HIP &quot;</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">hip_id</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                      <span class="nb">coerce</span><span class="o">=</span><span class="n">fix_id</span><span class="p">,</span>
+                      <span class="n">check</span><span class="o">=</span><span class="k">lambda</span> <span class="n">i</span><span class="p">:</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">120000</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">spectral_type</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now, it&#8217;s perfectly fine to pass a value including the prefix:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="s">&quot;hip17573&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span>
+<span class="go">17573</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>But if we pass an unreasonable ID, it fails:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="mi">175373</span>
+<span class="go">ValueError: Star.hip_id value &#39;175373&#39; failed type check</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="s">&quot;hip175373&quot;</span>
+<span class="go">ValueError: Star.hip_id value &#39;175373&#39; failed type check</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="s">&quot;hop175373&quot;</span>
+<span class="go">ValueError: invalid literal for int() with base 10: &#39;hop175373&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span><span class="o">.</span><span class="n">hip_id</span> <span class="o">=</span> <span class="bp">None</span>
+<span class="go">TypeError: int() argument must be a string or a number, not &#39;NoneType&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="property-defaults">
+<span id="defaults"></span><h2>Property Defaults<a class="headerlink" href="#property-defaults" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s possible to pass a value or function to the <tt class="docutils literal"><span class="pre">default=</span></tt>
+parameter, to set a default value for a property in case one is not
+provided.</p>
+<p>You can even use this to make properties that do not raise
+<tt class="docutils literal"><span class="pre">AttributeError</span></tt> if they were not set:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">types</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Sloppy</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+<span class="go">        anything = Property(default=None)</span>
+<span class="go">        goes = Property(default=&#39;&#39;)</span>
+<span class="go">        here = Property(default=None, isa=(types.NoneType, int))</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slop</span> <span class="o">=</span> <span class="n">Sloppy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slop</span>
+<span class="go">Sloppy(anything=None, goes=&#39;&#39;, here=None)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Beware that the value is assigned without consideration about whether
+it needs to be copied or not.  For immutable value types like strings,
+integers, etc this is fine.  For mutable lists, dictionaries, etc, it
+is likely to be a problem if you want to change the value after
+construction.  An easy way around this is to supply a function that
+returns a new instance of the value:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+<span class="gp">... </span>  <span class="n">bar</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
+<span class="gp">...</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Foo</span><span class="p">()</span>
+<span class="go">Foo(bar=[])</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="lazy-evaluation">
+<h2>Lazy Evaluation<a class="headerlink" href="#lazy-evaluation" title="Permalink to this headline">¶</a></h2>
+<p>There is some relatively limited support for lazy evaluation in this
+module.  It&#8217;s hardly lazy to the extent of, say, Haskell, where the
+compiler will defer all execution not required for IO.  But, it does
+let you declare properties whose value depends on other properties.</p>
+<p>For example:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">astrolib.coords</span> <span class="kn">as</span> <span class="nn">C</span>
+
+<span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">hip_id</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">right_ascention</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="n">declination</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">C</span><span class="o">.</span><span class="n">Position</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">right_ascention</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">declination</span><span class="p">))</span>
+
+    <span class="n">position</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">Position</span><span class="p">,</span>
+                        <span class="n">lazy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">make_position</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>When first constructed, the Record has no <tt class="docutils literal"><span class="pre">position</span></tt>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tcent</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">68933</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menkent&quot;</span><span class="p">,</span>
+<span class="go">                 right_ascention=226.67, declination=-36.367)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tcent</span>
+<span class="go">Star(declination=-36.367, hip_id=68933, name=&#39;Menkent&#39;, right_ascention=226.67)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>However, if the <tt class="docutils literal"><span class="pre">position</span></tt> property is read, it now has that property:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">tcent</span><span class="o">.</span><span class="n">position</span>
+<span class="go">226.670000 -36.367000 (degrees)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tcent</span>
+<span class="go">Star(declination=-36.367, hip_id=68933, name=&#39;Menkent&#39;, position=226.670000 -36.367000 (degrees), right_ascention=226.67)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Most of the time, you don&#8217;t really need lazy properties, because you
+can just write <tt class="docutils literal"><span class="pre">&#64;property</span></tt> methods on the class for python users.
+However, they are the only way to provide a <tt class="docutils literal"><span class="pre">default</span></tt> which is an
+instance method, and depends on other attributes.</p>
+<p>Lazy properties are also useful when writing properties which
+logically exist when marshaling data out, but are derived from
+multiple object property fields.  (it isn&#8217;t currently possible to do
+this without storing the return value in the object, or sub-classing
+<tt class="docutils literal"><span class="pre">Property</span></tt>; patches welcome)</p>
+</div>
+<div class="section" id="properties-which-are-records">
+<h2>Properties which are Records<a class="headerlink" href="#properties-which-are-records" title="Permalink to this headline">¶</a></h2>
+<p>With nesting of data types, <tt class="docutils literal"><span class="pre">normalize</span></tt> starts to become more than
+just the gimmicks shown so far.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">Binary</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">primary</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">Star</span><span class="p">)</span>
+    <span class="n">secondary</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">Star</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now, it is possible to construct a more complicated object:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cyg</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;61 Cygni&quot;</span><span class="p">,</span>
+<span class="go">                 primary=Star(hip_id=104214),</span>
+<span class="go">                 secondary=Star(hip_id=104217))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyg</span>
+<span class="go">Binary(name=&#39;61 Cygni&#39;, primary=Star(hip_id=104214), secondary=Star(hip_id=104217))</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This also works when using the <tt class="docutils literal"><span class="pre">dict</span></tt> constructor:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">cyg2</span> <span class="o">=</span> <span class="n">Binary</span><span class="p">({</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;61 Cygni&quot;</span><span class="p">,</span>
+<span class="go">                   &quot;primary&quot;: {&quot;hip_id&quot;: 104214},</span>
+<span class="go">                   &quot;secondary&quot;: {&quot;hip_id&quot;: 104217}})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">cyg</span> <span class="o">==</span> <span class="n">cyg2</span>
+<span class="go">True</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+<div class="section" id="properties-which-are-lists-of-records">
+<h2>Properties which are Lists of Records<a class="headerlink" href="#properties-which-are-lists-of-records" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s also possible to make properties which lists of records:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">ListProperty</span>
+
+<span class="k">class</span> <span class="nc">StarSystem</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">ListProperty</span><span class="p">(</span><span class="n">of</span><span class="o">=</span><span class="n">Star</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now, we can construct objects with a number of sub-records in them.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">acent</span> <span class="o">=</span> <span class="n">StarSystem</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;Alpha Centauri&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acent</span><span class="o">.</span><span class="n">components</span> <span class="o">=</span> <span class="p">({</span><span class="s">&quot;name&quot;</span><span class="p">:</span> <span class="s">&quot;Alpha Centauri A&quot;</span><span class="p">,</span> <span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">71683</span><span class="p">},</span>
+<span class="go">                        {&quot;name&quot;: &quot;Alpha Centauri B&quot;, &quot;hip_id&quot;: 71681},</span>
+<span class="go">                        {&quot;name&quot;: &quot;Alpha Centauri C&quot;, &quot;hip_id&quot;: 70890})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acent</span>
+<span class="go">StarSystem(components=StarList([Star(hip_id=71683, name=&#39;Alpha Centauri A&#39;), Star(hip_id=71681, name=&#39;Alpha Centauri B&#39;), Star(hip_id=70890, name=&#39;Alpha Centauri C&#39;)]), name=&#39;Alpha Centauri&#39;)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you look closely at the created object, there&#8217;s a type
+<tt class="docutils literal"><span class="pre">StarList</span></tt>.  This was created as side effect of making a
+<tt class="docutils literal"><span class="pre">ListProperty(of=Star)</span></tt>.  It&#8217;s a subclass of <tt class="docutils literal"><span class="pre">RecordList</span></tt>, and
+supports most of the <tt class="docutils literal"><span class="pre">LISTMETHODS</span></tt>.  In general, you should be able
+to treat it like a standard <tt class="docutils literal"><span class="pre">list</span></tt>, though there might be some
+methods not yet implemented.</p>
+<p>It&#8217;s possible to create these list types as the actual collection type
+of a property by passing it as a <tt class="docutils literal"><span class="pre">coll=</span></tt> parameter; as in:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="k">class</span> <span class="nc">StarList</span><span class="p">(</span><span class="n">RecordList</span><span class="p">):</span>
+    <span class="n">itemtype</span> <span class="o">=</span> <span class="n">Star</span>
+
+<span class="k">class</span> <span class="nc">StarSystem</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">components</span> <span class="o">=</span> <span class="n">ListProperty</span><span class="p">(</span><span class="n">of</span><span class="o">=</span><span class="n">Star</span><span class="p">,</span> <span class="n">coll</span><span class="o">=</span><span class="n">StarList</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This is mostly useful if you add properties or methods to the
+container itself.</p>
+<p>In this situation, use of <tt class="docutils literal"><span class="pre">ListProperty</span></tt> is largely redundant.  You
+could also just use <tt class="docutils literal"><span class="pre">Property(isa=StarList)</span></tt></p>
+</div>
+<div class="section" id="referring-to-fields-within-records">
+<h2>Referring to fields within Records<a class="headerlink" href="#referring-to-fields-within-records" title="Permalink to this headline">¶</a></h2>
+<p>There is a class, <tt class="docutils literal"><span class="pre">FieldSelector</span></tt>, which allows you to select
+individual properties from a record:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">&#39;Alpha Centauri&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="o">.</span><span class="n">components</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="go">&#39;Alpha Centauri B&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;components&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;hip_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">70890</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>You can also use <tt class="docutils literal"><span class="pre">None</span></tt> as a wildcard, if the component at the path
+is a collection such as a list:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&#39;components&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;hip_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">[71683, 71681, 70890]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>You can also put values in the data structure, and even add new items
+to collections in this way:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">name</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">acent</span><span class="p">,</span> <span class="s">&quot;Rigil Kent&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&#39;components&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s">&#39;hip_id&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1234</span><span class="p">)</span>
+<span class="go">ValueError: Star.hip_id is required</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&#39;components&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span><span class="o">.</span><span class="n">post</span><span class="p">({</span><span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">1234</span><span class="p">})</span>
+<span class="go">TypeError: &#39;StarList&#39; object does not support item assignment</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Yes, well.  It doesn&#8217;t interact well with required attributes,
+clearly.  And that comment above about the incompleteness of
+<tt class="docutils literal"><span class="pre">RecordList</span></tt> is evident.  One day soon hopefully!</p>
+<p>There&#8217;s also the <tt class="docutils literal"><span class="pre">MultiFieldSelector</span></tt>, which can be used to &#8216;filter&#8217;
+properties:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">MultiFieldSelector</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">MultiFieldSelector</span><span class="p">([</span><span class="s">&#39;components&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;hip_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">StarSystem(components=StarList([Star(hip_id=71683), Star(hip_id=71681), Star(hip_id=70890)]))</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This class can take multiple paths, and will return the intersection
+of all of the fields listed.</p>
+</div>
+<div class="section" id="comparing-object-structures">
+<h2>Comparing object structures<a class="headerlink" href="#comparing-object-structures" title="Permalink to this headline">¶</a></h2>
+<p>With two objects of the same type, you can compare them to see what
+fields are different:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">maia</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">17573</span><span class="p">,</span>
+<span class="go">                name=&quot;maia&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia2</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">17573</span><span class="p">,</span>
+<span class="go">                 name=&quot;20 Tauri&quot;,</span>
+<span class="go">                 spectral_type=&quot;B8III&quot;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">maia</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">maia2</span><span class="p">):</span>
+<span class="go">        print diff</span>
+<span class="go">&lt;DiffInfo: MODIFIED .name&gt;</span>
+<span class="go">&lt;DiffInfo: ADDED .spectral_type&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Each item in the returned <tt class="docutils literal"><span class="pre">Diff</span></tt> object has two <tt class="docutils literal"><span class="pre">FieldSelector</span></tt>
+objects which refer to where in the passed-in object structures the
+field that changed was (or wasn&#8217;t, in the case of ADDED or REMOVED
+diffs).</p>
+<p>This comparison supports a number of comparison options, such as
+whether to normalize whitespace and unicode normal form (on by
+default) or whether to distinguish between an attribute set to an
+empty string, and no attribute set at all.</p>
+</div>
+<div class="section" id="collections-and-primary-keys">
+<h2>Collections and primary keys<a class="headerlink" href="#collections-and-primary-keys" title="Permalink to this headline">¶</a></h2>
+<p>When comparing collections, special behavior happens.  In order to be
+able to tell the difference between a member in a collection being
+removed and replaced by a new one, or merely having a single field
+changed, <tt class="docutils literal"><span class="pre">normalize</span></tt> must know which of its fields uniquely identity
+it.</p>
+<p>So, if we use the definitions:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">ListProperty</span><span class="p">,</span> <span class="n">Property</span><span class="p">,</span> <span class="n">Record</span><span class="p">,</span> <span class="n">RecordList</span>
+
+<span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">hip_id</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">primary_key</span> <span class="o">=</span> <span class="p">[</span><span class="n">hip_id</span><span class="p">]</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">spectral_type</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">StarList</span><span class="p">(</span><span class="n">RecordList</span><span class="p">):</span>
+    <span class="n">itemtype</span> <span class="o">=</span> <span class="n">Star</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Then there can be a sensible comparison:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">acent</span> <span class="o">=</span> <span class="n">StarList</span><span class="p">([</span><span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">71683</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Alpha Centauri A&#39;</span><span class="p">),</span>
+<span class="go">                      Star(hip_id=71681, name=&#39;Alpha Centauri B&#39;),</span>
+<span class="go">                      Star(hip_id=70890, name=&#39;Alpha Centauri C&#39;)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acent_ab</span> <span class="o">=</span> <span class="n">StarList</span><span class="p">([</span>
+<span class="go">        {&quot;hip_id&quot;: &quot;71683&quot;, &quot;name&quot;: &#39;Alpha Centauri A&#39;,</span>
+<span class="go">         &quot;spectral_type&quot;: &#39;G2 V&#39;},</span>
+<span class="go">        {&quot;hip_id&quot;: &quot;71681&quot;, &quot;name&quot;: &#39;Alpha Centauri B&#39;,</span>
+<span class="go">         &quot;spectral_type&quot;: &#39;K1 V&#39;},</span>
+<span class="go">    ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">acent</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">acent_ab</span><span class="p">):</span>
+<span class="go">        print diff</span>
+<span class="go">&lt;DiffInfo: REMOVED [2]&gt;</span>
+<span class="go">&lt;DiffInfo: ADDED [1].spectral_type&gt;</span>
+<span class="go">&lt;DiffInfo: ADDED [0].spectral_type&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Without this <tt class="docutils literal"><span class="pre">primary_key</span></tt>, the diff mechanism would only be able to
+match entries in the collection if <em>all</em> of their properties are
+identical:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">acent</span> <span class="o">=</span> <span class="n">StarList</span><span class="p">([</span><span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">71683</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&#39;Alpha Centauri A&#39;</span><span class="p">),</span>
+<span class="go">                      Star(hip_id=71681, name=&#39;Alpha Centauri B&#39;),</span>
+<span class="go">                      Star(hip_id=70890, name=&#39;Alpha Centauri C&#39;)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">acent_ab</span> <span class="o">=</span> <span class="n">StarList</span><span class="p">([</span>
+<span class="go">        {&quot;hip_id&quot;: &quot;71683&quot;, &quot;name&quot;: &#39;Alpha Centauri A&#39;},</span>
+<span class="go">        {&quot;hip_id&quot;: &quot;71681&quot;, &quot;name&quot;: &#39;Alpha Centauri B&#39;,</span>
+<span class="go">         &quot;spectral_type&quot;: &#39;K1 V&#39;},</span>
+<span class="go">    ])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">acent</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">acent_ab</span><span class="p">):</span>
+<span class="go">        print diff</span>
+<span class="go">&lt;DiffInfo: REMOVED [2]&gt;</span>
+<span class="go">&lt;DiffInfo: REMOVED [1]&gt;</span>
+<span class="go">&lt;DiffInfo: ADDED [1]&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>You can also get in trouble if you have properties which end up being
+non-hashable types (eg, an unparsed <tt class="docutils literal"><span class="pre">dict</span></tt>).  These may throw errors
+when compared due to unhashability.</p>
+</div>
+<div class="section" id="marshaling-to-and-from-json">
+<h2>Marshaling to and from JSON<a class="headerlink" href="#marshaling-to-and-from-json" title="Permalink to this headline">¶</a></h2>
+<p>You can convert any <tt class="docutils literal"><span class="pre">Record</span></tt> to JSON using <tt class="docutils literal"><span class="pre">normalize.to_json</span></tt>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">from_json</span><span class="p">,</span> <span class="n">to_json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_json</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">[{&#39;hip_id&#39;: 71683, &#39;name&#39;: &#39;Alpha Centauri A&#39;}, {&#39;hip_id&#39;: 71681, &#39;name&#39;: &#39;Alpha Centauri B&#39;}, {&#39;hip_id&#39;: 70890, &#39;name&#39;: &#39;Alpha Centauri C&#39;}]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_json</span><span class="p">(</span><span class="n">MultiFieldSelector</span><span class="p">([</span><span class="bp">None</span><span class="p">,</span> <span class="s">&quot;hip_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">acent</span><span class="p">))</span>
+<span class="go">[{&#39;hip_id&#39;: 71683}, {&#39;hip_id&#39;: 71681}, {&#39;hip_id&#39;: 70890}]</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Note that it returns JSON data structures, which can be then passed to
+<tt class="docutils literal"><span class="pre">json.dumps</span></tt> or an equivalent function.</p>
+<p>You can also convert back the other way using <tt class="docutils literal"><span class="pre">from_json</span></tt> (supports
+JSON strings or JSON data):</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">from_json</span><span class="p">(</span><span class="n">Star</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;hip_id&#39;</span><span class="p">:</span> <span class="mi">71683</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Alpha Centauri A&#39;</span><span class="p">})</span>
+<span class="go">Star(hip_id=71683, name=&#39;Alpha Centauri A&#39;)</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>If your classes derive <tt class="docutils literal"><span class="pre">JsonRecord</span></tt>, then the API gets even more
+convenient:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">JsonStar</span><span class="p">(</span><span class="n">Star</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span>
+<span class="go">        pass</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">js</span> <span class="o">=</span> <span class="n">JsonStar</span><span class="p">(</span><span class="s">&#39;{&quot;hip_id&quot;: 71683, &quot;name&quot;: &quot;Alpha Centauri A&quot;}&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">js</span>
+<span class="go">JsonStar(hip_id=71683, name=&#39;Alpha Centauri A&#39;)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">js</span><span class="o">.</span><span class="n">json_data</span><span class="p">()</span>
+<span class="go">{&#39;hip_id&#39;: 71683, &#39;name&#39;: &#39;Alpha Centauri A&#39;}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<div class="section" id="customizing-json-conversion">
+<h3>Customizing JSON Conversion<a class="headerlink" href="#customizing-json-conversion" title="Permalink to this headline">¶</a></h3>
+<p>Frequently, you have types which are not supported by the JSON data
+model.  These properties need conversion functions for the
+transformation.</p>
+<p>Revisiting the earlier example with a C library type, this might look
+like this:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">astrolib.coords</span> <span class="kn">as</span> <span class="nn">C</span>
+<span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">Record</span><span class="p">,</span> <span class="n">Property</span>
+<span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">hip_id</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">)</span>
+    <span class="n">right_ascention</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">json_name</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="n">declination</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">json_name</span><span class="o">=</span><span class="bp">None</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">make_position</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">C</span><span class="o">.</span><span class="n">Position</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">right_ascention</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">declination</span><span class="p">))</span>
+    <span class="n">position</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">C</span><span class="o">.</span><span class="n">Position</span><span class="p">,</span>
+                        <span class="n">lazy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">make_position</span><span class="p">,</span>
+                        <span class="n">json_out</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">hmsdms</span><span class="p">())</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Now, this type will round-trip to JSON:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">from_json</span><span class="p">,</span> <span class="n">to_json</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">tcent</span> <span class="o">=</span> <span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">68933</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;Menkent&quot;</span><span class="p">,</span>
+<span class="go">                 right_ascention=226.67, declination=-36.367)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">to_json</span><span class="p">(</span><span class="n">tcent</span><span class="p">)</span>
+<span class="go">{&#39;position&#39;: &#39;15:06:40.800 -36:22:01.200&#39;, &#39;hip_id&#39;: 68933, &#39;name&#39;: &#39;Menkent&#39;}</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">from_json</span><span class="p">(</span><span class="n">Star</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;position&#39;</span><span class="p">:</span> <span class="s">&#39;15:06:40.800 -36:22:01.200&#39;</span><span class="p">,</span> <span class="s">&#39;hip_id&#39;</span><span class="p">:</span> <span class="mi">68933</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Menkent&#39;</span><span class="p">})</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="custom-visitor-classes">
+<h2>Custom Visitor Classes<a class="headerlink" href="#custom-visitor-classes" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s trivial to write a <em>visitor</em> which applies a custom function to
+every <em>value</em> and <em>reduces</em> the compound results back into a single
+return value, using <tt class="docutils literal"><span class="pre">normalize.visitor.Visitor</span></tt>:</p>
+</div>
+<div class="section" id="gotchas">
+<h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h2>
+<p>This section has some notes based on some first impressions from early
+adopters that I think are noteworthy.</p>
+<ul>
+<li><p class="first">unintended successful coercion</p>
+<p>You&#8217;d better make sure that you don&#8217;t set a <tt class="docutils literal"><span class="pre">None</span></tt> default without
+adding <tt class="docutils literal"><span class="pre">types.NoneType</span></tt> to your <tt class="docutils literal"><span class="pre">isa=</span></tt> type constraint.  Some
+types, after all, quite happily coerce from <tt class="docutils literal"><span class="pre">None</span></tt>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Sloppy</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+<span class="go">        anything = Property(isa=str, default=None)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slop</span> <span class="o">=</span> <span class="n">Sloppy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">slop</span><span class="o">.</span><span class="n">anything</span>
+<span class="go">&#39;None&#39;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="#defaults"><em>Property Defaults</em></a> above for a version which allows <tt class="docutils literal"><span class="pre">None</span></tt>,
+change your program to trap <tt class="docutils literal"><span class="pre">AttributeError</span></tt> for an unset
+attribute or mark it as <tt class="docutils literal"><span class="pre">required=True</span></tt> if that suits the problem
+better.</p>
+</li>
+<li><p class="first">confusing, unsuccessful coercion</p>
+<p>Some types don&#8217;t have a very flexible default constructor.  Take,
+for instance, <tt class="docutils literal"><span class="pre">datetime.datetime</span></tt>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+
+<span class="k">class</span> <span class="nc">DatedObject</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">datetime</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>When you construct it using a string, it throws this fantastic and
+useful exception:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DatedObject</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="s">&quot;2012-12-25T12:00&quot;</span><span class="p">)</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;normalize/record/__init__.py&quot;</span>, line <span class="m">28</span>, in <span class="n">__init__</span>
+    <span class="n">meta_prop</span><span class="o">.</span><span class="n">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+  File <span class="nb">&quot;normalize/property/__init__.py&quot;</span>, line <span class="m">101</span>, in <span class="n">init_prop</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  File <span class="nb">&quot;normalize/property/__init__.py&quot;</span>, line <span class="m">76</span>, in <span class="n">type_safe_value</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="gr">TypeError</span>: <span class="n">an integer is required</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>What happened there is that (according to the <a class="reference internal" href="#coercion"><em>Property Type Coercion</em></a> rules)
+the string value passed in did not pass <tt class="docutils literal"><span class="pre">isinstance(X,</span> <span class="pre">datetime)</span></tt>
+and so was passed to the default coercion function: the <tt class="docutils literal"><span class="pre">datetime</span></tt>
+constructor.  However, the <tt class="docutils literal"><span class="pre">datetime</span></tt> constructor expects multiple
+positional arguments, not a string.  So, it interpreted the first
+argument as an integer and failed without noticing that other
+required arguments were not present.</p>
+<p>You probably want to instead use a flexible conversion function like
+<tt class="docutils literal"><span class="pre">dateutil.parser.parse</span></tt>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="kn">import</span> <span class="n">parse</span>
+
+<span class="k">class</span> <span class="nc">DatedObject</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="n">timestamp</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">datetime</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="n">parse</span><span class="p">)</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Which works more like you expect:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">DatedObject</span><span class="p">(</span><span class="n">timestamp</span><span class="o">=</span><span class="s">&quot;2012-12-25T12:00&quot;</span><span class="p">)</span>
+<span class="go">DatedObject(timestamp=datetime.datetime(2012, 12, 25, 12, 0))</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt></a><ul>
+<li><a class="reference internal" href="#basic-records-and-properties">Basic Records and Properties</a></li>
+<li><a class="reference internal" href="#property-type-coercion">Property Type Coercion</a></li>
+<li><a class="reference internal" href="#property-defaults">Property Defaults</a></li>
+<li><a class="reference internal" href="#lazy-evaluation">Lazy Evaluation</a></li>
+<li><a class="reference internal" href="#properties-which-are-records">Properties which are Records</a></li>
+<li><a class="reference internal" href="#properties-which-are-lists-of-records">Properties which are Lists of Records</a></li>
+<li><a class="reference internal" href="#referring-to-fields-within-records">Referring to fields within Records</a></li>
+<li><a class="reference internal" href="#comparing-object-structures">Comparing object structures</a></li>
+<li><a class="reference internal" href="#collections-and-primary-keys">Collections and primary keys</a></li>
+<li><a class="reference internal" href="#marshaling-to-and-from-json">Marshaling to and from JSON</a><ul>
+<li><a class="reference internal" href="#customizing-json-conversion">Customizing JSON Conversion</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#custom-visitor-classes">Custom Visitor Classes</a></li>
+<li><a class="reference internal" href="#gotchas">Gotchas</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="scope.html"
+                        title="previous chapter">the scope and purpose of <tt class="docutils literal"><span class="pre">normalize</span></tt></a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="property.html"
+                        title="next chapter"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/intro.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="property.html" title="normalize.property reference"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="scope.html" title="the scope and purpose of normalize"
+             >previous</a> |</li>
+        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

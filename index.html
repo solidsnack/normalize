@@ -1,0 +1,214 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>the normalize library &mdash; normalize 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.0.4 documentation" href="#" />
+    <link rel="next" title="the scope and purpose of normalize" href="scope.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="scope.html" title="the scope and purpose of normalize"
+             accesskey="N">next</a> |</li>
+        <li><a href="#">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="the-normalize-library">
+<h1>the <tt class="docutils literal"><span class="pre">normalize</span></tt> library<a class="headerlink" href="#the-normalize-library" title="Permalink to this headline">¶</a></h1>
+<p>The <tt class="docutils literal"><span class="pre">normalize</span></tt> package is primarily a for writing &#8220;plain old data
+structures&#8221; to wrap data from network sources in python objects (and
+send them back).
+It is also a useful generic class builder which can be leveraged for
+interesting and powerful meta-programming.</p>
+<p>Put simply, you write python classes and declare your assumptions
+about the data structures you&#8217;re dealing with, feed in input data and
+you get regular python objects back which have attributes which you
+can use naturally.
+You can then perform basic operations with the objects, such as make
+changes to them and convert them back, or compare them to another
+version using the rich comparison API.
+You can also construct the objects &#8216;natively&#8217; using regular python
+keyword/value constructors or by passing a <tt class="docutils literal"><span class="pre">dict</span></tt> as the first
+argument.</p>
+<p>It is very similar in scope to the <tt class="docutils literal"><span class="pre">remoteobjects</span></tt> and
+<tt class="docutils literal"><span class="pre">schematics</span></tt> packages on PyPI, and may in time evolve to include all
+the features of those packages.</p>
+<p>Contents of this manual:</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="scope.html">the scope and purpose of <tt class="docutils literal"><span class="pre">normalize</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="scope.html#what-s-in-a-name">What&#8217;s in a name?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scope.html#what-s-wrong-with-collections-namedtuple-or-regular-python-objects">What&#8217;s wrong with <tt class="docutils literal"><span class="pre">collections.namedtuple</span></tt>?  Or regular python objects?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scope.html#what-s-wrong-with-schematics">What&#8217;s wrong with <tt class="docutils literal"><span class="pre">schematics</span></tt>?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scope.html#so-what-is-normalize-really">So, what is <tt class="docutils literal"><span class="pre">normalize</span></tt>, really?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scope.html#what-about-higher-normalization-forms-3nf-etc">What about higher normalization forms?  3NF etc?</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#basic-records-and-properties">Basic Records and Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#property-type-coercion">Property Type Coercion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#property-defaults">Property Defaults</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#lazy-evaluation">Lazy Evaluation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#properties-which-are-records">Properties which are Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#properties-which-are-lists-of-records">Properties which are Lists of Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#referring-to-fields-within-records">Referring to fields within Records</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#comparing-object-structures">Comparing object structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#collections-and-primary-keys">Collections and primary keys</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#marshaling-to-and-from-json">Marshaling to and from JSON</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="intro.html#customizing-json-conversion">Customizing JSON Conversion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#custom-visitor-classes">Custom Visitor Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#gotchas">Gotchas</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="property.html"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="property.html#standard-property-behavior">Standard Property behavior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#property-flavors">Property Flavors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="property.html#roproperty"><tt class="docutils literal"><span class="pre">ROProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#lazyproperty"><tt class="docutils literal"><span class="pre">LazyProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#safeproperty"><tt class="docutils literal"><span class="pre">SafeProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#slow-property-types-lazysafeproperty-rolazyproperty">&#8220;Slow&#8221; Property types: <tt class="docutils literal"><span class="pre">LazySafeProperty</span></tt>, <tt class="docutils literal"><span class="pre">ROLazyProperty</span></tt></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#typed-properties">Typed Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="property.html#supplied-types-intproperty-stringproperty-etc">Supplied types: <tt class="docutils literal"><span class="pre">IntProperty</span></tt>, <tt class="docutils literal"><span class="pre">StringProperty</span></tt>, etc</a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#creating-your-own-domain-specific-property-types">Creating your own domain-specific property types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#property-subclasses">Property subclasses</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="property.html#listproperty"><tt class="docutils literal"><span class="pre">ListProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#jsonproperty"><tt class="docutils literal"><span class="pre">JsonProperty</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="record.html"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="record.html#standard-record-behavior">Standard <tt class="docutils literal"><span class="pre">Record</span></tt> behavior</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="record.html#constructor">Constructor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="record.html#pickle-api">Pickle API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="record.html#stringification">Stringification</a></li>
+<li class="toctree-l3"><a class="reference internal" href="record.html#hashing-and-record-identity">Hashing and Record Identity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="record.html#comparison">Comparison</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="record.html#record-flavors">Record Flavors</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="record.html#jsonrecord"><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="record.html#collection"><tt class="docutils literal"><span class="pre">Collection</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="coll.html"><tt class="docutils literal"><span class="pre">normalize.coll</span></tt> reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="coll.html#collection-common-features">Collection common features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="coll.html#listcollection"><tt class="docutils literal"><span class="pre">ListCollection</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coll.html#dictcollection"><tt class="docutils literal"><span class="pre">DictCollection</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="coll.html#complex-collections">&#8216;Complex&#8217; Collections</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="selector.html"><tt class="docutils literal"><span class="pre">normalize.selector</span></tt> reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html"><tt class="docutils literal"><span class="pre">normalize.diff</span></tt> reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visitor.html"><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference</a></li>
+</ul>
+</div>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><em>Index</em></a></li>
+<li><a class="reference internal" href="py-modindex.html"><em>Module Index</em></a></li>
+<li><a class="reference internal" href="search.html"><em>Search Page</em></a></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">the <tt class="docutils literal"><span class="pre">normalize</span></tt> library</a><ul>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Next topic</h4>
+  <p class="topless"><a href="scope.html"
+                        title="next chapter">the scope and purpose of <tt class="docutils literal"><span class="pre">normalize</span></tt></a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/index.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="scope.html" title="the scope and purpose of normalize"
+             >next</a> |</li>
+        <li><a href="#">normalize 0.0.4 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
