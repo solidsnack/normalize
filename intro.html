@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -37,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="property.html" title="normalize.property reference"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -53,6 +54,20 @@
             
   <div class="section" id="an-introduction-to-using-normalize">
 <h1>An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt><a class="headerlink" href="#an-introduction-to-using-normalize" title="Permalink to this headline">¶</a></h1>
+<p>This introduction is designed to first familiarize you with how &#8220;pure&#8221;
+<tt class="docutils literal"><span class="pre">normalize</span></tt> Records work.  This core behavior is important to learn,
+as it will avoid surprises later.</p>
+<p>It is not normally the way of python to labor over object definitions
+and type declarations.  But it is these definitions that drive the
+useful applications of the module: converting to and from JSON, deep
+object comparison, etc.</p>
+<p>Thankfully, very little is compulsory, for instance most of the time
+you probably don&#8217;t really need to declare what type a field is.  The
+default JSON marshall in function ignores unknown keys, so you can
+also just declare the keys you care about extracting.</p>
+<p>This tutorial should help you see the purpose of the various parts of
+the declaration API, so that you can write your classes in minimal,
+pythonic style.</p>
 <div class="section" id="basic-records-and-properties">
 <h2>Basic Records and Properties<a class="headerlink" href="#basic-records-and-properties" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal"><span class="pre">normalize</span></tt> is built around two core concepts: records, and
@@ -94,6 +109,21 @@ exception:</p>
 </div></blockquote>
 <p>(for the rest of this document, tracebacks will be omitted from the
 python interpreter output).</p>
+<p>In addition to marking properties as <tt class="docutils literal"><span class="pre">required</span></tt>, you can pass a
+<em>check</em> function, which must return something true-ish for the value
+to pass:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Star</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+<span class="go">       hip_id = Property(isa=int, required=True,</span>
+<span class="go">                         check=lambda x: 0 &lt; x &lt; 120000)</span>
+<span class="go">       name = Property(isa=str)</span>
+<span class="go">       spectral_type = Property(isa=str)</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Star</span><span class="p">(</span><span class="n">hip_id</span><span class="o">=</span><span class="mi">150000</span><span class="p">)</span>
+<span class="go">ValueError: Star.hip_id value &#39;150000&#39; failed type check</span>
+</pre></div>
+</div>
+</div></blockquote>
 <p>You can also construct from <tt class="docutils literal"><span class="pre">dict</span></tt> objects and other objects which
 implement <tt class="docutils literal"><span class="pre">collections.Mapping</span></tt> to a sufficient level:</p>
 <blockquote>
@@ -210,6 +240,11 @@ is always called when a value is set.</p>
 </pre></div>
 </div>
 </div></blockquote>
+<p>The first two examples failed because they failed the <tt class="docutils literal"><span class="pre">check</span></tt>
+function.  The second failed <em>after</em> type coercion, so the invalid
+value in the exception is the coerced value, not the original value.
+The third and fourth examples threw exceptions inside the <tt class="docutils literal"><span class="pre">coerce</span></tt>
+function.</p>
 </div>
 <div class="section" id="property-defaults">
 <span id="defaults"></span><h2>Property Defaults<a class="headerlink" href="#property-defaults" title="Permalink to this headline">¶</a></h2>
@@ -340,7 +375,7 @@ just the gimmicks shown so far.</p>
 </div>
 <div class="section" id="properties-which-are-lists-of-records">
 <h2>Properties which are Lists of Records<a class="headerlink" href="#properties-which-are-lists-of-records" title="Permalink to this headline">¶</a></h2>
-<p>It&#8217;s also possible to make properties which lists of records:</p>
+<p>It&#8217;s also possible to make properties which are lists of records:</p>
 <blockquote>
 <div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">normalize</span> <span class="kn">import</span> <span class="n">ListProperty</span>
 
@@ -465,6 +500,28 @@ diffs).</p>
 whether to normalize whitespace and unicode normal form (on by
 default) or whether to distinguish between an attribute set to an
 empty string, and no attribute set at all.</p>
+<p>It&#8217;s also possible to compare against object structures which are not
+<tt class="docutils literal"><span class="pre">Record</span></tt> classes at all:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">schematics.models</span> <span class="kn">import</span> <span class="n">Model</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">schematics.types</span> <span class="kn">import</span> <span class="n">IntType</span><span class="p">,</span> <span class="n">StringType</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Starmatic</span><span class="p">(</span><span class="n">Model</span><span class="p">):</span>
+<span class="go">        hip_id = IntType(required=True)</span>
+<span class="go">        name = StringType()</span>
+<span class="go">        spectral_type = StringType()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">maia3</span> <span class="o">=</span> <span class="n">Starmatic</span><span class="p">({</span><span class="s">&quot;hip_id&quot;</span><span class="p">:</span> <span class="mi">17573</span><span class="p">,</span>
+<span class="go">                       &quot;name&quot;: &quot;20 Tauri&quot;})</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">maia</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">maia3</span><span class="p">,</span> <span class="n">duck_type</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<span class="go">        print diff</span>
+<span class="go">&lt;DiffInfo: MODIFIED .name&gt;</span>
+<span class="go">&lt;DiffInfo: ADDED .spectral_type&gt;</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>Naturally, this &#8220;duck typing&#8221; diff is only comparing properties
+defined in the <tt class="docutils literal"><span class="pre">normalize</span></tt> class.  This functionality is useful for
+those transitioning from other similar systems or ad-hoc classes.</p>
 </div>
 <div class="section" id="collections-and-primary-keys">
 <h2>Collections and primary keys<a class="headerlink" href="#collections-and-primary-keys" title="Permalink to this headline">¶</a></h2>
@@ -602,10 +659,24 @@ like this:</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">to_json</span><span class="p">(</span><span class="n">tcent</span><span class="p">)</span>
 <span class="go">{&#39;position&#39;: &#39;15:06:40.800 -36:22:01.200&#39;, &#39;hip_id&#39;: 68933, &#39;name&#39;: &#39;Menkent&#39;}</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">from_json</span><span class="p">(</span><span class="n">Star</span><span class="p">,</span> <span class="p">{</span><span class="s">&#39;position&#39;</span><span class="p">:</span> <span class="s">&#39;15:06:40.800 -36:22:01.200&#39;</span><span class="p">,</span> <span class="s">&#39;hip_id&#39;</span><span class="p">:</span> <span class="mi">68933</span><span class="p">,</span> <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="s">&#39;Menkent&#39;</span><span class="p">})</span>
+<span class="go">Star(hip_id=68933, name=&#39;Menkent&#39;, position=15h 6m 40.800s -36d 22m 1.200s (degrees))</span>
 <span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
 </div></blockquote>
+<p>There&#8217;s a couple of things to note in this.</p>
+<p>First, practically: setting <tt class="docutils literal"><span class="pre">json_name</span></tt> to <tt class="docutils literal"><span class="pre">None</span></tt> supresses the
+attribute from being marshalled to and from JSON.</p>
+<p>Secondly: <tt class="docutils literal"><span class="pre">JsonProperty</span></tt> arguments were passed to the <tt class="docutils literal"><span class="pre">Property</span></tt>
+constructor.  Instead of <tt class="docutils literal"><span class="pre">Property</span></tt> failing, it looked to see what
+property types it knew of which supported that constructor argument,
+and created one of those instead.</p>
+<p>Currently the precise mechanics of this Property sub-class
+auto-selection are a little fiddly, and require users to ensure that
+precise combinations of Property classes are available so that
+<tt class="docutils literal"><span class="pre">normalize.property.meta.PropertyMeta.__new__()</span></tt> can find them.
+Future versions may automatically mix these property types together if
+they were not already found.</p>
 </div>
 </div>
 <div class="section" id="custom-visitor-classes">
@@ -613,6 +684,36 @@ like this:</p>
 <p>It&#8217;s trivial to write a <em>visitor</em> which applies a custom function to
 every <em>value</em> and <em>reduces</em> the compound results back into a single
 return value, using <tt class="docutils literal"><span class="pre">normalize.visitor.Visitor</span></tt>:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">normalize.visitor</span> <span class="kn">import</span> <span class="n">Visitor</span>
+
+<span class="n">JSON_CAN_DUMP</span> <span class="o">=</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">,</span> <span class="nb">dict</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">SimpleDumper</span><span class="p">(</span><span class="n">Visitor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">JSON_CAN_DUMP</span><span class="p">):</span>
+            <span class="n">dumpable</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">datetime</span><span class="p">):</span>
+            <span class="n">dumpable</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s">&quot;Can&#39;t dump </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">dumpable</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>This class is now somewhat similar to <tt class="docutils literal"><span class="pre">to_json</span></tt>, except that it
+ignores all the <tt class="docutils literal"><span class="pre">json_*</span></tt> options that were passed to the
+<tt class="docutils literal"><span class="pre">Property</span></tt> field.</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">SimpleDumper</span><span class="p">()</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">acent</span><span class="p">)</span>
+<span class="go">{&#39;name&#39;: &#39;Alpha Centauri&#39;, &#39;components&#39;: [(0, {&#39;hip_id&#39;: 71683, &#39;name&#39;: &#39;Alpha Centauri A&#39;}), (1, {&#39;hip_id&#39;: 71681, &#39;name&#39;: &#39;Alpha Centauri B&#39;}), (2, {&#39;hip_id&#39;: 70890, &#39;name&#39;: &#39;Alpha Centauri C&#39;})]}</span>
+<span class="go">&gt;&gt;&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<p>I&#8217;d like to now proudly state that all of the visitor pattern
+functions in this module are implemented on top of this <tt class="docutils literal"><span class="pre">Visitor</span></tt>
+class.  But, sadly, that is simply not true, yet.</p>
 </div>
 <div class="section" id="gotchas">
 <h2>Gotchas<a class="headerlink" href="#gotchas" title="Permalink to this headline">¶</a></h2>
@@ -759,6 +860,9 @@ required arguments were not present.</p>
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="property.html" title="normalize.property reference"
              >next</a> |</li>
         <li class="right" >
@@ -769,7 +873,7 @@ required arguments were not present.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>

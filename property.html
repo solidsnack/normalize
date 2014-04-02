@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '0.0.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -37,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="record.html" title="normalize.record reference"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -53,8 +54,51 @@
             
   <div class="section" id="normalize-property-reference">
 <h1><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference<a class="headerlink" href="#normalize-property-reference" title="Permalink to this headline">¶</a></h1>
+<p>And here is:</p>
+<dl class="attribute">
+<dt id="normalize.property">
+<tt class="descclassname">normalize.</tt><tt class="descname">property</tt><a class="headerlink" href="#normalize.property" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#module-normalize.property" title="normalize.property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property</span></tt></a></p>
+</dd></dl>
+
+<p>ra ra!</p>
 <div class="section" id="standard-property-behavior">
 <h2>Standard Property behavior<a class="headerlink" href="#standard-property-behavior" title="Permalink to this headline">¶</a></h2>
+<p>go see:</p>
+<span class="target" id="module-normalize.property"></span><p>property Class&#8217; docstring</p>
+<dl class="attribute">
+<dt id="normalize.property.LazyProperty">
+<tt class="descclassname">normalize.property.</tt><tt class="descname">LazyProperty</tt><a class="reference internal" href="_modules/normalize/property.html#LazyProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.LazyProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>This declares a property which has late evaluation using its &#8216;default&#8217;
+method.  This type uses the support built-in to python for lazy attribute
+setting, which means subsequent attribute assignments will not be prevented
+or checked.  See LazySafeProperty for the descriptor version</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.Property">
+<tt class="descclassname">normalize.property.</tt><tt class="descname">Property</tt><a class="reference internal" href="_modules/normalize/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the base class for all property types.  It is a data descriptor,
+so care should be taken before adding any SPECIALMETHODS which might change
+the way it behaves.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.SafeProperty">
+<tt class="descclassname">normalize.property.</tt><tt class="descname">SafeProperty</tt><a class="reference internal" href="_modules/normalize/property.html#SafeProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SafeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A version of Property which always checks all assignments to
+properties</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.property.make_property_type">
+<tt class="descclassname">normalize.property.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>*default_args</em>, <em>**default_kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#make_property_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.make_property_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a new Property type, which supplies the given arguments as
+defaults to the Property() constructor.  Note: defaults which affect the
+property type returned cannot be supplied by this mechanism.</p>
+</dd></dl>
+
+<p>W00t!</p>
 </div>
 <div class="section" id="property-flavors">
 <h2>Property Flavors<a class="headerlink" href="#property-flavors" title="Permalink to this headline">¶</a></h2>
@@ -158,6 +202,9 @@
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="record.html" title="normalize.record reference"
              >next</a> |</li>
         <li class="right" >
@@ -168,7 +215,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
