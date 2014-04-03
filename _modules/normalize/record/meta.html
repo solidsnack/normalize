@@ -1,0 +1,166 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.record.meta &mdash; normalize 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="normalize.record" href="../record.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.record.meta</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+<span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">Property</span>
+
+
+<span class="k">class</span> <span class="nc">RecordMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+<div class="viewcode-block" id="RecordMeta"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta">[docs]</a>    <span class="sd">&quot;&quot;&quot;Metaclass to reify descriptors properly&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+<div class="viewcode-block" id="RecordMeta.__new__"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta.__new__">[docs]</a>
+        <span class="n">properties</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s">&quot;properties&quot;</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">propname</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">base</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                    <span class="k">if</span> <span class="n">propname</span> <span class="ow">in</span> <span class="n">properties</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">MultipleInheritanceClash</span><span class="p">(</span>
+                            <span class="n">propname</span><span class="o">=</span><span class="n">propname</span><span class="p">,</span>
+                            <span class="n">typename</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                        <span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span>
+
+        <span class="n">local_props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">attrval</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="c"># don&#39;t allow clobbering of these meta-properties in class</span>
+            <span class="c"># definitions</span>
+            <span class="k">if</span> <span class="n">attrname</span> <span class="ow">in</span> <span class="nb">frozenset</span><span class="p">((</span><span class="s">&#39;properties&#39;</span><span class="p">,</span> <span class="s">&#39;eager_properties&#39;</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ReservedPropertyName</span><span class="p">(</span><span class="n">attrname</span><span class="o">=</span><span class="n">attrname</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attrval</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
+                <span class="n">properties</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrval</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">attrval</span><span class="o">.</span><span class="n">bound</span><span class="p">:</span>
+                    <span class="n">local_props</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrval</span>
+
+        <span class="n">all_properties</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">def</span> <span class="nf">coerce_prop_list</span><span class="p">(</span><span class="n">prop_list_field</span><span class="p">):</span>
+            <span class="n">proplist</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop_list_field</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="n">good_props</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">proplist</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">proplist</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+                        <span class="n">prop</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">Property</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+                        <span class="n">prop</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_properties</span>
+                    <span class="p">):</span>
+                        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertiesNotKnown</span><span class="p">(</span>
+                            <span class="n">badprop</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">prop</span><span class="p">),</span>
+                            <span class="n">proplist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">proplist</span><span class="p">),</span>
+                        <span class="p">)</span>
+                    <span class="n">good_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">good_props</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;primary_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coerce_prop_list</span><span class="p">(</span><span class="s">&#39;primary_key&#39;</span><span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;properties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;_sorted_properties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+            <span class="nb">list</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">x</span><span class="o">.</span><span class="n">extraneous</span><span class="p">),</span>
+            <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;eager_properties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">frozenset</span><span class="p">(</span>
+            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span> <span class="n">v</span><span class="o">.</span><span class="n">eager_init</span><span class="p">()</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RecordMeta</span><span class="p">,</span> <span class="n">mcs</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">propname</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">local_props</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">prop</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propname</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

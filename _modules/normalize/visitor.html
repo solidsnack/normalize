@@ -1,0 +1,267 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.visitor &mdash; normalize 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="normalize" href="../normalize.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.visitor</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+<span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
+<span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+
+
+<span class="k">class</span> <span class="nc">Visitor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Visitor"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor">[docs]</a>    <span class="sd">&quot;&quot;&quot;Class for writing Record visitor pattern functions.  This Visitor is</span>
+<span class="sd">    intended to be subclassed; a generic version which can take the apply and</span>
+<span class="sd">    reduce functions as arguments may be implemented later.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ignore_empty_string</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<div class="viewcode-block" id="Visitor.__init__"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.__init__">[docs]</a>                 <span class="n">apply_records</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">apply_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new visitor.  The built-in parameters, which affect the</span>
+<span class="sd">        default &#39;map&#39; function operation, are:</span>
+
+<span class="sd">        ``ignore_none`` (bool)</span>
+<span class="sd">            If the &#39;apply&#39; function returns ``None``, treat it as if the</span>
+<span class="sd">            slot or object did not exist.  On by default.</span>
+
+<span class="sd">        ``ignore_empty_string`` (bool)</span>
+<span class="sd">            If the &#39;apply&#39; function returns the empty string, treat it as if</span>
+<span class="sd">            the slot or object did not exist.  Not on by default.</span>
+
+<span class="sd">        ``apply_records`` (bool)</span>
+<span class="sd">            Normally, traversal happens in depth-first order, and fields</span>
+<span class="sd">            which are Records never have ``apply`` called on them.  If you</span>
+<span class="sd">            want them to, set this field.  This affects the arguments passed</span>
+<span class="sd">            to ``reduce_record``</span>
+<span class="sd">            If the ``apply`` function returns</span>
+<span class="sd">            ``self.StopVisiting`` (or an instance of it), then traversal</span>
+<span class="sd">            does not descend into the fields of the record.  If it returns</span>
+<span class="sd">            something else, then ``reduce_record`` is expected to take a</span>
+<span class="sd">            tuple of the return value, and the dictio</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span> <span class="o">=</span> <span class="n">ignore_none</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span> <span class="o">=</span> <span class="n">ignore_empty_string</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span> <span class="o">=</span> <span class="n">apply_records</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_empty_slots</span> <span class="o">=</span> <span class="n">apply_empty_slots</span>
+
+    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">parent_obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.apply"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.apply">[docs]</a>        <span class="sd">&quot;&quot;&quot;&#39;apply&#39; is a general place to put a function which is called</span>
+<span class="sd">        on every extant record slot.</span>
+
+<span class="sd">        Data structures are normally traversed in depth-first order.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">reduce_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_dict</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.reduce_record"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_record">[docs]</a>        <span class="sd">&quot;&quot;&quot;Hook called for each record, with the results of mapping each</span>
+<span class="sd">        member.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">result_dict</span>
+
+    <span class="k">def</span> <span class="nf">reduce_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_coll_generator</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">coll_type</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.reduce_collection"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_collection">[docs]</a>        <span class="sd">&quot;&quot;&quot;Hook called for each normalize.coll.Collection.  The first argument</span>
+<span class="sd">        is a generator, which returns (key, value) pairs (like</span>
+<span class="sd">        Collection.itertuples())</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span><span class="n">result_coll_generator</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">reduce_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_result</span><span class="p">,</span> <span class="n">coll_result</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.reduce_complex"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_complex">[docs]</a>        <span class="sd">&quot;&quot;&quot;If a Collection has properties that map to something, this</span>
+<span class="sd">        reduction.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">record_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;values&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">VisitorTooSimple</span><span class="p">(</span>
+                <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                <span class="n">value_type_name</span><span class="o">=</span><span class="n">value_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="n">visitor</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">record_result</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coll_result</span>
+        <span class="k">return</span> <span class="n">record_result</span>
+
+    <span class="k">class</span> <span class="nc">StopVisiting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.StopVisiting"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.StopVisiting">[docs]</a>        <span class="n">return_value</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_value</span><span class="p">):</span>
+<div class="viewcode-block" id="Visitor.StopVisiting.__init__"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.StopVisiting.__init__">[docs]</a>            <span class="bp">self</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">return_value</span>
+
+    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">value_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="Visitor.map"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map">[docs]</a>        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value_type</span><span class="p">:</span>
+            <span class="n">value_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">prune</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+            <span class="n">record_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_record</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">record_mapped</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">record_mapped</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span>
+        <span class="p">):</span>
+            <span class="n">record_mapped</span> <span class="o">=</span> <span class="n">record_mapped</span><span class="o">.</span><span class="n">return_value</span>
+            <span class="n">prune</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prune</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
+            <span class="n">coll_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_collection</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_collection</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">),</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">coll_mapped</span> <span class="ow">and</span> <span class="n">record_mapped</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_complex</span><span class="p">(</span>
+                    <span class="n">record_mapped</span><span class="p">,</span> <span class="n">coll_mapped</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">coll_mapped</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">coll_mapped</span>
+
+        <span class="k">return</span> <span class="n">record_mapped</span>
+
+    <span class="k">def</span> <span class="nf">map_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.map_record"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_record">[docs]</a>        <span class="sd">&quot;&quot;&quot;Function responsible for descending an object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">record_type</span><span class="p">:</span>
+            <span class="n">record_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span> <span class="ow">or</span> \
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">return_value</span>
+
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">record_type</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_prop</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">mapped</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped</span>
+
+        <span class="n">to_reduce</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">result_dict</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span> <span class="ow">or</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span>
+            <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result_dict</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_record</span><span class="p">(</span><span class="n">to_reduce</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">map_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.map_prop"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_prop">[docs]</a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_empty_slots</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">value_type</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">mapped</span>
+
+    <span class="k">def</span> <span class="nf">map_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coll</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">coll_type</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Visitor.map_collection"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_collection">[docs]</a>        <span class="k">try</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">itertuples</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">coll_to_tuples</span><span class="p">(</span><span class="n">coll</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">mapped</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">mapped</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

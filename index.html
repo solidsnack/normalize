@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>the normalize library &mdash; normalize 0.0.4 documentation</title>
+    <title>the normalize library &mdash; normalize 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.0.4',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.0.4 documentation" href="#" />
+    <link rel="top" title="normalize 0.1.0 documentation" href="#" />
     <link rel="next" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="N">next</a> |</li>
-        <li><a href="#">normalize 0.0.4 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -130,6 +130,7 @@ the features of those packages.</p>
 <li class="toctree-l3"><a class="reference internal" href="record.html#collection"><tt class="docutils literal"><span class="pre">Collection</span></tt></a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="record.html#module-normalize.record.meta">Record MetaClass</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="coll.html"><tt class="docutils literal"><span class="pre">normalize.coll</span></tt> reference</a><ul>
@@ -193,8 +194,35 @@ the sorted order of the FieldSelectors.</p>
 <tt class="descclassname">normalize.</tt><tt class="descname">from_json</tt><big>(</big><em>record_type</em>, <em>json_struct</em><big>)</big><a class="headerlink" href="#normalize.from_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON
 types/hints but does not require them.</p>
-<p>&#64;param json_struct a loaded (via <tt class="docutils literal"><span class="pre">json.loads</span></tt>) data structure
-&#64;param record_type a Record object to load items into</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>TYPE</em></dt>
+<dd>Record type to convert data to</dd>
+<dt><tt class="docutils literal"><span class="pre">json_struct=</span></tt><em>DICT|LIST</em></dt>
+<dd>a loaded (via <tt class="docutils literal"><span class="pre">json.loads</span></tt>) data structure, normally a
+dict or a list.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.JsonCollectionProperty">
+<tt class="descclassname">normalize.</tt><tt class="descname">JsonCollectionProperty</tt><a class="headerlink" href="#normalize.JsonCollectionProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which map to a list of records in JSON.</p>
+<p>It can also map a dictionary with some top level keys (eg, streaming
+information) and a key with the actual list contents.  See
+<a class="reference internal" href="record.html#module-normalize.record.json" title="normalize.record.json"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.record.json</span></tt></a> for more details.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.JsonListProperty">
+<tt class="descclassname">normalize.</tt><tt class="descname">JsonListProperty</tt><a class="headerlink" href="#normalize.JsonListProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which map to a list of records in JSON.</p>
+<p>It can also map a dictionary with some top level keys (eg, streaming
+information) and a key with the actual list contents.  See
+<a class="reference internal" href="record.html#module-normalize.record.json" title="normalize.record.json"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.record.json</span></tt></a> for more details.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -406,7 +434,7 @@ them.</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >next</a> |</li>
-        <li><a href="#">normalize 0.0.4 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -1,0 +1,565 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.diff &mdash; normalize 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="normalize" href="../normalize.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.diff</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">unicodedata</span>
+
+<span class="kn">from</span> <span class="nn">richenum</span> <span class="kn">import</span> <span class="n">OrderedRichEnum</span>
+<span class="kn">from</span> <span class="nn">richenum</span> <span class="kn">import</span> <span class="n">OrderedRichEnumValue</span>
+
+<span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">SafeProperty</span>
+<span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">ListCollection</span>
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+<span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
+<span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">record_id</span>
+<span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+
+
+<span class="k">class</span> <span class="nc">DiffTypes</span><span class="p">(</span><span class="n">OrderedRichEnum</span><span class="p">):</span>
+<div class="viewcode-block" id="DiffTypes"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffTypes">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    An &quot;enum&quot; to represent types of diffs</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">class</span> <span class="nc">EnumValue</span><span class="p">(</span><span class="n">OrderedRichEnumValue</span><span class="p">):</span>
+<div class="viewcode-block" id="DiffTypes.EnumValue"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffTypes.EnumValue">[docs]</a>        <span class="k">pass</span>
+
+    <span class="n">NO_CHANGE</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s">&quot;none&quot;</span><span class="p">,</span> <span class="s">&quot;UNCHANGED&quot;</span><span class="p">)</span></div>
+    <span class="n">ADDED</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s">&quot;added&quot;</span><span class="p">,</span> <span class="s">&quot;ADDED&quot;</span><span class="p">)</span>
+    <span class="n">REMOVED</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="s">&quot;removed&quot;</span><span class="p">,</span> <span class="s">&quot;REMOVED&quot;</span><span class="p">)</span>
+    <span class="n">MODIFIED</span> <span class="o">=</span> <span class="n">EnumValue</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;modified&quot;</span><span class="p">,</span> <span class="s">&quot;MODIFIED&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_coerce_diff</span><span class="p">(</span><span class="n">dt</span><span class="p">):</span></div>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="n">OrderedRichEnumValue</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">from_index</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">dt</span> <span class="o">=</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">from_canonical</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">dt</span>
+
+
+<span class="k">class</span> <span class="nc">DiffInfo</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+<div class="viewcode-block" id="DiffInfo"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffInfo">[docs]</a>    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Container for storing diff information that can be used to reconstruct the</span>
+<span class="sd">    values diffed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">diff_type</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span>
+        <span class="nb">coerce</span><span class="o">=</span><span class="n">_coerce_diff</span><span class="p">,</span>
+        <span class="n">isa</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">EnumValue</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="DiffInfo.__str__"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffInfo.__str__">[docs]</a>        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+            <span class="n">pathinfo</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="p">)</span>
+                <span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span> <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">)</span> <span class="ow">and</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+                <span class="p">)</span> <span class="k">else</span> <span class="s">&quot;(</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pathinfo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span>
+        <span class="n">difftype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">diff_type</span><span class="o">.</span><span class="n">display_name</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;DiffInfo: </span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">difftype</span><span class="p">,</span> <span class="n">pathinfo</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_Nothing</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span></div></div>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;(not set)&quot;</span>
+
+
+<span class="n">_nothing</span> <span class="o">=</span> <span class="n">_Nothing</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">DiffOptions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="DiffOptions"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions">[docs]</a>    <span class="sd">&quot;&quot;&quot;Optional data structure to pass diff options down&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_ws</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+<div class="viewcode-block" id="DiffOptions.__init__"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.__init__">[docs]</a>                 <span class="n">unicode_normal</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unchanged</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">ignore_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">duck_type</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_ws</span> <span class="o">=</span> <span class="n">ignore_ws</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="o">=</span> <span class="n">ignore_case</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_slots</span> <span class="o">=</span> <span class="n">ignore_empty_slots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unicode_normal</span> <span class="o">=</span> <span class="n">unicode_normal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unchanged</span> <span class="o">=</span> <span class="n">unchanged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">duck_type</span> <span class="o">=</span> <span class="n">duck_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">extraneous</span> <span class="o">=</span> <span class="n">extraneous</span>
+
+    <span class="k">def</span> <span class="nf">items_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.items_equal"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.items_equal">[docs]</a>        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">normalize_whitespace</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.normalize_whitespace"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.normalize_whitespace">[docs]</a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="s">u&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">r&#39;\s+&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span><span class="p">)</span> <span class="k">if</span>
+                <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">normalize_unf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.normalize_unf"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.normalize_unf">[docs]</a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s">&#39;NFC&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">normalize_case</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.normalize_case"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.normalize_case">[docs]</a>        <span class="c"># FIXME: this will do the wrong thing for letters in some languages, eg</span>
+        <span class="c"># Greek, Turkish.  Correct, locale-dependent unicode case folding is</span>
+        <span class="c"># left as an exercise for a subclass.</span>
+        <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">value_is_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.value_is_empty"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.value_is_empty">[docs]</a>        <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="n">value</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)))</span>
+
+    <span class="k">def</span> <span class="nf">normalize_val</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_nothing</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.normalize_val"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.normalize_val">[docs]</a>        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_ws</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_whitespace</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_case</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">unicode_normal</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_unf</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_slots</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_is_empty</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">_nothing</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span> <span class="nf">record_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+<div class="viewcode-block" id="DiffOptions.record_id"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.record_id">[docs]</a>        <span class="sd">&quot;&quot;&quot;Retrieve an object identifier from the given record; if it is an</span>
+<span class="sd">        alien class, and the type is provided, then use duck typing to get the</span>
+<span class="sd">        corresponding fields of the alien class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s">&quot;__pk__&quot;</span><span class="p">,</span> <span class="n">record_id</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">compare_record_iter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="compare_record_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_record_iter">[docs]</a>    <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">duck_type</span> <span class="ow">and</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+            <span class="s">&quot;cannot compare </span><span class="si">%s</span><span class="s"> with </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">b</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+        <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+
+    <span class="n">properties</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span>
+    <span class="k">for</span> <span class="n">propname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">properties</span><span class="p">):</span>
+
+        <span class="n">prop</span> <span class="o">=</span> <span class="n">properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">extraneous</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">extraneous</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">propval_a</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">))</span>
+        <span class="n">propval_b</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">propval_a</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="n">propval_b</span> <span class="ow">is</span> <span class="n">_nothing</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">elif</span> <span class="n">propval_a</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="n">propval_b</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">ADDED</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">propval_b</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="n">propval_a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">REMOVED</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">duck_type</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">propval_a</span><span class="p">)</span> <span class="o">==</span> <span class="nb">type</span><span class="p">(</span><span class="n">propval_b</span><span class="p">))</span> \
+                <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">COMPARABLE</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">type_union</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">COMPARE_FUNCTIONS</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">type_union</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">func</span><span class="p">(</span>
+                        <span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+                        <span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span> <span class="n">options</span><span class="p">,</span>
+                    <span class="p">):</span>
+                        <span class="k">yield</span> <span class="n">diff</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">items_equal</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">):</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">MODIFIED</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
+            <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">collection_generator</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span></div>
+<div class="viewcode-block" id="collection_generator"><a class="viewcode-back" href="../../diff.html#normalize.diff.collection_generator">[docs]</a>    <span class="sd">&quot;&quot;&quot;This function returns a generator which iterates over the collection,</span>
+<span class="sd">    similar to Collection.itertuples().  Collections are viewed by this module,</span>
+<span class="sd">    regardless of type, as a mapping from an index to the value.  For sets, the</span>
+<span class="sd">    &quot;index&quot; is always None.  For dicts, it&#39;s a string, and for lists, it&#39;s an</span>
+<span class="sd">    int.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s">&quot;itertuples&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">itertuples</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s">&quot;iteritems&quot;</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s">&quot;__getitem__&quot;</span><span class="p">):</span>
+
+        <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">else</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">generator</span><span class="p">()</span>
+
+
+<span class="c"># There&#39;s a lot of repetition in the following code.  It could be served by one</span>
+<span class="c"># function instead of 3, which would be 3 times fewer places to have bugs, but</span>
+<span class="c"># it would probably also be more than 3 times as difficult to debug.</span>
+<span class="k">def</span> <span class="nf">compare_collection_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="compare_collection_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_collection_iter">[docs]</a>                            <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+        <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+    <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">()</span>
+
+    <span class="n">propvals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">propval_b</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">rev_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">compare_values</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">typeargs</span> <span class="o">=</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">propval_a</span><span class="p">)</span><span class="o">.</span><span class="n">itemtype</span><span class="p">,)</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">duck_type</span> <span class="k">else</span> <span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span>
+        <span class="n">propval_x</span> <span class="o">=</span> <span class="n">propvals</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">rev_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="n">seen</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">collection_generator</span><span class="p">(</span><span class="n">propval_x</span><span class="p">):</span>
+            <span class="n">pk</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">record_id</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">*</span><span class="n">typeargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">compare_values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">compare_values</span> <span class="o">=</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pk</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span>
+            <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">pk</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">pk</span><span class="p">]))</span>
+            <span class="n">rev_key</span><span class="p">[(</span><span class="n">pk</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">pk</span><span class="p">])]</span> <span class="o">=</span> <span class="n">k</span>
+            <span class="n">seen</span><span class="p">[</span><span class="n">pk</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">removed</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span><span class="p">:</span>
+        <span class="n">unchanged</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">unchanged</span><span class="p">:</span>
+            <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">],</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">removed</span><span class="p">:</span>
+        <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">REMOVED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+        <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">ADDED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">compare_values</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]):</span>
+            <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="n">selector_a</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="n">a_key</span>
+            <span class="n">selector_b</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="n">b_key</span>
+            <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">compare_record_iter</span><span class="p">(</span>
+                <span class="n">propval_a</span><span class="p">[</span><span class="n">a_key</span><span class="p">],</span> <span class="n">propval_b</span><span class="p">[</span><span class="n">b_key</span><span class="p">],</span>
+                <span class="n">selector_a</span><span class="p">,</span> <span class="n">selector_b</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
+            <span class="p">):</span>
+                <span class="k">yield</span> <span class="n">diff</span>
+
+
+<span class="k">def</span> <span class="nf">compare_list_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="compare_list_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_list_iter">[docs]</a>                      <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+        <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">()</span>
+    <span class="n">propvals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">propval_b</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span>
+        <span class="n">propval_x</span> <span class="o">=</span> <span class="n">propvals</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">rev_key</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">propval_x</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">ignore_empty_slots</span><span class="p">:</span>
+                <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span>
+                <span class="n">rev_key</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">])]</span> <span class="o">=</span> <span class="n">i</span>
+                <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">removed</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span><span class="p">:</span>
+        <span class="n">unchanged</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">unchanged</span><span class="p">:</span>
+            <span class="n">a_idx</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="n">b_idx</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_idx</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_idx</span><span class="p">],</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">removed</span><span class="p">:</span>
+        <span class="n">a_key</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">REMOVED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+        <span class="n">b_key</span> <span class="o">=</span> <span class="n">indices</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">ADDED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">compare_dict_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span></div>
+<div class="viewcode-block" id="compare_dict_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_dict_iter">[docs]</a>                      <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+        <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">()</span>
+    <span class="n">propvals</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="n">propval_b</span><span class="p">)</span>
+    <span class="n">values</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">rev_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span>
+        <span class="n">propval_x</span> <span class="o">=</span> <span class="n">propvals</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
+        <span class="n">vals</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">rev_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">seen</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Counter</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">propval_x</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">options</span><span class="o">.</span><span class="n">ignore_empty_slots</span><span class="p">:</span>
+                <span class="n">vals</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">]))</span>
+                <span class="n">rev_key</span><span class="p">[(</span><span class="n">v</span><span class="p">,</span> <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">])]</span> <span class="o">=</span> <span class="n">k</span>
+                <span class="n">seen</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="n">removed</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+    <span class="n">added</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span><span class="p">:</span>
+        <span class="n">unchanged</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">unchanged</span><span class="p">:</span>
+            <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+            <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">,</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">],</span>
+                <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">],</span>
+            <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">removed</span><span class="p">:</span>
+        <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">REMOVED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">v</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">added</span><span class="p">:</span>
+        <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">v</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
+        <span class="n">selector</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">]</span>
+        <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+            <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">ADDED</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span><span class="p">,</span>
+            <span class="n">other</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="n">COMPARE_FUNCTIONS</span> <span class="o">=</span> <span class="p">{</span></div>
+    <span class="nb">list</span><span class="p">:</span> <span class="n">compare_list_iter</span><span class="p">,</span>
+    <span class="nb">tuple</span><span class="p">:</span> <span class="n">compare_list_iter</span><span class="p">,</span>
+    <span class="nb">dict</span><span class="p">:</span> <span class="n">compare_dict_iter</span><span class="p">,</span>
+    <span class="n">Collection</span><span class="p">:</span> <span class="n">compare_collection_iter</span><span class="p">,</span>
+    <span class="n">Record</span><span class="p">:</span> <span class="n">compare_record_iter</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="n">COMPARABLE</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">COMPARE_FUNCTIONS</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">diff_iter</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="diff_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.diff_iter">[docs]</a>    <span class="sd">&quot;&quot;&quot;Simplified interface to &#39;compare_*_iter&#39;&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">options</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">DiffOptionsException</span><span class="p">()</span>
+
+    <span class="n">generators</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">type_union</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="n">COMPARE_FUNCTIONS</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">type_union</span><span class="p">):</span>
+            <span class="n">generators</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="n">options</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">generators</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">generators</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">chain</span><span class="p">(</span><span class="o">*</span><span class="n">generators</span><span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Diff</span><span class="p">(</span><span class="n">ListCollection</span><span class="p">):</span></div>
+<div class="viewcode-block" id="Diff"><a class="viewcode-back" href="../../diff.html#normalize.diff.Diff">[docs]</a>    <span class="sd">&quot;&quot;&quot;Container for a list of differences&quot;&quot;&quot;</span>
+    <span class="n">base_type_name</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">other_type_name</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">itemtype</span> <span class="o">=</span> <span class="n">DiffInfo</span>
+
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Diff.__str__"><a class="viewcode-back" href="../../diff.html#normalize.diff.Diff.__str__">[docs]</a>        <span class="n">what</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;</span><span class="si">%s</span><span class="s"> vs </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_type_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_type_name</span><span class="p">)</span> <span class="k">if</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_type_name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_type_name</span> <span class="k">else</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">base_type_name</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;Diff [{what}]; {n} item(s)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
+            <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="diff"><a class="viewcode-back" href="../../diff.html#normalize.diff.diff">[docs]</a>    <span class="sd">&quot;&quot;&quot;Eager version of diff_iter&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">Diff</span><span class="p">(</span><span class="n">diff_iter</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
+                <span class="n">base_type_name</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">base</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="n">other_type_name</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

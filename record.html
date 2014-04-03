@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record reference &mdash; normalize 0.0.4 documentation</title>
+    <title>normalize.record reference &mdash; normalize 0.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.0.4',
+        VERSION:     '0.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.0.4 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.1.0 documentation" href="index.html" />
     <link rel="next" title="normalize.coll reference" href="coll.html" />
     <link rel="prev" title="normalize.property reference" href="property.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="property.html" title="normalize.property reference"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,8 +52,89 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="normalize-record-reference">
-<h1><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference<a class="headerlink" href="#normalize-record-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="module-normalize.record">
+<span id="normalize-record-reference"></span><h1><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference<a class="headerlink" href="#module-normalize.record" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="normalize.record.Record">
+<em class="property">class </em><tt class="descclassname">normalize.record.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for normalize instances</p>
+<dl class="method">
+<dt id="normalize.record.Record.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__init__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__getnewargs__">
+<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__getnewargs__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__getnewargs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement saving for pickle API</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__str__">
+<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to string form</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to Python source</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare two Record classes; recursively compares all attributes
+for equality (except those marked &#8216;extraneous&#8217;)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__ne__">
+<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__ne__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.Record.__pk__">
+<tt class="descname">__pk__</tt><a class="reference internal" href="_modules/normalize/record.html#Record.__pk__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__pk__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__hash__">
+<tt class="descname">__hash__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__hash__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.diff_iter">
+<tt class="descname">diff_iter</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.diff_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.diff_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.diff">
+<tt class="descname">diff</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.diff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.Record.eager_properties">
+<tt class="descname">eager_properties</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#normalize.record.Record.eager_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.Record.primary_key">
+<tt class="descname">primary_key</tt><em class="property"> = ()</em><a class="headerlink" href="#normalize.record.Record.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.Record.properties">
+<tt class="descname">properties</tt><em class="property"> = {}</em><a class="headerlink" href="#normalize.record.Record.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.walk">
+<tt class="descname">walk</tt><big>(</big><em>fs=None</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.walk"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.walk" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 <div class="section" id="standard-record-behavior">
 <h2>Standard <tt class="docutils literal"><span class="pre">Record</span></tt> behavior<a class="headerlink" href="#standard-record-behavior" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="constructor">
@@ -76,6 +157,224 @@
 <h2>Record Flavors<a class="headerlink" href="#record-flavors" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="jsonrecord">
 <h3><tt class="docutils literal"><span class="pre">JsonRecord</span></tt><a class="headerlink" href="#jsonrecord" title="Permalink to this headline">¶</a></h3>
+<span class="target" id="module-normalize.record.json"></span><dl class="function">
+<dt id="normalize.record.json.json_to_initkwargs">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">json_to_initkwargs</tt><big>(</big><em>record_type</em>, <em>json_struct</em>, <em>kwargs=None</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#json_to_initkwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function converts a JSON dict (json_struct) to a set of init
+keyword arguments for the passed Record (or JsonRecord).</p>
+<p>It is called by the JsonRecord constructor.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.record.json.from_json">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">from_json</tt><big>(</big><em>record_type</em>, <em>json_struct</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON
+types/hints but does not require them.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>TYPE</em></dt>
+<dd>Record type to convert data to</dd>
+<dt><tt class="docutils literal"><span class="pre">json_struct=</span></tt><em>DICT|LIST</em></dt>
+<dd>a loaded (via <tt class="docutils literal"><span class="pre">json.loads</span></tt>) data structure, normally a
+dict or a list.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.record.json.to_json">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">to_json</tt><big>(</big><em>record</em>, <em>extraneous=True</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON marshall out function: a &#8216;visitor&#8217; function which implements
+marshall out, honoring JSON property types/hints but does not require
+them.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonRecord">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonRecord</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of a Record which deals primarily in JSON form.</p>
+<p>This means:</p>
+<ol class="arabic simple">
+<li>The first argument to the constructor is assumed to be a JSON data
+dictionary, and passed through the class&#8217; <tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt>
+method before being used to set actual properties</li>
+<li>Unknown keys are permitted, and saved in the &#8220;unknown_json_keys&#8221;
+property, which is merged back on output (ie, calling <tt class="docutils literal"><span class="pre">.json_data()</span></tt>
+or <tt class="docutils literal"><span class="pre">to_json()</span></tt>) #TODO</li>
+</ol>
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">json_data=</span></tt><em>DICT|other</em></dt>
+<dd>JSON data (string or already <tt class="docutils literal"><span class="pre">json.loads</span></tt>&#8216;d).  If not
+a JSON dictionary with keys corresponding to the
+<tt class="docutils literal"><span class="pre">json_name</span></tt> or the properties within, then
+<tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt> should be overridden to handle
+the unpacking differently</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd><tt class="docutils literal"><span class="pre">JsonRecord</span></tt> instances may also be constructed by
+passing in attribute initializers in keyword form.  The
+keys here should be the names of the attributes and the
+python values, not the JSON names or form.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.record.json.JsonRecord.json_to_initkwargs">
+<em class="property">classmethod </em><tt class="descname">json_to_initkwargs</tt><big>(</big><em>json_data</em>, <em>kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.json_to_initkwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclassing hook to specialize how JSON data is converted
+to keyword arguments</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.record.json.JsonRecord.from_json">
+<em class="property">classmethod </em><tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method can be overridden to specialize how the class is loaded
+when marshalling in; however beware that it is not invoked when the
+caller uses the <tt class="docutils literal"><span class="pre">from_json()</span></tt> function directly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.json_data">
+<tt class="descname">json_data</tt><big>(</big><em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.json_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.json_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.diff_iter">
+<tt class="descname">diff_iter</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff_iter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.diff">
+<tt class="descname">diff</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecord.eager_properties">
+<tt class="descname">eager_properties</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#normalize.record.json.JsonRecord.eager_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecord.primary_key">
+<tt class="descname">primary_key</tt><em class="property"> = ()</em><a class="headerlink" href="#normalize.record.json.JsonRecord.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecord.properties">
+<tt class="descname">properties</tt><em class="property"> = {'unknown_json_keys': &lt;normalize.property.json.SafeJsonProperty object at 0x37aa150&gt;}</em><a class="headerlink" href="#normalize.record.json.JsonRecord.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonRecordList">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonRecordList</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of a RecordList which deals primarily in JSON</p>
+<dl class="method">
+<dt id="normalize.record.json.JsonRecordList.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">json_data=</span></tt><em>LIST|other</em></dt>
+<dd>JSON data (string or already <tt class="docutils literal"><span class="pre">json.loads</span></tt>&#8216;d)</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd>Other initializer attributes, for lists with extra
+attributes (eg, paging information)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.record.json.JsonRecordList.json_to_initkwargs">
+<em class="property">classmethod </em><tt class="descname">json_to_initkwargs</tt><big>(</big><em>json_struct</em>, <em>kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList.json_to_initkwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecordList.json_data">
+<tt class="descname">json_data</tt><big>(</big><em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList.json_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList.json_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecordList.eager_properties">
+<tt class="descname">eager_properties</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#normalize.record.json.JsonRecordList.eager_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecordList.primary_key">
+<tt class="descname">primary_key</tt><em class="property"> = ()</em><a class="headerlink" href="#normalize.record.json.JsonRecordList.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonRecordList.properties">
+<tt class="descname">properties</tt><em class="property"> = {'unknown_json_keys': &lt;normalize.property.json.SafeJsonProperty object at 0x37aa150&gt;}</em><a class="headerlink" href="#normalize.record.json.JsonRecordList.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonDiffInfo">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonDiffInfo</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonDiffInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonDiffInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of &#8216;DiffInfo&#8217; that supports <tt class="docutils literal"><span class="pre">.json_data()</span></tt></p>
+<dl class="method">
+<dt id="normalize.record.json.JsonDiffInfo.json_data">
+<tt class="descname">json_data</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonDiffInfo.json_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonDiffInfo.json_data" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiffInfo.eager_properties">
+<tt class="descname">eager_properties</tt><em class="property"> = frozenset(['diff_type', 'other', 'base'])</em><a class="headerlink" href="#normalize.record.json.JsonDiffInfo.eager_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiffInfo.primary_key">
+<tt class="descname">primary_key</tt><em class="property"> = ()</em><a class="headerlink" href="#normalize.record.json.JsonDiffInfo.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiffInfo.properties">
+<tt class="descname">properties</tt><em class="property"> = {'diff_type': &lt;normalize.property.SafeProperty object at 0x3816310&gt;, 'other': &lt;normalize.property.SafeProperty object at 0x3816390&gt;, 'base': &lt;normalize.property.SafeProperty object at 0x3816350&gt;, 'unknown_json_keys': &lt;normalize.property.json.SafeJsonProperty object at 0x37aa150&gt;}</em><a class="headerlink" href="#normalize.record.json.JsonDiffInfo.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonDiff">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonDiff</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of &#8216;Diff&#8217; that supports <tt class="docutils literal"><span class="pre">.json_data()</span></tt></p>
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiff.eager_properties">
+<tt class="descname">eager_properties</tt><em class="property"> = frozenset([])</em><a class="headerlink" href="#normalize.record.json.JsonDiff.eager_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiff.primary_key">
+<tt class="descname">primary_key</tt><em class="property"> = ()</em><a class="headerlink" href="#normalize.record.json.JsonDiff.primary_key" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiff.properties">
+<tt class="descname">properties</tt><em class="property"> = {'base_type_name': &lt;normalize.property.SafeProperty object at 0x3816590&gt;, 'other_type_name': &lt;normalize.property.SafeProperty object at 0x38165d0&gt;, 'unknown_json_keys': &lt;normalize.property.json.SafeJsonProperty object at 0x37aa150&gt;}</em><a class="headerlink" href="#normalize.record.json.JsonDiff.properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiff.itemtype">
+<tt class="descname">itemtype</tt><a class="headerlink" href="#normalize.record.json.JsonDiff.itemtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#normalize.record.json.JsonDiffInfo" title="normalize.record.json.JsonDiffInfo"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiffInfo</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
 <div class="section" id="customizing-jsonrecord-marshalling">
 <h4>Customizing JsonRecord Marshalling<a class="headerlink" href="#customizing-jsonrecord-marshalling" title="Permalink to this headline">¶</a></h4>
 </div>
@@ -83,6 +382,20 @@
 <div class="section" id="collection">
 <h3><tt class="docutils literal"><span class="pre">Collection</span></tt><a class="headerlink" href="#collection" title="Permalink to this headline">¶</a></h3>
 </div>
+</div>
+<div class="section" id="module-normalize.record.meta">
+<span id="record-metaclass"></span><h2>Record MetaClass<a class="headerlink" href="#module-normalize.record.meta" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="normalize.record.meta.RecordMeta">
+<em class="property">class </em><tt class="descclassname">normalize.record.meta.</tt><tt class="descname">RecordMeta</tt><a class="reference internal" href="_modules/normalize/record/meta.html#RecordMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.meta.RecordMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass to reify descriptors properly</p>
+<dl class="staticmethod">
+<dt id="normalize.record.meta.RecordMeta.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>mcs</em>, <em>name</em>, <em>bases</em>, <em>attrs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/meta.html#RecordMeta.__new__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.meta.RecordMeta.__new__" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -111,6 +424,7 @@
 <li><a class="reference internal" href="#collection"><tt class="docutils literal"><span class="pre">Collection</span></tt></a></li>
 </ul>
 </li>
+<li><a class="reference internal" href="#module-normalize.record.meta">Record MetaClass</a></li>
 </ul>
 </li>
 </ul>
@@ -158,7 +472,7 @@
         <li class="right" >
           <a href="property.html" title="normalize.property reference"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.0.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
