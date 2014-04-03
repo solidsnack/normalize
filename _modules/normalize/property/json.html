@@ -58,54 +58,94 @@
 <span class="kn">from</span> <span class="nn">normalize.property.coll</span> <span class="kn">import</span> <span class="n">ListProperty</span>
 
 
-<span class="k">class</span> <span class="nc">Default</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">_Default</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;prop.name&gt;&quot;</span>
+
+
+<span class="n">_default</span> <span class="o">=</span> <span class="n">_Default</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="JsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonProperty">[docs]</a><span class="k">class</span> <span class="nc">JsonProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>
     <span class="sd">&#39;&#39;&#39;Object property wrapper for record json data&#39;&#39;&#39;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&#39;json&#39;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_name</span><span class="o">=</span><span class="n">Default</span><span class="p">,</span> <span class="n">json_in</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">json_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="JsonProperty.__init__"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonProperty.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_name</span><span class="o">=</span><span class="n">_default</span><span class="p">,</span> <span class="n">json_in</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">json_out</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new property with JSON mapping overrides.  You</span>
+<span class="sd">        generally don&#39;t need to use this directly; simply specifying the</span>
+<span class="sd">        options using ``json_``\ *X* to a superclass like ``Property()``</span>
+<span class="sd">        is sufficient.</span>
+
+<span class="sd">        Arguments:</span>
+<span class="sd">            ``json_name=``\ *STR*</span>
+<span class="sd">                Specify the key in the input/output dictionary to use</span>
+<span class="sd">                for this property when marshalling to/from JSON.</span>
+
+<span class="sd">            ``json_in=``\ *FUNCTION*</span>
+<span class="sd">                Specify a function which converts the JSON form of this</span>
+<span class="sd">                property to the python form.  This is called *before* the</span>
+<span class="sd">                ``isa=`` check and ``coerce=`` function, and is always</span>
+<span class="sd">                called if the key exists on the marshaled in structure.</span>
+<span class="sd">                This function can recurse into</span>
+<span class="sd">                :py:func:`normalize.record.from_json` if required.</span>
+
+<span class="sd">            ``json_out=``\ *FUNCTION*</span>
+<span class="sd">                Specify a function which converts a property from the</span>
+<span class="sd">                python form to a form which your JSON library can handle.</span>
+<span class="sd">                You&#39;ll probably want to convert native python objects to</span>
+<span class="sd">                strings, in a form which can be reversed by the</span>
+<span class="sd">                ``json_in`` function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span> <span class="o">=</span> <span class="n">json_name</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">json_in</span> <span class="o">=</span> <span class="n">json_in</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">json_out</span> <span class="o">=</span> <span class="n">json_out</span>
-
+</div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">json_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Retrieve field name as present in JSON dictionary&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span> <span class="ow">is</span> <span class="n">Default</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span>
-
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propval</span><span class="p">):</span>
+<div class="viewcode-block" id="JsonProperty.json_name"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonProperty.json_name">[docs]</a>    <span class="k">def</span> <span class="nf">json_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Key name for this attribute in JSON dictionary.  Defaults to</span>
+<span class="sd">        the attribute name in the class it is bound to.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span> <span class="ow">is</span> <span class="n">_default</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span>
+</div>
+<div class="viewcode-block" id="JsonProperty.to_json"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonProperty.to_json">[docs]</a>    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propval</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function calls the ``json_out`` function, if it was</span>
+<span class="sd">        specified, otherwise passes through.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_out</span><span class="p">(</span><span class="n">propval</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_out</span> <span class="k">else</span> <span class="n">propval</span>
-
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="JsonProperty.from_json"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonProperty.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This function calls the ``json_in`` function, if it was</span>
+<span class="sd">        specified, otherwise passes through.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_in</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">json_in</span> <span class="k">else</span> <span class="n">json_data</span>
 
+</div></div>
+<div class="viewcode-block" id="SafeJsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.SafeJsonProperty">[docs]</a><span class="k">class</span> <span class="nc">SafeJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
+    <span class="k">pass</span>
+
 </div>
-<span class="k">class</span> <span class="nc">SafeJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyJsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.LazyJsonProperty">[docs]</a><span class="k">class</span> <span class="nc">LazyJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazyProperty</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="LazySafeJsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.LazySafeJsonProperty">[docs]</a><span class="k">class</span> <span class="nc">LazySafeJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazySafeProperty</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="JsonListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonListProperty">[docs]</a><span class="k">class</span> <span class="nc">JsonListProperty</span><span class="p">(</span><span class="n">ListProperty</span><span class="p">,</span> <span class="n">JsonProperty</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A property which map to a list of records in JSON.</span>
+
+<span class="sd">    It can also map a dictionary with some top level keys (eg, streaming</span>
+<span class="sd">    information) and a key with the actual list contents.  See</span>
+<span class="sd">    :py:mod:`normalize.record.json` for more details.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">pass</span>
+
+</div>
+<div class="viewcode-block" id="SafeJsonListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.SafeJsonListProperty">[docs]</a><span class="k">class</span> <span class="nc">SafeJsonListProperty</span><span class="p">(</span><span class="n">JsonListProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
     <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">LazyJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazyProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="k">class</span> <span class="nc">LazySafeJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazySafeProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="k">class</span> <span class="nc">JsonListProperty</span><span class="p">(</span><span class="n">ListProperty</span><span class="p">,</span> <span class="n">JsonProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="k">class</span> <span class="nc">SafeJsonListProperty</span><span class="p">(</span><span class="n">JsonListProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-
-<span class="c"># deprecated compatibility exports</span>
+<span class="c"># deprecated compatibility exports</span></div>
 <span class="n">JsonCollectionProperty</span> <span class="o">=</span> <span class="n">JsonListProperty</span>
 <span class="n">SafeJsonCollectionProperty</span> <span class="o">=</span> <span class="n">SafeJsonListProperty</span>
 </pre></div>

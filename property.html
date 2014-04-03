@@ -248,6 +248,62 @@ this (very minor) slowdown.</p>
 </div>
 <div class="section" id="typed-properties">
 <span id="types"></span><h2>Typed Properties<a class="headerlink" href="#typed-properties" title="Permalink to this headline">¶</a></h2>
+<p>Typed properties are convenient shorthands to specifying the various
+<tt class="docutils literal"><span class="pre">isa</span></tt> and <tt class="docutils literal"><span class="pre">coerce</span></tt> parameters when declaring properties.</p>
+<div class="section" id="module-normalize.property.types">
+<span id="bundled-typed-properties"></span><h3>Bundled Typed Properties<a class="headerlink" href="#module-normalize.property.types" title="Permalink to this headline">¶</a></h3>
+<p><tt class="docutils literal"><span class="pre">normalize.property.types</span></tt> provides an assortment of pre-generated types</p>
+<dl class="attribute">
+<dt id="normalize.property.types.IntProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntProperty</tt><a class="headerlink" href="#normalize.property.types.IntProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be an <tt class="docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.LongProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">LongProperty</tt><a class="headerlink" href="#normalize.property.types.LongProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">long</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.IntegerProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntegerProperty</tt><a class="headerlink" href="#normalize.property.types.IntegerProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which may be either an int or a long</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.StringProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">StringProperty</tt><a class="headerlink" href="#normalize.property.types.StringProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">basestring</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.FloatProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">FloatProperty</tt><a class="headerlink" href="#normalize.property.types.FloatProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a floating point number.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.UnicodeProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">UnicodeProperty</tt><a class="headerlink" href="#normalize.property.types.UnicodeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">unicode</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">unicode</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.DateProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DateProperty</tt><a class="headerlink" href="#normalize.property.types.DateProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must holds a python date; coercion from string is provided via <tt class="docutils literal"><span class="pre">dateutil.parse</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.DatetimeProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DatetimeProperty</tt><a class="headerlink" href="#normalize.property.types.DatetimeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must holds a python datetime.  Correct timezone handling is currently TODO and users should not depend on timezone behavior until this message is removed (submit tests and a patch!)</p>
+</dd></dl>
+
+</div>
+<div class="section" id="rolling-your-own-typed-properties">
+<h3>Rolling your own typed properties<a class="headerlink" href="#rolling-your-own-typed-properties" title="Permalink to this headline">¶</a></h3>
 <dl class="function">
 <dt id="normalize.property.make_property_type">
 <tt class="descclassname">normalize.property.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>**default_kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#make_property_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.make_property_type" title="Permalink to this definition">¶</a></dt>
@@ -298,91 +354,170 @@ passes it as well, this overrides the defaults passed to
 </dl>
 </dd></dl>
 
-<span class="target" id="module-normalize.property.types"></span><p><tt class="docutils literal"><span class="pre">normalize.property.types</span></tt> provides an assortment of pre-generated types</p>
-<dl class="attribute">
-<dt id="normalize.property.types.IntProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntProperty</tt><a class="headerlink" href="#normalize.property.types.IntProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must be an <tt class="docutils literal"><span class="pre">int</span></tt></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.LongProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">LongProperty</tt><a class="headerlink" href="#normalize.property.types.LongProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">long</span></tt></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.IntegerProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntegerProperty</tt><a class="headerlink" href="#normalize.property.types.IntegerProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which may be either an int or a long</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.StringProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">StringProperty</tt><a class="headerlink" href="#normalize.property.types.StringProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">basestring</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">str</span></tt></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.FloatProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">FloatProperty</tt><a class="headerlink" href="#normalize.property.types.FloatProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must be a floating point number.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.UnicodeProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">UnicodeProperty</tt><a class="headerlink" href="#normalize.property.types.UnicodeProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">unicode</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">unicode</span></tt></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.DateProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DateProperty</tt><a class="headerlink" href="#normalize.property.types.DateProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must holds a python date; coercion from string is provided via <tt class="docutils literal"><span class="pre">dateutil.parse</span></tt></p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.types.DatetimeProperty">
-<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DatetimeProperty</tt><a class="headerlink" href="#normalize.property.types.DatetimeProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must holds a python datetime.  Correct timezone handling is currently TODO and users should not depend on timezone behavior until this message is removed (submit tests and a patch!)</p>
-</dd></dl>
-
 </div>
-<div class="section" id="module-normalize.property.coll">
-<span id="properties-containing-collections"></span><span id="coll"></span><h2>Properties containing collections<a class="headerlink" href="#module-normalize.property.coll" title="Permalink to this headline">¶</a></h2>
-<dl class="attribute">
+<div class="section" id="properties-containing-collections">
+<span id="coll"></span><h3>Properties containing collections<a class="headerlink" href="#properties-containing-collections" title="Permalink to this headline">¶</a></h3>
+<p>The following typed properties are similar to the other typed
+properties, in that they provide some checks and convenience around
+making new collection types and hooking them up correctly.</p>
+<dl class="class">
 <dt id="normalize.property.coll.CollectionProperty">
-<tt class="descclassname">normalize.property.coll.</tt><tt class="descname">CollectionProperty</tt><a class="reference internal" href="_modules/normalize/property/coll.html#CollectionProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.CollectionProperty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><tt class="descclassname">normalize.property.coll.</tt><tt class="descname">CollectionProperty</tt><big>(</big><em>of=None</em>, <em>coll=None</em>, <em>isa=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/coll.html#CollectionProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.CollectionProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.Property" title="normalize.property.Property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.Property</span></tt></a></p>
+<p>Base class for properties which contain collections; responsible for
+creating new collection types (via <tt class="xref py py-func docutils literal"><span class="pre">normalize.coll.make_generic()</span></tt>)</p>
+<dl class="method">
+<dt id="normalize.property.coll.CollectionProperty.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>of=None</em>, <em>coll=None</em>, <em>isa=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/coll.html#CollectionProperty.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.CollectionProperty.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new Collection property.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">of=</span></tt><em>TYPE</em></dt>
+<dd>Specifies what type each member of the collection must be.</dd>
+<dt><tt class="docutils literal"><span class="pre">coll=</span></tt><em>&lt;Abstract Collection type&gt;</em></dt>
+<dd>Specify the container type for the collection.  Should be
+a <tt class="xref py py-mod docutils literal"><span class="pre">normalize.coll.Collection</span></tt> sub-class.</dd>
+<dt><tt class="docutils literal"><span class="pre">isa=</span></tt><em>&lt;Concrete Collection type&gt;</em></dt>
+<dd>Specify both <tt class="docutils literal"><span class="pre">of=</span></tt> and <tt class="docutils literal"><span class="pre">isa=</span></tt> by passing in a
+&#8216;concrete&#8217; Collection type (this means it already has
+<tt class="docutils literal"><span class="pre">itemtype</span></tt> set)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="attribute">
+</dd></dl>
+
+<dl class="class">
 <dt id="normalize.property.coll.SafeCollectionProperty">
-<tt class="descclassname">normalize.property.coll.</tt><tt class="descname">SafeCollectionProperty</tt><a class="reference internal" href="_modules/normalize/property/coll.html#SafeCollectionProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.SafeCollectionProperty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><tt class="descclassname">normalize.property.coll.</tt><tt class="descname">SafeCollectionProperty</tt><big>(</big><em>of=None</em>, <em>coll=None</em>, <em>isa=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/coll.html#SafeCollectionProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.SafeCollectionProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.coll.CollectionProperty" title="normalize.property.coll.CollectionProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.coll.CollectionProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.SafeProperty" title="normalize.property.SafeProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.SafeProperty</span></tt></a></p>
+</dd></dl>
 
-<dl class="attribute">
+<dl class="class">
 <dt id="normalize.property.coll.ListProperty">
-<tt class="descclassname">normalize.property.coll.</tt><tt class="descname">ListProperty</tt><a class="reference internal" href="_modules/normalize/property/coll.html#ListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.ListProperty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<em class="property">class </em><tt class="descclassname">normalize.property.coll.</tt><tt class="descname">ListProperty</tt><big>(</big><em>list_of=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/coll.html#ListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.ListProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.coll.CollectionProperty" title="normalize.property.coll.CollectionProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.coll.CollectionProperty</span></tt></a></p>
+</dd></dl>
 
-<dl class="attribute">
+<dl class="class">
 <dt id="normalize.property.coll.SafeListProperty">
-<tt class="descclassname">normalize.property.coll.</tt><tt class="descname">SafeListProperty</tt><a class="reference internal" href="_modules/normalize/property/coll.html#SafeListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.SafeListProperty" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</div>
-<div class="section" id="module-normalize.property.json">
-<span id="declaring-json-hints-on-properties"></span><span id="json"></span><h2>Declaring JSON hints on Properties<a class="headerlink" href="#module-normalize.property.json" title="Permalink to this headline">¶</a></h2>
-<dl class="attribute">
-<dt id="normalize.property.json.JsonProperty">
-<tt class="descclassname">normalize.property.json.</tt><tt class="descname">JsonProperty</tt><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Object property wrapper for record json data</p>
+<em class="property">class </em><tt class="descclassname">normalize.property.coll.</tt><tt class="descname">SafeListProperty</tt><big>(</big><em>list_of=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/coll.html#SafeListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.coll.SafeListProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.coll.ListProperty" title="normalize.property.coll.ListProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.coll.ListProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.coll.SafeCollectionProperty" title="normalize.property.coll.SafeCollectionProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.coll.SafeCollectionProperty</span></tt></a></p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-normalize.property.meta">
-<span id="addendum-property-metaclass"></span><span id="meta"></span><h2>Addendum: Property MetaClass<a class="headerlink" href="#module-normalize.property.meta" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+</div>
+<div class="section" id="declaring-json-hints-on-properties">
+<span id="json"></span><h2>Declaring JSON hints on Properties<a class="headerlink" href="#declaring-json-hints-on-properties" title="Permalink to this headline">¶</a></h2>
+<p>The various <tt class="docutils literal"><span class="pre">json_</span></tt><em>X</em> parameters are <em>distinguishing options</em>
+which will select the &#8220;<tt class="docutils literal"><span class="pre">json</span></tt>&#8221; trait.</p>
+<dl class="class">
+<dt id="normalize.property.json.JsonProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">JsonProperty</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object property wrapper for record json data</p>
+<dl class="method">
+<dt id="normalize.property.json.JsonProperty.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new property with JSON mapping overrides.  You
+generally don&#8217;t need to use this directly; simply specifying the
+options using <tt class="docutils literal"><span class="pre">json_</span></tt><em>X</em> to a superclass like <tt class="docutils literal"><span class="pre">Property()</span></tt>
+is sufficient.</p>
+<dl class="docutils">
+<dt>Arguments:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">json_name=</span></tt><em>STR</em></dt>
+<dd>Specify the key in the input/output dictionary to use
+for this property when marshalling to/from JSON.</dd>
+<dt><tt class="docutils literal"><span class="pre">json_in=</span></tt><em>FUNCTION</em></dt>
+<dd>Specify a function which converts the JSON form of this
+property to the python form.  This is called <em>before</em> the
+<tt class="docutils literal"><span class="pre">isa=</span></tt> check and <tt class="docutils literal"><span class="pre">coerce=</span></tt> function, and is always
+called if the key exists on the marshaled in structure.
+This function can recurse into
+<tt class="xref py py-func docutils literal"><span class="pre">normalize.record.from_json()</span></tt> if required.</dd>
+<dt><tt class="docutils literal"><span class="pre">json_out=</span></tt><em>FUNCTION</em></dt>
+<dd>Specify a function which converts a property from the
+python form to a form which your JSON library can handle.
+You&#8217;ll probably want to convert native python objects to
+strings, in a form which can be reversed by the
+<tt class="docutils literal"><span class="pre">json_in</span></tt> function.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.json.JsonProperty.json_name">
+<tt class="descname">json_name</tt><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.json_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.json_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Key name for this attribute in JSON dictionary.  Defaults to
+the attribute name in the class it is bound to.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.property.json.JsonProperty.to_json">
+<tt class="descname">to_json</tt><big>(</big><em>propval</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calls the <tt class="docutils literal"><span class="pre">json_out</span></tt> function, if it was
+specified, otherwise passes through.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.property.json.JsonProperty.from_json">
+<tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calls the <tt class="docutils literal"><span class="pre">json_in</span></tt> function, if it was
+specified, otherwise passes through.</p>
+</dd></dl>
+
+</dd></dl>
+
+<p>The other classes in this module are just mixed-in combinations of
+<tt class="docutils literal"><span class="pre">JsonProperty</span></tt> with various other base types.  This is required
+because currently the metaclass does not mix them in dynamically.
+Once it does, the trivial, undocumented mixes here may be deprecated
+or removed.</p>
+<dl class="class">
+<dt id="normalize.property.json.SafeJsonProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">SafeJsonProperty</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#SafeJsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.SafeJsonProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.json.JsonProperty" title="normalize.property.json.JsonProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.json.JsonProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.SafeProperty" title="normalize.property.SafeProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.SafeProperty</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.property.json.LazyJsonProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">LazyJsonProperty</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#LazyJsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.LazyJsonProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.json.JsonProperty" title="normalize.property.json.JsonProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.json.JsonProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.LazyProperty" title="normalize.property.LazyProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.LazyProperty</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.property.json.LazySafeJsonProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">LazySafeJsonProperty</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#LazySafeJsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.LazySafeJsonProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.json.JsonProperty" title="normalize.property.json.JsonProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.json.JsonProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.LazySafeProperty" title="normalize.property.LazySafeProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.LazySafeProperty</span></tt></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.property.json.JsonListProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">JsonListProperty</tt><big>(</big><em>list_of=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonListProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.coll.ListProperty" title="normalize.property.coll.ListProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.coll.ListProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.json.JsonProperty" title="normalize.property.json.JsonProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.json.JsonProperty</span></tt></a></p>
+<p>A property which map to a list of records in JSON.</p>
+<p>It can also map a dictionary with some top level keys (eg, streaming
+information) and a key with the actual list contents.  See
+<tt class="xref py py-mod docutils literal"><span class="pre">normalize.record.json</span></tt> for more details.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.property.json.SafeJsonListProperty">
+<em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">SafeJsonListProperty</tt><big>(</big><em>list_of=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#SafeJsonListProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.SafeJsonListProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#normalize.property.json.JsonListProperty" title="normalize.property.json.JsonListProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.json.JsonListProperty</span></tt></a>, <a class="reference internal" href="#normalize.property.SafeProperty" title="normalize.property.SafeProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.SafeProperty</span></tt></a></p>
+</dd></dl>
+
+<p>There are also two deprecated aliases: <tt class="docutils literal"><span class="pre">JsonCollectionProperty</span></tt> is
+the same as <tt class="docutils literal"><span class="pre">JsonListProperty</span></tt>, and <tt class="docutils literal"><span class="pre">SafeJsonCollectionProperty</span></tt>
+is the same as <tt class="docutils literal"><span class="pre">SafeJsonListProperty</span></tt>.</p>
+</div>
+<div class="section" id="addendum-property-metaclass">
+<span id="meta"></span><h2>Addendum: Property MetaClass<a class="headerlink" href="#addendum-property-metaclass" title="Permalink to this headline">¶</a></h2>
+<p>This module was mostly a proof of concept.</p>
+<span class="target" id="module-normalize.property.meta"></span><dl class="function">
 <dt id="normalize.property.meta.has">
 <tt class="descclassname">normalize.property.meta.</tt><tt class="descname">has</tt><big>(</big><em>selfie</em>, <em>self</em>, <em>args</em>, <em>kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/meta.html#has"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.meta.has" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is called &#8216;has&#8217; but is called indirectly.  Each Property sub-class
@@ -405,6 +540,13 @@ one class to another.</p>
 <dd><p>MetaClass for the various Property types, which allows for
 composing the various Property mix-ins, depending on options
 selected.</p>
+<dl class="staticmethod">
+<dt id="normalize.property.meta.MetaProperty.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>mcs</em>, <em>name</em>, <em>bases</em>, <em>attrs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/meta.html#MetaProperty.__new__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.meta.MetaProperty.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This __new__ method is called when new property trait combinations
+are created.</p>
+</dd></dl>
+
 </dd></dl>
 
 </div>
@@ -427,10 +569,14 @@ selected.</p>
 <li><a class="reference internal" href="#slow-property-types-lazysafeproperty-rolazyproperty-slowlazyproperty">&#8220;Slow&#8221; Property types: <tt class="docutils literal"><span class="pre">LazySafeProperty</span></tt>, <tt class="docutils literal"><span class="pre">ROLazyProperty</span></tt>, <tt class="docutils literal"><span class="pre">SlowLazyProperty</span></tt></a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#typed-properties">Typed Properties</a></li>
-<li><a class="reference internal" href="#module-normalize.property.coll">Properties containing collections</a></li>
-<li><a class="reference internal" href="#module-normalize.property.json">Declaring JSON hints on Properties</a></li>
-<li><a class="reference internal" href="#module-normalize.property.meta">Addendum: Property MetaClass</a></li>
+<li><a class="reference internal" href="#typed-properties">Typed Properties</a><ul>
+<li><a class="reference internal" href="#module-normalize.property.types">Bundled Typed Properties</a></li>
+<li><a class="reference internal" href="#rolling-your-own-typed-properties">Rolling your own typed properties</a></li>
+<li><a class="reference internal" href="#properties-containing-collections">Properties containing collections</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#declaring-json-hints-on-properties">Declaring JSON hints on Properties</a></li>
+<li><a class="reference internal" href="#addendum-property-metaclass">Addendum: Property MetaClass</a></li>
 </ul>
 </li>
 </ul>
