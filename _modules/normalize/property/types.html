@@ -1,0 +1,239 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.property.types &mdash; normalize 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.0.4 documentation" href="../../../index.html" />
+    <link rel="up" title="normalize.property" href="../property.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.property.types</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;``normalize.property.types`` provides an assortment of pre-generated types&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span> <span class="nn">sys</span> <span class="kn">import</span> <span class="n">maxint</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">make_property_type</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">dateutil.parser</span> <span class="kn">import</span> <span class="n">parse</span> <span class="k">as</span> <span class="n">parse_datetime</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">formats</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="mi">6</span><span class="p">:</span> <span class="s">&quot;%y%m</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="mi">8</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">&quot;</span><span class="p">,</span>
+        <span class="mi">13</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%M&quot;</span><span class="p">,</span>
+        <span class="mi">14</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%MZ&quot;</span><span class="p">,</span>
+        <span class="mi">16</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%M:%S&quot;</span><span class="p">,</span>
+        <span class="mi">17</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%M:%SZ&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">def</span> <span class="nf">parse_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">):</span>
+        <span class="n">datetime_stripped</span> <span class="o">=</span> <span class="n">not_a_datetime</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+            <span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;T&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">datetime_stripped</span><span class="p">)</span> <span class="ow">in</span> <span class="n">formats</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                <span class="n">datetime_stripped</span><span class="p">,</span> <span class="n">formats</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">datetime_stripped</span><span class="p">)],</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
+                <span class="s">&quot;``dateutil`` not installed, so can&#39;t parse </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span>
+                <span class="n">not_a_datetime</span>
+            <span class="p">)</span>
+
+
+<span class="n">IntProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;IntProperty&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="nb">int</span><span class="p">,</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;int&quot;</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must be an ``int``&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">LongProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;LongProperty&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="nb">long</span><span class="p">,</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;long&quot;</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must be a ``long``&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">IntegerProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;IntegerProperty&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">),</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;integer&quot;</span><span class="p">,</span>
+    <span class="nb">coerce</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="p">(</span>
+        <span class="nb">int</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">&lt;</span> <span class="n">maxint</span> <span class="k">else</span> <span class="nb">long</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+    <span class="p">),</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which may be either an int or a long&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">StringProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;StringProperty&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="nb">basestring</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;str&quot;</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must be a ``basestring``, and if &quot;</span>
+                   <span class="s">&quot;not, it is coerced using ``str``&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">FloatProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;FloatProperty&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;float&quot;</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must be a floating point number.&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">UnicodeProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;UnicodeProperty&quot;</span><span class="p">,</span> <span class="n">base_type</span><span class="o">=</span><span class="n">StringProperty</span><span class="p">,</span>
+    <span class="n">isa</span><span class="o">=</span><span class="nb">unicode</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="nb">unicode</span><span class="p">,</span> <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;unicode&quot;</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must be a ``unicode``, and if &quot;</span>
+                   <span class="s">&quot;not, it is coerced using ``unicode``&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">coerce_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
+        <span class="n">tt</span> <span class="o">=</span> <span class="n">not_a_datetime</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">parse_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s">&quot;Cannot coerce </span><span class="si">%r</span><span class="s"> to a date/datetime&quot;</span> <span class="o">%</span> <span class="n">not_a_datetime</span>
+        <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">coerce_date</span><span class="p">(</span><span class="n">not_a_date</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_a_date</span><span class="p">,</span> <span class="n">datetime</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+        <span class="nb">hasattr</span><span class="p">(</span><span class="n">not_a_date</span><span class="p">,</span> <span class="s">&quot;date&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="n">not_a_date</span><span class="o">.</span><span class="n">date</span><span class="p">)</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="n">not_a_date</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">coerce_datetime</span><span class="p">(</span><span class="n">not_a_date</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+
+<span class="n">DateProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;DateProperty&quot;</span><span class="p">,</span>
+    <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="n">coerce_date</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must holds a python date; coercion from string is provided via ``dateutil.parse``&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+<span class="n">DatetimeProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
+    <span class="s">&quot;DatetimeProperty&quot;</span><span class="p">,</span>
+    <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;datetime&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="n">datetime</span><span class="p">,</span>
+    <span class="nb">coerce</span><span class="o">=</span><span class="n">coerce_datetime</span><span class="p">,</span>
+    <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must holds a python datetime.  &quot;</span>
+                   <span class="s">&quot;Correct timezone handling is currently TODO and &quot;</span>
+                   <span class="s">&quot;users should not depend on timezone behavior until &quot;</span>
+                   <span class="s">&quot;this message is removed (submit tests and a patch!)&quot;</span><span class="p">,</span>
+    <span class="p">},</span>
+<span class="p">)</span>
+
+
+<span class="c"># now, go and generate ROLazyUnicodeProperty, SafeStringProperty etc</span>
+<span class="n">_prop_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span>
+                   <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;Property&quot;</span><span class="p">))</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">LazyProperty</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ROLazyProperty</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ROProperty</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SafeProperty</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SlowLazyProperty</span>
+
+<span class="n">_variants</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;Lazy&quot;</span><span class="p">:</span> <span class="n">LazyProperty</span><span class="p">,</span>
+    <span class="s">&quot;RO&quot;</span><span class="p">:</span> <span class="n">ROProperty</span><span class="p">,</span>
+    <span class="s">&quot;ROLazy&quot;</span><span class="p">:</span> <span class="n">ROLazyProperty</span><span class="p">,</span>
+    <span class="s">&quot;Safe&quot;</span><span class="p">:</span> <span class="n">SafeProperty</span><span class="p">,</span>
+    <span class="s">&quot;SlowLazy&quot;</span><span class="p">:</span> <span class="n">SlowLazyProperty</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">proptype</span> <span class="ow">in</span> <span class="n">_prop_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">_variants</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+        <span class="n">typename</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">name</span>
+        <span class="nb">globals</span><span class="p">()[</span><span class="n">typename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">typename</span><span class="p">,</span> <span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">variant</span><span class="p">),</span> <span class="p">{})</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="n">_prop_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../property.html" >normalize.property</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

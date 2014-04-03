@@ -151,53 +151,6 @@ the features of those packages.</p>
 * An integer specifies an index into a collection.
 * &#8216;None&#8217; specifies the full collection.</p>
 <dl class="method">
-<dt id="normalize.FieldSelector.__ge__">
-<tt class="descname">__ge__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__ge__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.__getnewargs__">
-<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__getnewargs__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize as a list.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.__gt__">
-<tt class="descname">__gt__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__gt__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>other=None</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;param other Provides a way to copy an existing FieldSelector or</dt>
-<dd>instantiate one from an iterable.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.__le__">
-<tt class="descname">__le__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__le__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.__ne__">
-<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__ne__" title="Permalink to this definition">¶</a></dt>
-<dd><p>functools.total_ordering() currently doesn&#8217;t take care of __ne__().
-Don&#8217;t call other comparison methods directly to avoid infinite
-recursion.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.FieldSelector.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#normalize.FieldSelector.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="normalize.FieldSelector.extend">
 <tt class="descname">extend</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.extend" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extends this field selector with another FieldSelector</p>
@@ -259,16 +212,6 @@ method before being used to set actual properties</li>
 property, which is merged back on output (ie, calling <tt class="docutils literal"><span class="pre">.json_data()</span></tt>
 or <tt class="docutils literal"><span class="pre">to_json()</span></tt>) #TODO</li>
 </ol>
-<dl class="method">
-<dt id="normalize.JsonRecord.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a new JsonRecord sub-class.</p>
-<p>&#64;param json_data JSON data (string or already json.load&#8217;d)
-&#64;param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs fall-back defaults for properties not passed in via</p>
-<blockquote>
-<div>JSON; of a type allowed by the Property.</div></blockquote>
-</dd></dl>
-
 <dl class="classmethod">
 <dt id="normalize.JsonRecord.from_json">
 <em class="property">classmethod </em><tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.from_json" title="Permalink to this definition">¶</a></dt>
@@ -290,16 +233,6 @@ to keyword arguments</p>
 <dt id="normalize.JsonRecordList">
 <em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">JsonRecordList</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecordList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version of a RecordList which deals primarily in JSON</p>
-<dl class="method">
-<dt id="normalize.JsonRecordList.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecordList.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build a new JsonRecord sub-class.</p>
-<p>&#64;param json_data JSON data (string or already json.load&#8217;d)
-&#64;param <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs fall-back defaults for properties not passed in via</p>
-<blockquote>
-<div>JSON; of a type allowed by the Property.</div></blockquote>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="attribute">
@@ -308,15 +241,57 @@ to keyword arguments</p>
 <dd><p>This declares a property which has late evaluation using its &#8216;default&#8217;
 method.  This type uses the support built-in to python for lazy attribute
 setting, which means subsequent attribute assignments will not be prevented
-or checked.  See LazySafeProperty for the descriptor version</p>
+or checked.  See LazySafeProperty for the descriptor version.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="normalize.make_property_type">
-<tt class="descclassname">normalize.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>*default_args</em>, <em>**default_kwargs</em><big>)</big><a class="headerlink" href="#normalize.make_property_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a new Property type, which supplies the given arguments as
-defaults to the Property() constructor.  Note: defaults which affect the
+<tt class="descclassname">normalize.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>**default_kwargs</em><big>)</big><a class="headerlink" href="#normalize.make_property_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a new <tt class="docutils literal"><span class="pre">Property</span></tt> type, which supplies the given arguments as
+defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.  Note: defaults which affect the
 property type returned cannot be supplied by this mechanism.</p>
+<p>The typical use of this function is to make types for the API you are
+mapping so that, for instance, any time they use a date you can convert
+it in a consistent way to a <tt class="docutils literal"><span class="pre">datetime.date</span></tt>, or to supply
+<tt class="docutils literal"><span class="pre">default=None</span></tt> because you and prefer subtle bugs caused by stray
+<tt class="docutils literal"><span class="pre">None</span></tt> values to <tt class="docutils literal"><span class="pre">AttributeError</span></tt> exceptions.</p>
+<p>It&#8217;s also used by <a class="reference internal" href="property.html#module-normalize.property.types" title="normalize.property.types"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.types</span></tt></a> to create all
+of its Property subclasses.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">name=</span></tt><em>STR</em></dt>
+<dd>Specifies the name of the new property type.  This is entirely
+cosmetic, but it is probably a good idea to make this exactly
+the same as the symbol you are assigning the result to.</dd>
+<dt><tt class="docutils literal"><span class="pre">base_type=</span></tt><em>Property sub-class</em></dt>
+<dd>Specifies which property type you are adding defaults to.
+Currently, this must be the computed type your schema will
+use for these options (usually <tt class="docutils literal"><span class="pre">SafeProperty</span></tt> or
+<tt class="docutils literal"><span class="pre">SafeJsonProperty</span></tt>); in the future this may become more
+streamlined.  You can pass in a tuple of types here.</dd>
+<dt><tt class="docutils literal"><span class="pre">attrs=</span></tt><em>DICT</em></dt>
+<dd>This lets you pass in a dictionary that will be used as
+the new Property type&#8217;s class dictionary.  i.e., it gets
+passed as the third argument to <tt class="docutils literal"><span class="pre">type(NAME,</span> <span class="pre">BASES,</span> <span class="pre">ATTRS)</span></tt>,
+after the properties necessary to implement the defaults
+are added to it.  If you use this for anything less than
+trivial, it may be simpler just to make a whole class
+definition.</dd>
+<dt><tt class="docutils literal"><span class="pre">trait_name=</span></tt><em>STR</em></dt>
+<dd>Specify the unique identifier of the trait that is created.
+This probably doesn&#8217;t matter, unless you want to use the
+<tt class="docutils literal"><span class="pre">traits=</span></tt> keyword to <tt class="docutils literal"><span class="pre">Property()</span></tt>.  The default is to
+make up a new numbered trait name, starting with &#8220;<tt class="docutils literal"><span class="pre">trait1</span></tt>&#8221;.</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd>Everything not known is used as defaults for the eventual
+call to <tt class="docutils literal"><span class="pre">Property()</span></tt> (or <tt class="docutils literal"><span class="pre">SafeProperty()</span></tt> or whichever
+sub-class you chose).  If the user of the Property type
+passes it as well, this overrides the defaults passed to
+<tt class="docutils literal"><span class="pre">make_property_type</span></tt>.</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="attribute">
@@ -338,43 +313,6 @@ assigned to</p>
 <dt id="normalize.Record">
 <em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.Record" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for normalize instances</p>
-<dl class="method">
-<dt id="normalize.Record.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.Record.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare two Record classes; recursively compares all attributes
-for equality (except those marked &#8216;extraneous&#8217;)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.Record.__getnewargs__">
-<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__getnewargs__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement saving for pickle API</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.Record.__metaclass__">
-<tt class="descname">__metaclass__</tt><a class="headerlink" href="#normalize.Record.__metaclass__" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <a class="reference internal" href="#normalize.RecordMeta" title="normalize.RecordMeta"><tt class="xref py py-class docutils literal"><span class="pre">RecordMeta</span></tt></a></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.Record.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marshalling to Python source</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.Record.__str__">
-<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__str__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marshalling to string form</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.Record.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#normalize.Record.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -387,7 +325,10 @@ for equality (except those marked &#8216;extraneous&#8217;)</p>
 <dt id="normalize.SafeProperty">
 <tt class="descclassname">normalize.</tt><tt class="descname">SafeProperty</tt><a class="headerlink" href="#normalize.SafeProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>A version of Property which always checks all assignments to
-properties</p>
+properties.</p>
+<p>Normalize gives you safe properties by default; if you want unsafe
+properties, then you (currently) need to pass <tt class="docutils literal"><span class="pre">traits=[&quot;unsafe&quot;]</span></tt> to the
+<tt class="docutils literal"><span class="pre">Property()</span></tt> declaration.</p>
 </dd></dl>
 
 <dl class="function">

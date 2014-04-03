@@ -79,12 +79,6 @@ documentation.</p>
 <dd><p>This is the base class for all property types.  It is a data descriptor,
 so care should be taken before adding any <tt class="docutils literal"><span class="pre">SPECIALMETHODS</span></tt> which might
 change the way it behaves.</p>
-<dl class="attribute">
-<dt id="normalize.property.Property.__metaclass__">
-<tt class="descname">__metaclass__</tt><a class="headerlink" href="#normalize.property.Property.__metaclass__" title="Permalink to this definition">¶</a></dt>
-<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">MetaProperty</span></tt></p>
-</dd></dl>
-
 <dl class="method">
 <dt id="normalize.property.Property.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property.__init__" title="Permalink to this definition">¶</a></dt>
@@ -145,12 +139,6 @@ attached to, and attribute name it is attached as.</p>
 <dd><p>Default getter; does NOT fall back to regular descriptor behavior</p>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="normalize.property.Property.__weakref__">
-<tt class="descname">__weakref__</tt><a class="headerlink" href="#normalize.property.Property.__weakref__" title="Permalink to this definition">¶</a></dt>
-<dd><p>list of weak references to the object (if defined)</p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -199,18 +187,6 @@ default method/function.</p>
 <em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">ROProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read-only property throws an exception when the attribute slot is
 assigned to</p>
-<dl class="method">
-<dt id="normalize.property.ROProperty.__set__">
-<tt class="descname">__set__</tt><big>(</big><em>obj</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty.__set__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty.__set__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raises <tt class="docutils literal"><span class="pre">ReadOnlyAttributeError</span></tt></p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.property.ROProperty.__delete__">
-<tt class="descname">__delete__</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty.__delete__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty.__delete__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Raises <tt class="docutils literal"><span class="pre">ReadOnlyAttributeError</span></tt></p>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -254,13 +230,6 @@ this (very minor) slowdown.</p>
 <em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">SlowLazyProperty</tt><big>(</big><em>lazy=True</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SlowLazyProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SlowLazyProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.property.LazyProperty" title="normalize.property.LazyProperty"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.LazyProperty</span></tt></a></p>
 <p>Base class used by LazySafeProperty and ROLazyProperty</p>
-<dl class="method">
-<dt id="normalize.property.SlowLazyProperty.__get__">
-<tt class="descname">__get__</tt><big>(</big><em>obj</em>, <em>type_=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SlowLazyProperty.__get__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SlowLazyProperty.__get__" title="Permalink to this definition">¶</a></dt>
-<dd><p>This getter checks to see if the slot is already set in the object
-and if so, returns it.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
@@ -281,13 +250,104 @@ and if so, returns it.</p>
 <span id="types"></span><h2>Typed Properties<a class="headerlink" href="#typed-properties" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="normalize.property.make_property_type">
-<tt class="descclassname">normalize.property.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>*default_args</em>, <em>**default_kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#make_property_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.make_property_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a new Property type, which supplies the given arguments as
-defaults to the Property() constructor.  Note: defaults which affect the
+<tt class="descclassname">normalize.property.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>**default_kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#make_property_type"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.make_property_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a new <tt class="docutils literal"><span class="pre">Property</span></tt> type, which supplies the given arguments as
+defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.  Note: defaults which affect the
 property type returned cannot be supplied by this mechanism.</p>
+<p>The typical use of this function is to make types for the API you are
+mapping so that, for instance, any time they use a date you can convert
+it in a consistent way to a <tt class="docutils literal"><span class="pre">datetime.date</span></tt>, or to supply
+<tt class="docutils literal"><span class="pre">default=None</span></tt> because you and prefer subtle bugs caused by stray
+<tt class="docutils literal"><span class="pre">None</span></tt> values to <tt class="docutils literal"><span class="pre">AttributeError</span></tt> exceptions.</p>
+<p>It&#8217;s also used by <a class="reference internal" href="#module-normalize.property.types" title="normalize.property.types"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.types</span></tt></a> to create all
+of its Property subclasses.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">name=</span></tt><em>STR</em></dt>
+<dd>Specifies the name of the new property type.  This is entirely
+cosmetic, but it is probably a good idea to make this exactly
+the same as the symbol you are assigning the result to.</dd>
+<dt><tt class="docutils literal"><span class="pre">base_type=</span></tt><em>Property sub-class</em></dt>
+<dd>Specifies which property type you are adding defaults to.
+Currently, this must be the computed type your schema will
+use for these options (usually <tt class="docutils literal"><span class="pre">SafeProperty</span></tt> or
+<tt class="docutils literal"><span class="pre">SafeJsonProperty</span></tt>); in the future this may become more
+streamlined.  You can pass in a tuple of types here.</dd>
+<dt><tt class="docutils literal"><span class="pre">attrs=</span></tt><em>DICT</em></dt>
+<dd>This lets you pass in a dictionary that will be used as
+the new Property type&#8217;s class dictionary.  i.e., it gets
+passed as the third argument to <tt class="docutils literal"><span class="pre">type(NAME,</span> <span class="pre">BASES,</span> <span class="pre">ATTRS)</span></tt>,
+after the properties necessary to implement the defaults
+are added to it.  If you use this for anything less than
+trivial, it may be simpler just to make a whole class
+definition.</dd>
+<dt><tt class="docutils literal"><span class="pre">trait_name=</span></tt><em>STR</em></dt>
+<dd>Specify the unique identifier of the trait that is created.
+This probably doesn&#8217;t matter, unless you want to use the
+<tt class="docutils literal"><span class="pre">traits=</span></tt> keyword to <tt class="docutils literal"><span class="pre">Property()</span></tt>.  The default is to
+make up a new numbered trait name, starting with &#8220;<tt class="docutils literal"><span class="pre">trait1</span></tt>&#8221;.</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd>Everything not known is used as defaults for the eventual
+call to <tt class="docutils literal"><span class="pre">Property()</span></tt> (or <tt class="docutils literal"><span class="pre">SafeProperty()</span></tt> or whichever
+sub-class you chose).  If the user of the Property type
+passes it as well, this overrides the defaults passed to
+<tt class="docutils literal"><span class="pre">make_property_type</span></tt>.</dd>
+</dl>
+</dd>
+</dl>
 </dd></dl>
 
-<span class="target" id="module-normalize.property.types"></span></div>
+<span class="target" id="module-normalize.property.types"></span><p><tt class="docutils literal"><span class="pre">normalize.property.types</span></tt> provides an assortment of pre-generated types</p>
+<dl class="attribute">
+<dt id="normalize.property.types.IntProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntProperty</tt><a class="headerlink" href="#normalize.property.types.IntProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be an <tt class="docutils literal"><span class="pre">int</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.LongProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">LongProperty</tt><a class="headerlink" href="#normalize.property.types.LongProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">long</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.IntegerProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">IntegerProperty</tt><a class="headerlink" href="#normalize.property.types.IntegerProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which may be either an int or a long</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.StringProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">StringProperty</tt><a class="headerlink" href="#normalize.property.types.StringProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">basestring</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">str</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.FloatProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">FloatProperty</tt><a class="headerlink" href="#normalize.property.types.FloatProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a floating point number.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.UnicodeProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">UnicodeProperty</tt><a class="headerlink" href="#normalize.property.types.UnicodeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must be a <tt class="docutils literal"><span class="pre">unicode</span></tt>, and if not, it is coerced using <tt class="docutils literal"><span class="pre">unicode</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.DateProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DateProperty</tt><a class="headerlink" href="#normalize.property.types.DateProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must holds a python date; coercion from string is provided via <tt class="docutils literal"><span class="pre">dateutil.parse</span></tt></p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.property.types.DatetimeProperty">
+<tt class="descclassname">normalize.property.types.</tt><tt class="descname">DatetimeProperty</tt><a class="headerlink" href="#normalize.property.types.DatetimeProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A property which must holds a python datetime.  Correct timezone handling is currently TODO and users should not depend on timezone behavior until this message is removed (submit tests and a patch!)</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-normalize.property.coll">
 <span id="properties-containing-collections"></span><span id="coll"></span><h2>Properties containing collections<a class="headerlink" href="#module-normalize.property.coll" title="Permalink to this headline">¶</a></h2>
 <dl class="attribute">
@@ -345,18 +405,6 @@ one class to another.</p>
 <dd><p>MetaClass for the various Property types, which allows for
 composing the various Property mix-ins, depending on options
 selected.</p>
-<dl class="staticmethod">
-<dt id="normalize.property.meta.MetaProperty.__new__">
-<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>mcs</em>, <em>name</em>, <em>bases</em>, <em>attrs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/meta.html#MetaProperty.__new__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.meta.MetaProperty.__new__" title="Permalink to this definition">¶</a></dt>
-<dd><p>This __new__ method is called when new property trait combinations
-are created.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.property.meta.MetaProperty.__module__">
-<tt class="descname">__module__</tt><em class="property"> = 'normalize.property.meta'</em><a class="headerlink" href="#normalize.property.meta.MetaProperty.__module__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 </div>
