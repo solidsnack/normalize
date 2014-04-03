@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.property.meta &mdash; normalize 0.0.4 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.0.4 documentation" href="../../../index.html" />
+    <link rel="up" title="normalize.property" href="../property.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.property.meta</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+
+
+<span class="n">PROPERTY_TYPES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+<span class="c"># Duck typing kwargs... for picking the right Property sub-class to instantiate</span>
+<span class="c"># based on the kwargs used in the Property() constructor</span>
+<span class="n">DUCKWARGS</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="has"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.has">[docs]</a><span class="k">def</span> <span class="nf">has</span><span class="p">(</span><span class="n">selfie</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is called &#39;has&#39; but is called indirectly.  Each Property sub-class</span>
+<span class="sd">    is installed with this function which replaces their __new__.</span>
+
+<span class="sd">    It is called &#39;has&#39;, because it runs during property declaration, processes</span>
+<span class="sd">    the arguments and is responsible for returning an appropriate Property</span>
+<span class="sd">    subclass.  As such it is identical to the &#39;has&#39; function in Perl&#39;s Moose.</span>
+<span class="sd">    The API does not use the word, but the semantics are the same.</span>
+
+<span class="sd">    It is responsible for picking which sub-class of &#39;self&#39; to invoke.</span>
+<span class="sd">    Unlike Moose, it will not dynamically create property types; if a type</span>
+<span class="sd">    does not exist it will be a hard error.</span>
+
+<span class="sd">    This function should *only* be concerned with picking the appropriate</span>
+<span class="sd">    object type, because unlike in Perl, python cannot re-bless objects from</span>
+<span class="sd">    one class to another.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PositionalArgumentsProhibited</span><span class="p">()</span>
+    <span class="n">extra_traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&#39;traits&#39;</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">()))</span>
+    <span class="c"># detect initializer arguments only supported by a subclass and add</span>
+    <span class="c"># them to extra_traits</span>
+    <span class="k">for</span> <span class="n">argname</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">argname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_duckwargs</span><span class="p">:</span>
+            <span class="c"># initializer does not support this arg.  Do any subclasses?</span>
+            <span class="k">for</span> <span class="n">trait</span><span class="p">,</span> <span class="n">proptype</span> <span class="ow">in</span> <span class="n">DUCKWARGS</span><span class="p">[</span><span class="n">argname</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                    <span class="n">extra_traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
+
+    <span class="n">all_traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">)</span> <span class="o">|</span> <span class="n">extra_traits</span>
+
+    <span class="k">if</span> <span class="s">&quot;unsafe&quot;</span> <span class="ow">in</span> <span class="n">all_traits</span><span class="p">:</span>
+        <span class="n">all_traits</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&quot;unsafe&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="s">&quot;ro&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_traits</span> <span class="ow">and</span> <span class="s">&quot;lazy&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_traits</span><span class="p">:</span>
+            <span class="n">all_traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;safe&quot;</span><span class="p">)</span>
+
+    <span class="n">trait_set_key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">all_traits</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">trait_set_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMixNotFound</span><span class="p">(</span><span class="n">traitlist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">trait_set_key</span><span class="p">))</span>
+    <span class="n">property_type</span> <span class="o">=</span> <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="n">trait_set_key</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">property_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMismatch</span><span class="p">(</span>
+            <span class="n">selected</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">property_type</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="n">base</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">selfie</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">property_type</span><span class="p">)</span>
+
+</div>
+<div class="viewcode-block" id="MetaProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.MetaProperty">[docs]</a><span class="k">class</span> <span class="nc">MetaProperty</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;MetaClass for the various Property types, which allows for</span>
+<span class="sd">    composing the various Property mix-ins, depending on options</span>
+<span class="sd">    selected.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="MetaProperty.__new__"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.MetaProperty.__new__">[docs]</a>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This __new__ method is called when new property trait combinations</span>
+<span class="sd">        are created.&quot;&quot;&quot;</span>
+        <span class="n">selfie</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">_has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">has</span><span class="p">(</span><span class="n">selfie</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;__new__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_has</span>
+        <span class="n">duckwargs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s">&#39;__init__&#39;</span> <span class="ow">in</span> <span class="n">attrs</span><span class="p">:</span>
+            <span class="n">new_kwargs</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">attrs</span><span class="p">[</span><span class="s">&#39;__init__&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">args</span>
+            <span class="k">if</span> <span class="n">new_kwargs</span><span class="p">:</span>
+                <span class="n">duckwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">new_kwargs</span><span class="p">)</span>
+        <span class="n">traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="n">trait</span> <span class="o">=</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;__trait__&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trait</span><span class="p">:</span>
+            <span class="n">traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
+        <span class="n">all_duckwargs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">duckwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s">&quot;traits&quot;</span><span class="p">):</span>
+                <span class="n">traits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">traits</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">base</span><span class="p">,</span> <span class="s">&quot;all_duckwargs&quot;</span><span class="p">):</span>
+                <span class="n">all_duckwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">all_duckwargs</span><span class="p">)</span>
+        <span class="n">traits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">traits</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">traits</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeClash</span><span class="p">(</span>
+                <span class="n">newtype</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">oldtype</span><span class="o">=</span><span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="n">traits</span><span class="p">]</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="n">traitlist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">traits</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;traits&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">traits</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;duckwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">duckwargs</span>
+        <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;all_duckwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_duckwargs</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MetaProperty</span><span class="p">,</span> <span class="n">mcs</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
+        <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="n">selfie</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">trait</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">kwarg</span> <span class="ow">in</span> <span class="n">duckwargs</span><span class="p">:</span>
+                <span class="n">DUCKWARGS</span><span class="p">[</span><span class="n">kwarg</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">trait</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../index.html">normalize 0.0.4 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
+          <li><a href="../property.html" >normalize.property</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

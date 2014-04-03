@@ -98,24 +98,18 @@ the features of those packages.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="property.html"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="property.html#standard-property-behavior">Standard Property behavior</a></li>
-<li class="toctree-l2"><a class="reference internal" href="property.html#property-flavors">Property Flavors</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="property.html#roproperty"><tt class="docutils literal"><span class="pre">ROProperty</span></tt></a></li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property">Core Property Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="property.html#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="property.html#lazyproperty"><tt class="docutils literal"><span class="pre">LazyProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#roproperty"><tt class="docutils literal"><span class="pre">ROProperty</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="property.html#safeproperty"><tt class="docutils literal"><span class="pre">SafeProperty</span></tt></a></li>
-<li class="toctree-l3"><a class="reference internal" href="property.html#slow-property-types-lazysafeproperty-rolazyproperty">&#8220;Slow&#8221; Property types: <tt class="docutils literal"><span class="pre">LazySafeProperty</span></tt>, <tt class="docutils literal"><span class="pre">ROLazyProperty</span></tt></a></li>
+<li class="toctree-l3"><a class="reference internal" href="property.html#slow-property-types-lazysafeproperty-rolazyproperty-slowlazyproperty">&#8220;Slow&#8221; Property types: <tt class="docutils literal"><span class="pre">LazySafeProperty</span></tt>, <tt class="docutils literal"><span class="pre">ROLazyProperty</span></tt>, <tt class="docutils literal"><span class="pre">SlowLazyProperty</span></tt></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="property.html#typed-properties">Typed Properties</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="property.html#supplied-types-intproperty-stringproperty-etc">Supplied types: <tt class="docutils literal"><span class="pre">IntProperty</span></tt>, <tt class="docutils literal"><span class="pre">StringProperty</span></tt>, etc</a></li>
-<li class="toctree-l3"><a class="reference internal" href="property.html#creating-your-own-domain-specific-property-types">Creating your own domain-specific property types</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="property.html#property-subclasses">Property subclasses</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="property.html#listproperty"><tt class="docutils literal"><span class="pre">ListProperty</span></tt></a></li>
-<li class="toctree-l3"><a class="reference internal" href="property.html#jsonproperty"><tt class="docutils literal"><span class="pre">JsonProperty</span></tt></a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#typed-properties">Typed Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property.coll">Properties containing collections</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property.json">Declaring JSON hints on Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property.meta">Addendum: Property MetaClass</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="record.html"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a><ul>
@@ -156,6 +150,53 @@ the features of those packages.</p>
 * A string specifies an attribute of an object.
 * An integer specifies an index into a collection.
 * &#8216;None&#8217; specifies the full collection.</p>
+<dl class="method">
+<dt id="normalize.FieldSelector.__ge__">
+<tt class="descname">__ge__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__ge__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.FieldSelector.__getnewargs__">
+<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__getnewargs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Serialize as a list.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.FieldSelector.__gt__">
+<tt class="descname">__gt__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__gt__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.FieldSelector.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>other=None</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="docutils">
+<dt>&#64;param other Provides a way to copy an existing FieldSelector or</dt>
+<dd>instantiate one from an iterable.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.FieldSelector.__le__">
+<tt class="descname">__le__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__le__" title="Permalink to this definition">¶</a></dt>
+<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.FieldSelector.__ne__">
+<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>functools.total_ordering() currently doesn&#8217;t take care of __ne__().
+Don&#8217;t call other comparison methods directly to avoid infinite
+recursion.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.FieldSelector.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#normalize.FieldSelector.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="normalize.FieldSelector.extend">
 <tt class="descname">extend</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.extend" title="Permalink to this definition">¶</a></dt>
@@ -218,6 +259,16 @@ method before being used to set actual properties</li>
 property, which is merged back on output (ie, calling <tt class="docutils literal"><span class="pre">.json_data()</span></tt>
 or <tt class="docutils literal"><span class="pre">to_json()</span></tt>) #TODO</li>
 </ol>
+<dl class="method">
+<dt id="normalize.JsonRecord.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<p>&#64;param json_data JSON data (string or already json.load&#8217;d)
+&#64;param <a href="#id1"><span class="problematic" id="id2">**</span></a>kwargs fall-back defaults for properties not passed in via</p>
+<blockquote>
+<div>JSON; of a type allowed by the Property.</div></blockquote>
+</dd></dl>
+
 <dl class="classmethod">
 <dt id="normalize.JsonRecord.from_json">
 <em class="property">classmethod </em><tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.from_json" title="Permalink to this definition">¶</a></dt>
@@ -239,6 +290,16 @@ to keyword arguments</p>
 <dt id="normalize.JsonRecordList">
 <em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">JsonRecordList</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecordList" title="Permalink to this definition">¶</a></dt>
 <dd><p>Version of a RecordList which deals primarily in JSON</p>
+<dl class="method">
+<dt id="normalize.JsonRecordList.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecordList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<p>&#64;param json_data JSON data (string or already json.load&#8217;d)
+&#64;param <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs fall-back defaults for properties not passed in via</p>
+<blockquote>
+<div>JSON; of a type allowed by the Property.</div></blockquote>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="attribute">
@@ -262,14 +323,58 @@ property type returned cannot be supplied by this mechanism.</p>
 <dt id="normalize.Property">
 <tt class="descclassname">normalize.</tt><tt class="descname">Property</tt><a class="headerlink" href="#normalize.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the base class for all property types.  It is a data descriptor,
-so care should be taken before adding any SPECIALMETHODS which might change
-the way it behaves.</p>
+so care should be taken before adding any <tt class="docutils literal"><span class="pre">SPECIALMETHODS</span></tt> which might
+change the way it behaves.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.ROProperty">
+<tt class="descclassname">normalize.</tt><tt class="descname">ROProperty</tt><a class="headerlink" href="#normalize.ROProperty" title="Permalink to this definition">¶</a></dt>
+<dd><p>A read-only property throws an exception when the attribute slot is
+assigned to</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="normalize.Record">
 <em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.Record" title="Permalink to this definition">¶</a></dt>
 <dd><p>Base class for normalize instances</p>
+<dl class="method">
+<dt id="normalize.Record.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.Record.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare two Record classes; recursively compares all attributes
+for equality (except those marked &#8216;extraneous&#8217;)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.Record.__getnewargs__">
+<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__getnewargs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement saving for pickle API</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.Record.__metaclass__">
+<tt class="descname">__metaclass__</tt><a class="headerlink" href="#normalize.Record.__metaclass__" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#normalize.RecordMeta" title="normalize.RecordMeta"><tt class="xref py py-class docutils literal"><span class="pre">RecordMeta</span></tt></a></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.Record.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to Python source</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.Record.__str__">
+<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.Record.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to string form</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.Record.__weakref__">
+<tt class="descname">__weakref__</tt><a class="headerlink" href="#normalize.Record.__weakref__" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">

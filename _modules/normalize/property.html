@@ -48,7 +48,14 @@
           <div class="body">
             
   <h1>Source code for normalize.property</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;property Class&#39; docstring&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;Property objects are &quot;new&quot;-style object *data descriptors*.  They define</span>
+<span class="sd">*getters* and *setters* for object attribute access, and allow the module to</span>
+<span class="sd">hang on extra information and customize behavior.</span>
+
+<span class="sd">For information on data descriptors, see the `Descriptor HowTo Guide</span>
+<span class="sd">&lt;https://docs.python.org/2/howto/descriptor.html&gt;`_ in the main python</span>
+<span class="sd">documentation.</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
@@ -59,8 +66,9 @@
 <span class="kn">from</span> <span class="nn">normalize.property.meta</span> <span class="kn">import</span> <span class="n">MetaProperty</span>
 
 
-<span class="k">class</span> <span class="nc">_Default</span><span class="p">():</span>
-    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">_Default</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;not set&gt;&quot;</span>
 
 
 <span class="n">_none</span> <span class="o">=</span> <span class="n">_Default</span><span class="p">()</span>
@@ -68,13 +76,61 @@
 
 <span class="k">class</span> <span class="nc">Property</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
 <div class="viewcode-block" id="Property"><a class="viewcode-back" href="../../property.html#normalize.property.Property">[docs]</a>    <span class="sd">&quot;&quot;&quot;This is the base class for all property types.  It is a data descriptor,</span>
-<span class="sd">    so care should be taken before adding any SPECIALMETHODS which might change</span>
-<span class="sd">    the way it behaves.</span>
+<span class="sd">    so care should be taken before adding any ``SPECIALMETHODS`` which might</span>
+<span class="sd">    change the way it behaves.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">MetaProperty</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="nb">coerce</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="Property.__init__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__init__">[docs]</a>                 <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                 <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Declares a new standard Property.  Note: if you pass arguments which</span>
+<span class="sd">        are not understood by this constructor, or pass extra property traits</span>
+<span class="sd">        to ``traits``, then the call will be redirected to a sub-class; see</span>
+<span class="sd">        :py:mod:`normalize.property.meta` for more.</span>
+
+<span class="sd">        Because of this magic, all ``Property`` arguments *must* be passed in</span>
+<span class="sd">        keyword argument form.  All arguments are optional.</span>
+
+<span class="sd">            ``isa=``\ *TYPE|TUPLE*</span>
+<span class="sd">                Any assigned property must be one of these types according to</span>
+<span class="sd">                ``isinstance()``.  Also used by visitor functions which are</span>
+<span class="sd">                missing an instance, such as marshal in.</span>
+
+<span class="sd">                If ``isa`` is not set, then *any* value (including ``None``)</span>
+<span class="sd">                is acceptable.</span>
+
+<span class="sd">            ``coerce=``\ *FUNCTION*</span>
+<span class="sd">                If the value fails the ``isa`` isinstance check, then this</span>
+<span class="sd">                function is called with the value, and should return a value of</span>
+<span class="sd">                a conformant type or throw an exception.</span>
+
+<span class="sd">            ``check=``\ *FUNCTION*</span>
+<span class="sd">                Once the value is of the correct type, this function is called</span>
+<span class="sd">                and should return something true (according to ``bool()``) if</span>
+<span class="sd">                the value is acceptable.</span>
+
+<span class="sd">            ``required=``\ *BOOL*</span>
+<span class="sd">                If ``True``, then the value must be passed during construction,</span>
+<span class="sd">                and may not be ``None`` (this is only meaningful if ``isa=`` is</span>
+<span class="sd">                not passed)</span>
+
+<span class="sd">            ``default=``\ *VALUE|FUNCTION*</span>
+<span class="sd">                If no value is passed during construction, then use this value</span>
+<span class="sd">                instead.  If the argument is a function, then the function is</span>
+<span class="sd">                called and the value it returns used as the default.</span>
+
+<span class="sd">            ``traits=``\ *LIST|SEQUENCE*</span>
+<span class="sd">                Manually specify a list of named Property traits.  The default</span>
+<span class="sd">                is ``[&quot;safe&quot;]``, and any unknown keyword arguments will add</span>
+<span class="sd">                extra traits on.</span>
+
+<span class="sd">            ``extraneous=``\ *BOOL*</span>
+<span class="sd">                This Property is considered *denormalized* and does not affect</span>
+<span class="sd">                the ``Record`` equality operator.  Visitor functions typically</span>
+<span class="sd">                ignore extraneous properties or require an extra option to</span>
+<span class="sd">                process them.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Property</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
@@ -102,7 +158,7 @@
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CoerceWithoutType</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extraneous</span> <span class="o">=</span> <span class="n">extraneous</span>
 
-    <span class="nd">@property</span>
+    <span class="nd">@property</span></div>
     <span class="k">def</span> <span class="nf">bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">)</span>
 
@@ -112,6 +168,8 @@
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">fullname</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Property.fullname"><a class="viewcode-back" href="../../property.html#normalize.property.Property.fullname">[docs]</a>        <span class="sd">&quot;&quot;&quot;Returns the name of the ``Record`` class this ``Property`` is</span>
+<span class="sd">        attached to, and attribute name it is attached as.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">bound</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;(unbound)&quot;</span>
         <span class="k">elif</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">():</span>
@@ -120,7 +178,7 @@
             <span class="n">classname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">()</span><span class="o">.</span><span class="n">__name__</span>
         <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">classname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">type_safe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">type_safe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is required&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">):</span>
@@ -134,6 +192,7 @@
     <span class="k">def</span> <span class="nf">get_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_wants_arg</span><span class="p">:</span>
+                <span class="c"># XXX - only &#39;lazy&#39; properties should be allowed to do this.</span>
                 <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">()</span>
@@ -155,13 +214,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_none</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Default getter; does NOT fall back to regular descriptor behavior</span>
+<div class="viewcode-block" id="Property.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Default getter; does NOT fall back to regular descriptor behavior</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
         <span class="n">metaclass</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span>
         <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">metaclass</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
 
@@ -170,16 +229,29 @@
 <div class="viewcode-block" id="LazyProperty"><a class="viewcode-back" href="../../property.html#normalize.property.LazyProperty">[docs]</a>    <span class="sd">&quot;&quot;&quot;This declares a property which has late evaluation using its &#39;default&#39;</span>
 <span class="sd">    method.  This type uses the support built-in to python for lazy attribute</span>
 <span class="sd">    setting, which means subsequent attribute assignments will not be prevented</span>
-<span class="sd">    or checked.  See LazySafeProperty for the descriptor version</span>
+<span class="sd">    or checked.  See LazySafeProperty for the descriptor version.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;lazy&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lazy</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyProperty.__init__"><a class="viewcode-back" href="../../property.html#normalize.property.LazyProperty.__init__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Creates a Lazy property.  In addition to the standard Property</span>
+<span class="sd">        arguments, accepts:</span>
+<span class="sd"> </span>
+<span class="sd">            ``lazy=``\ *BOOL*</span>
+<span class="sd">                Must be ``True``. Used as a &quot;distinguishing argument&quot; to</span>
+<span class="sd">                request a lazy Property. Not required if you call</span>
+<span class="sd">                ``LazyProperty()`` directly.</span>
+
+<span class="sd">            ``default=``\ *FUNCTION|METHOD*</span>
+<span class="sd">                The default value for the property.  Unlike a standard</span>
+<span class="sd">                ``Property``, the value can also be set to a method, which can</span>
+<span class="sd">                reference other object properties.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">lazy</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">LazyIsFalse</span><span class="p">()</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LazyProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_Default</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_Default</span><span class="p">):</span></div>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_Default</span><span class="p">:</span>
             <span class="k">return</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LazyProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">init_prop</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -188,60 +260,73 @@
         <span class="k">return</span> <span class="bp">False</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="LazyProperty.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.LazyProperty.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This getter is called when there is no value set, and calls the</span>
+<span class="sd">        default method/function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
         <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">LazyProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ROProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span></div>
+<span class="k">class</span> <span class="nc">ROProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="ROProperty"><a class="viewcode-back" href="../../property.html#normalize.property.ROProperty">[docs]</a>    <span class="sd">&quot;&quot;&quot;A read-only property throws an exception when the attribute slot is</span>
+<span class="sd">    assigned to&quot;&quot;&quot;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;ro&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ROProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="ROProperty.__set__"><a class="viewcode-back" href="../../property.html#normalize.property.ROProperty.__set__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Raises ``ReadOnlyAttributeError``&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ReadOnlyAttributeError</span><span class="p">(</span><span class="n">attrname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Note: instance is normally an instance of a Record</span>
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span></div>
+<div class="viewcode-block" id="ROProperty.__delete__"><a class="viewcode-back" href="../../property.html#normalize.property.ROProperty.__delete__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Raises ``ReadOnlyAttributeError``&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ReadOnlyAttributeError</span><span class="p">(</span><span class="n">attrname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">SlowLazyProperty</span><span class="p">(</span><span class="n">LazyProperty</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SlowLazyProperty</span><span class="p">(</span><span class="n">LazyProperty</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="SlowLazyProperty"><a class="viewcode-back" href="../../property.html#normalize.property.SlowLazyProperty">[docs]</a>    <span class="sd">&quot;&quot;&quot;Base class used by LazySafeProperty and ROLazyProperty&quot;&quot;&quot;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;slow&quot;</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="SlowLazyProperty.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.SlowLazyProperty.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This getter checks to see if the slot is already set in the object</span>
+<span class="sd">        and if so, returns it.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">SlowLazyProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">ROLazyProperty</span><span class="p">(</span><span class="n">SlowLazyProperty</span><span class="p">,</span> <span class="n">ROProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">ROLazyProperty</span><span class="p">(</span><span class="n">SlowLazyProperty</span><span class="p">,</span> <span class="n">ROProperty</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="ROLazyProperty"><a class="viewcode-back" href="../../property.html#normalize.property.ROLazyProperty">[docs]</a>    <span class="k">pass</span>
 
 
-<span class="k">class</span> <span class="nc">SafeProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">SafeProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span></div>
 <div class="viewcode-block" id="SafeProperty"><a class="viewcode-back" href="../../property.html#normalize.property.SafeProperty">[docs]</a>    <span class="sd">&quot;&quot;&quot;A version of Property which always checks all assignments to</span>
-<span class="sd">    properties&quot;&quot;&quot;</span>
+<span class="sd">    properties.</span>
+
+<span class="sd">    Normalize gives you safe properties by default; if you want unsafe</span>
+<span class="sd">    properties, then you (currently) need to pass ``traits=[&quot;unsafe&quot;]`` to the</span>
+<span class="sd">    ``Property()`` declaration.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;safe&quot;</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<div class="viewcode-block" id="SafeProperty.__set__"><a class="viewcode-back" href="../../property.html#normalize.property.SafeProperty.__set__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This setter checks the type of the value before allowing it to be</span>
+<span class="sd">        set.&quot;&quot;&quot;</span>
         <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__delete__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span></div>
+<div class="viewcode-block" id="SafeProperty.__delete__"><a class="viewcode-back" href="../../property.html#normalize.property.SafeProperty.__delete__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the property&#39;s ``required`` setting, and allows the delete if</span>
+<span class="sd">        it is false&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is required&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SafeProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__delete__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">LazySafeProperty</span><span class="p">(</span><span class="n">SafeProperty</span><span class="p">,</span> <span class="n">SlowLazyProperty</span><span class="p">):</span></div>
-    <span class="k">pass</span>
+<span class="k">class</span> <span class="nc">LazySafeProperty</span><span class="p">(</span><span class="n">SafeProperty</span><span class="p">,</span> <span class="n">SlowLazyProperty</span><span class="p">):</span></div></div>
+<div class="viewcode-block" id="LazySafeProperty"><a class="viewcode-back" href="../../property.html#normalize.property.LazySafeProperty">[docs]</a>    <span class="k">pass</span>
 
 
-<span class="n">trait_num</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">trait_num</span> <span class="o">=</span> <span class="mi">0</span></div>
 
 
 <span class="k">def</span> <span class="nf">make_property_type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">base_type</span><span class="o">=</span><span class="n">Property</span><span class="p">,</span>
