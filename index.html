@@ -145,232 +145,106 @@ the features of those packages.</p>
 <li class="toctree-l1"><a class="reference internal" href="visitor.html"><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference</a></li>
 </ul>
 </div>
-<div class="section" id="module-normalize">
-<span id="module-exports"></span><h2>Module Exports<a class="headerlink" href="#module-normalize" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="normalize.FieldSelector">
-<em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">FieldSelector</tt><big>(</big><em>other=None</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>A way to refer to fields/record/properties within a data structure.</p>
-<p>Properties/Indicies are tracked as elements in a list:
-* A string specifies an attribute of an object.
-* An integer specifies an index into a collection.
-* &#8216;None&#8217; specifies the full collection.</p>
-<dl class="method">
-<dt id="normalize.FieldSelector.extend">
-<tt class="descname">extend</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extends this field selector with another FieldSelector</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.get">
-<tt class="descname">get</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies this FieldSelector to the specified Record to get the
-field/property/record specified by this FieldSelector</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.post">
-<tt class="descname">post</tt><big>(</big><em>record</em>, <em>value</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.post" title="Permalink to this definition">¶</a></dt>
-<dd><p>auto-vivifying version of &#8216;put&#8217;; if properties are not found along
-the path, attempts are made to set them to empty values.</p>
-<p>Returns the number of values set; may be 0 if there is &#8216;None&#8217; in the
-selector and there were no existing items in that collection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.FieldSelector.put">
-<tt class="descname">put</tt><big>(</big><em>record</em>, <em>value</em><big>)</big><a class="headerlink" href="#normalize.FieldSelector.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the field referenced by this field selector for the given Record
-with the given value.</p>
-<p>If put() is going to be called on the same Record from
-multiple/different FieldSelectors, then put() needs to called in
-the sorted order of the FieldSelectors.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="function">
-<dt id="normalize.from_json">
-<tt class="descclassname">normalize.</tt><tt class="descname">from_json</tt><big>(</big><em>record_type</em>, <em>json_struct</em><big>)</big><a class="headerlink" href="#normalize.from_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON
-types/hints but does not require them.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>TYPE</em></dt>
-<dd>Record type to convert data to</dd>
-<dt><tt class="docutils literal"><span class="pre">json_struct=</span></tt><em>DICT|LIST</em></dt>
-<dd>a loaded (via <tt class="docutils literal"><span class="pre">json.loads</span></tt>) data structure, normally a
-dict or a list.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.JsonCollectionProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">JsonCollectionProperty</tt><a class="headerlink" href="#normalize.JsonCollectionProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which map to a list of records in JSON.</p>
-<p>It can also map a dictionary with some top level keys (eg, streaming
-information) and a key with the actual list contents.  See
-<a class="reference internal" href="record.html#module-normalize.record.json" title="normalize.record.json"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.record.json</span></tt></a> for more details.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.JsonListProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">JsonListProperty</tt><a class="headerlink" href="#normalize.JsonListProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which map to a list of records in JSON.</p>
-<p>It can also map a dictionary with some top level keys (eg, streaming
-information) and a key with the actual list contents.  See
-<a class="reference internal" href="record.html#module-normalize.record.json" title="normalize.record.json"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.record.json</span></tt></a> for more details.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.JsonProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">JsonProperty</tt><a class="headerlink" href="#normalize.JsonProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>Object property wrapper for record json data</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.JsonRecord">
-<em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">JsonRecord</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord" title="Permalink to this definition">¶</a></dt>
-<dd><p>Version of a Record which deals primarily in JSON form.</p>
-<p>This means:</p>
-<ol class="arabic simple">
-<li>The first argument to the constructor is assumed to be a JSON data
-dictionary, and passed through the class&#8217; <tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt>
-method before being used to set actual properties</li>
-<li>Unknown keys are permitted, and saved in the &#8220;unknown_json_keys&#8221;
-property, which is merged back on output (ie, calling <tt class="docutils literal"><span class="pre">.json_data()</span></tt>
-or <tt class="docutils literal"><span class="pre">to_json()</span></tt>) #TODO</li>
-</ol>
-<dl class="classmethod">
-<dt id="normalize.JsonRecord.from_json">
-<em class="property">classmethod </em><tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.from_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method can be overridden to specialize how the class is loaded
-when marshalling in; however beware that it is not invoked when the
-caller uses the <tt class="docutils literal"><span class="pre">from_json()</span></tt> function directly.</p>
-</dd></dl>
-
-<dl class="classmethod">
-<dt id="normalize.JsonRecord.json_to_initkwargs">
-<em class="property">classmethod </em><tt class="descname">json_to_initkwargs</tt><big>(</big><em>json_data</em>, <em>kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecord.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Subclassing hook to specialize how JSON data is converted
-to keyword arguments</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.JsonRecordList">
-<em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">JsonRecordList</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.JsonRecordList" title="Permalink to this definition">¶</a></dt>
-<dd><p>Version of a RecordList which deals primarily in JSON</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.LazyProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">LazyProperty</tt><a class="headerlink" href="#normalize.LazyProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>This declares a property which has late evaluation using its &#8216;default&#8217;
-method.  This type uses the support built-in to python for lazy attribute
-setting, which means subsequent attribute assignments will not be prevented
-or checked.  See LazySafeProperty for the descriptor version.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="normalize.make_property_type">
-<tt class="descclassname">normalize.</tt><tt class="descname">make_property_type</tt><big>(</big><em>name</em>, <em>base_type=&lt;class 'normalize.property.Property'&gt;</em>, <em>attrs=None</em>, <em>trait_name=None</em>, <em>**default_kwargs</em><big>)</big><a class="headerlink" href="#normalize.make_property_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Makes a new <tt class="docutils literal"><span class="pre">Property</span></tt> type, which supplies the given arguments as
-defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.  Note: defaults which affect the
-property type returned cannot be supplied by this mechanism.</p>
-<p>The typical use of this function is to make types for the API you are
-mapping so that, for instance, any time they use a date you can convert
-it in a consistent way to a <tt class="docutils literal"><span class="pre">datetime.date</span></tt>, or to supply
-<tt class="docutils literal"><span class="pre">default=None</span></tt> because you and prefer subtle bugs caused by stray
-<tt class="docutils literal"><span class="pre">None</span></tt> values to <tt class="docutils literal"><span class="pre">AttributeError</span></tt> exceptions.</p>
-<p>It&#8217;s also used by <a class="reference internal" href="property.html#module-normalize.property.types" title="normalize.property.types"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.types</span></tt></a> to create all
-of its Property subclasses.</p>
-<dl class="docutils">
-<dt>Args:</dt>
-<dd><dl class="first last docutils">
-<dt><tt class="docutils literal"><span class="pre">name=</span></tt><em>STR</em></dt>
-<dd>Specifies the name of the new property type.  This is entirely
-cosmetic, but it is probably a good idea to make this exactly
-the same as the symbol you are assigning the result to.</dd>
-<dt><tt class="docutils literal"><span class="pre">base_type=</span></tt><em>Property sub-class</em></dt>
-<dd>Specifies which property type you are adding defaults to.
-Currently, this must be the computed type your schema will
-use for these options (usually <tt class="docutils literal"><span class="pre">SafeProperty</span></tt> or
-<tt class="docutils literal"><span class="pre">SafeJsonProperty</span></tt>); in the future this may become more
-streamlined.  You can pass in a tuple of types here.</dd>
-<dt><tt class="docutils literal"><span class="pre">attrs=</span></tt><em>DICT</em></dt>
-<dd>This lets you pass in a dictionary that will be used as
-the new Property type&#8217;s class dictionary.  i.e., it gets
-passed as the third argument to <tt class="docutils literal"><span class="pre">type(NAME,</span> <span class="pre">BASES,</span> <span class="pre">ATTRS)</span></tt>,
-after the properties necessary to implement the defaults
-are added to it.  If you use this for anything less than
-trivial, it may be simpler just to make a whole class
-definition.</dd>
-<dt><tt class="docutils literal"><span class="pre">trait_name=</span></tt><em>STR</em></dt>
-<dd>Specify the unique identifier of the trait that is created.
-This probably doesn&#8217;t matter, unless you want to use the
-<tt class="docutils literal"><span class="pre">traits=</span></tt> keyword to <tt class="docutils literal"><span class="pre">Property()</span></tt>.  The default is to
-make up a new numbered trait name, starting with &#8220;<tt class="docutils literal"><span class="pre">trait1</span></tt>&#8221;.</dd>
-<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
-<dd>Everything not known is used as defaults for the eventual
-call to <tt class="docutils literal"><span class="pre">Property()</span></tt> (or <tt class="docutils literal"><span class="pre">SafeProperty()</span></tt> or whichever
-sub-class you chose).  If the user of the Property type
-passes it as well, this overrides the defaults passed to
-<tt class="docutils literal"><span class="pre">make_property_type</span></tt>.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.Property">
-<tt class="descclassname">normalize.</tt><tt class="descname">Property</tt><a class="headerlink" href="#normalize.Property" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the base class for all property types.  It is a data descriptor,
-so care should be taken before adding any <tt class="docutils literal"><span class="pre">SPECIALMETHODS</span></tt> which might
-change the way it behaves.</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.ROProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">ROProperty</tt><a class="headerlink" href="#normalize.ROProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A read-only property throws an exception when the attribute slot is
-assigned to</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.Record">
-<em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#normalize.Record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for normalize instances</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.RecordMeta">
-<em class="property">class </em><tt class="descclassname">normalize.</tt><tt class="descname">RecordMeta</tt><a class="headerlink" href="#normalize.RecordMeta" title="Permalink to this definition">¶</a></dt>
-<dd><p>Metaclass to reify descriptors properly</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.SafeProperty">
-<tt class="descclassname">normalize.</tt><tt class="descname">SafeProperty</tt><a class="headerlink" href="#normalize.SafeProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A version of Property which always checks all assignments to
-properties.</p>
-<p>Normalize gives you safe properties by default; if you want unsafe
-properties, then you (currently) need to pass <tt class="docutils literal"><span class="pre">traits=[&quot;unsafe&quot;]</span></tt> to the
-<tt class="docutils literal"><span class="pre">Property()</span></tt> declaration.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="normalize.to_json">
-<tt class="descclassname">normalize.</tt><tt class="descname">to_json</tt><big>(</big><em>record</em>, <em>extraneous=True</em><big>)</big><a class="headerlink" href="#normalize.to_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>JSON marshall out function: a &#8216;visitor&#8217; function which implements
-marshall out, honoring JSON property types/hints but does not require
-them.</p>
-</dd></dl>
-
+<div class="section" id="module-exports">
+<h2>Module Exports<a class="headerlink" href="#module-exports" title="Permalink to this headline">¶</a></h2>
+<p>It&#8217;s safest to stick with importing directly from the <tt class="docutils literal"><span class="pre">normalize</span></tt>
+top-level namespace.  Useful classes and functions not being here may
+be a bug!</p>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">exports</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.DictCollection</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.exc</span></tt></td>
+<td>Structured exception module.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelector</span></tt></td>
+<td>A way to refer to fields/record/properties within a data structure.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelectorException</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.from_json</span></tt></td>
+<td>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON types/hints but does not require them.</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonCollection</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonCollectionProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonListProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecord</span></tt></td>
+<td>Version of a Record which deals primarily in JSON form.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecordList</span></tt></td>
+<td>Version of a RecordList which deals primarily in JSON</td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazyJsonProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazyProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazySafeJsonProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazySafeProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ListCollection</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ListProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.make_property_type</span></tt></td>
+<td>Makes a new <tt class="docutils literal"><span class="pre">Property</span></tt> type, which supplies the given arguments as defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.MultiFieldSelector</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.Property</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ROProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.Record</span></tt></td>
+<td>Base class for normalize instances</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.RecordList</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.RecordMeta</span></tt></td>
+<td>Metaclass to reify descriptors properly</td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeJsonListProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeJsonProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeProperty</span></tt></td>
+<td></td>
+</tr>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.to_json</span></tt></td>
+<td>JSON marshall out function: a &#8216;visitor&#8217; function which implements marshall out, honoring JSON property types/hints but does not require them.</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section" id="indices-and-tables">
 <h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
@@ -391,7 +265,7 @@ them.</p>
   <h3><a href="#">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">the <tt class="docutils literal"><span class="pre">normalize</span></tt> library</a><ul>
-<li><a class="reference internal" href="#module-normalize">Module Exports</a></li>
+<li><a class="reference internal" href="#module-exports">Module Exports</a></li>
 <li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
 </ul>
 </li>
