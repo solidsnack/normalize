@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property.types &mdash; normalize 0.1.0 documentation</title>
+    <title>normalize.property.types &mdash; normalize 0.1.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.1.1 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.property" href="../property.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
@@ -49,7 +49,8 @@
           <div class="body">
             
   <h1>Source code for normalize.property.types</h1><div class="highlight"><pre>
-<span class="sd">&quot;&quot;&quot;``normalize.property.types`` provides an assortment of pre-generated types&quot;&quot;&quot;</span>
+<span class="sd">&quot;&quot;&quot;``normalize.property.types`` provides an assortment of pre-generated</span>
+<span class="sd">types&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -68,6 +69,7 @@
         <span class="mi">16</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%M:%S&quot;</span><span class="p">,</span>
         <span class="mi">17</span><span class="p">:</span> <span class="s">&quot;%Y%m</span><span class="si">%d</span><span class="s">%H:%M:%SZ&quot;</span><span class="p">,</span>
     <span class="p">}</span>
+
     <span class="k">def</span> <span class="nf">parse_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">):</span>
         <span class="n">datetime_stripped</span> <span class="o">=</span> <span class="n">not_a_datetime</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
             <span class="s">&quot;-&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;T&quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
@@ -151,7 +153,8 @@
     <span class="s">&quot;DateProperty&quot;</span><span class="p">,</span>
     <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="n">coerce_date</span><span class="p">,</span>
     <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must holds a python date; coercion from string is provided via ``dateutil.parse``&quot;</span><span class="p">,</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must holds a python date; coercion &quot;</span>
+                   <span class="s">&quot;from string is provided via ``dateutil.parse``&quot;</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
 <span class="n">DatetimeProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>
@@ -225,7 +228,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" >normalize.property</a> &raquo;</li> 

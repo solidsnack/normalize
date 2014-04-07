@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.diff &mdash; normalize 0.1.0 documentation</title>
+    <title>normalize.diff &mdash; normalize 0.1.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.0 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.1.1 documentation" href="../../index.html" />
     <link rel="up" title="normalize" href="../normalize.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
       </ul>
@@ -185,7 +185,8 @@
 <div class="viewcode-block" id="DiffOptions.record_id"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.record_id">[docs]</a>        <span class="sd">&quot;&quot;&quot;Retrieve an object identifier from the given record; if it is an</span>
 <span class="sd">        alien class, and the type is provided, then use duck typing to get the</span>
 <span class="sd">        corresponding fields of the alien class.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s">&quot;__pk__&quot;</span><span class="p">,</span> <span class="n">record_id</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="p">))</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s">&quot;__pk__&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">pk</span> <span class="k">if</span> <span class="n">pk</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">record_id</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">compare_record_iter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div></div>
@@ -552,7 +553,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
       </ul>

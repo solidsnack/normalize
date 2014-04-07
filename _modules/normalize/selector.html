@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.selector &mdash; normalize 0.1.0 documentation</title>
+    <title>normalize.selector &mdash; normalize 0.1.1 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.1.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.0 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.1.1 documentation" href="../../index.html" />
     <link rel="up" title="normalize" href="../normalize.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
       </ul>
@@ -380,7 +380,7 @@
                      <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">iteritems</span><span class="p">)</span>
         <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="MultiFieldSelector.__iter__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Generates FieldSelectors from this MultiFieldSelector&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">head_selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FieldSelector</span><span class="p">((</span><span class="n">head</span><span class="p">,))</span>
@@ -391,7 +391,7 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tail</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">head_selector</span> <span class="o">+</span> <span class="n">x</span>
-</div>
+
 <div class="viewcode-block" id="MultiFieldSelector.__repr__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;MultiFieldSelector</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">selectors</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
 </div>
@@ -476,7 +476,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
       </ul>
