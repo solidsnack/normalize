@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.coll &mdash; normalize 0.1.1 documentation</title>
+    <title>normalize.coll &mdash; normalize 0.1.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.1',
+        VERSION:     '0.1.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.1 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.1.2 documentation" href="../../index.html" />
     <link rel="up" title="normalize" href="../normalize.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
       </ul>
@@ -122,7 +122,12 @@
 <div class="viewcode-block" id="Collection.__len__"><a class="viewcode-back" href="../../coll.html#normalize.coll.Collection.__len__">[docs]</a>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span></div>
-    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">coerce_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
+<div class="viewcode-block" id="Collection.coerce_tuples"><a class="viewcode-back" href="../../coll.html#normalize.coll.Collection.coerce_tuples">[docs]</a>        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">cls</span><span class="o">.</span><span class="n">coerceitem</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span></div>
+    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
 <div class="viewcode-block" id="Collection.tuples_to_coll"><a class="viewcode-back" href="../../coll.html#normalize.coll.Collection.tuples_to_coll">[docs]</a>        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CollectionDefinitionError</span><span class="p">(</span>
             <span class="nb">property</span><span class="o">=</span><span class="s">&#39;tuples_to_coll&#39;</span><span class="p">,</span>
             <span class="n">coll</span><span class="o">=</span><span class="s">&#39;Collection&#39;</span><span class="p">,</span>
@@ -170,8 +175,10 @@
     <span class="n">colltype</span> <span class="o">=</span> <span class="nb">dict</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-<div class="viewcode-block" id="DictCollection.tuples_to_coll"><a class="viewcode-back" href="../../coll.html#normalize.coll.DictCollection.tuples_to_coll">[docs]</a>        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="DictCollection.tuples_to_coll"><a class="viewcode-back" href="../../coll.html#normalize.coll.DictCollection.tuples_to_coll">[docs]</a>        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span>
+            <span class="n">cls</span><span class="o">.</span><span class="n">coerce_tuples</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">if</span> <span class="nb">coerce</span> <span class="k">else</span> <span class="n">generator</span>
+        <span class="p">)</span>
 
     <span class="nd">@classmethod</span></div>
     <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
@@ -201,13 +208,9 @@
     <span class="n">colltype</span> <span class="o">=</span> <span class="nb">list</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">tuples</span><span class="p">):</span>
-<div class="viewcode-block" id="ListCollection.tuples_to_coll"><a class="viewcode-back" href="../../coll.html#normalize.coll.ListCollection.tuples_to_coll">[docs]</a>        <span class="n">itemtype</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">itemtype</span>
-        <span class="n">coerceitem</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coerceitem</span>
-        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span>
-            <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">itemtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">coerceitem</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="k">for</span>
-            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tuples</span>
-        <span class="p">)</span>
+    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="ListCollection.tuples_to_coll"><a class="viewcode-back" href="../../coll.html#normalize.coll.ListCollection.tuples_to_coll">[docs]</a>        <span class="n">tuples</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">coerce_tuples</span><span class="p">(</span><span class="n">generator</span><span class="p">)</span> <span class="k">if</span> <span class="nb">coerce</span> <span class="k">else</span> <span class="n">generator</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tuples</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span></div>
     <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
@@ -318,7 +321,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.1.1 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li>
           <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
       </ul>
