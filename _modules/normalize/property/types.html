@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property.types &mdash; normalize 0.1.2 documentation</title>
+    <title>normalize.property.types &mdash; normalize 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.property" href="../property.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
@@ -170,31 +170,7 @@
 <span class="p">)</span>
 
 
-<span class="c"># now, go and generate ROLazyUnicodeProperty, SafeStringProperty etc</span>
-<span class="n">_prop_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span> <span class="k">if</span>
-                   <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;Property&quot;</span><span class="p">))</span>
-
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">LazyProperty</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ROLazyProperty</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">ROProperty</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SafeProperty</span>
-<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">SlowLazyProperty</span>
-
-<span class="n">_variants</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s">&quot;Lazy&quot;</span><span class="p">:</span> <span class="n">LazyProperty</span><span class="p">,</span>
-    <span class="s">&quot;RO&quot;</span><span class="p">:</span> <span class="n">ROProperty</span><span class="p">,</span>
-    <span class="s">&quot;ROLazy&quot;</span><span class="p">:</span> <span class="n">ROLazyProperty</span><span class="p">,</span>
-    <span class="s">&quot;Safe&quot;</span><span class="p">:</span> <span class="n">SafeProperty</span><span class="p">,</span>
-    <span class="s">&quot;SlowLazy&quot;</span><span class="p">:</span> <span class="n">SlowLazyProperty</span><span class="p">,</span>
-<span class="p">}</span>
-
-<span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">proptype</span> <span class="ow">in</span> <span class="n">_prop_types</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-    <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">_variants</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-        <span class="n">typename</span> <span class="o">=</span> <span class="n">prefix</span> <span class="o">+</span> <span class="n">name</span>
-        <span class="nb">globals</span><span class="p">()[</span><span class="n">typename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">typename</span><span class="p">,</span> <span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">variant</span><span class="p">),</span> <span class="p">{})</span>
-
-
-<span class="n">__all__</span> <span class="o">=</span> <span class="n">_prop_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">globals</span><span class="p">()</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;Property&quot;</span><span class="p">))</span>
 </pre></div>
 
           </div>
@@ -228,7 +204,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" >normalize.property</a> &raquo;</li> 

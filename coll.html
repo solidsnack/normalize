@@ -57,7 +57,9 @@
 <span class="target" id="module-normalize.coll"></span><dl class="class">
 <dt id="normalize.coll.Collection">
 <em class="property">class </em><tt class="descclassname">normalize.coll.</tt><tt class="descname">Collection</tt><big>(</big><em>values=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>All collections are modeled as a mapping from some index to a value.
+<dd><p>This is the base class for Record property values which contain
+iterable sets of values with a particular common type.</p>
+<p>All collections are modeled as a mapping from some index to a value.
 Bags are not currently supported, ie the keys must be unique for the diff
 machinery as currently written to function.</p>
 <dl class="classmethod">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property.meta &mdash; normalize 0.1.2 documentation</title>
+    <title>normalize.property.meta &mdash; normalize 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.property" href="../property.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
@@ -87,22 +87,33 @@
     <span class="k">for</span> <span class="n">argname</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">argname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_duckwargs</span><span class="p">:</span>
             <span class="c"># initializer does not support this arg.  Do any subclasses?</span>
+            <span class="n">implies_traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">trait</span><span class="p">,</span> <span class="n">proptype</span> <span class="ow">in</span> <span class="n">DUCKWARGS</span><span class="p">[</span><span class="n">argname</span><span class="p">]:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
-                    <span class="n">extra_traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
+                    <span class="n">implies_traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">trait</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">implies_traits</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>  <span class="c"># if it&#39;s 0, it&#39;ll fail later</span>
+                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">AmbiguousPropertyTraitArg</span><span class="p">(</span>
+                    <span class="n">trait_arg</span><span class="o">=</span><span class="n">argname</span><span class="p">,</span>
+                    <span class="n">could_be</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                        <span class="nb">sorted</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">__name__</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">implies_traits</span><span class="p">)</span>
+                    <span class="p">),</span>
+                    <span class="n">matched_traits</span><span class="o">=</span><span class="n">implies_traits</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">extra_traits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">implies_traits</span><span class="p">)</span>
 
     <span class="n">all_traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">)</span> <span class="o">|</span> <span class="n">extra_traits</span>
 
     <span class="k">if</span> <span class="s">&quot;unsafe&quot;</span> <span class="ow">in</span> <span class="n">all_traits</span><span class="p">:</span>
         <span class="n">all_traits</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s">&quot;unsafe&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="k">if</span> <span class="s">&quot;ro&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_traits</span> <span class="ow">and</span> <span class="s">&quot;lazy&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_traits</span><span class="p">:</span>
+    <span class="k">elif</span> <span class="s">&quot;ro&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">all_traits</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="n">x</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;required&quot;</span><span class="p">,</span> <span class="s">&quot;isa&quot;</span><span class="p">,</span> <span class="s">&quot;check&quot;</span><span class="p">)):</span>
             <span class="n">all_traits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;safe&quot;</span><span class="p">)</span>
 
     <span class="n">trait_set_key</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">all_traits</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">trait_set_key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMixNotFound</span><span class="p">(</span><span class="n">traitlist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">trait_set_key</span><span class="p">))</span>
+        <span class="n">create_property_type_from_traits</span><span class="p">(</span><span class="n">trait_set_key</span><span class="p">)</span>
     <span class="n">property_type</span> <span class="o">=</span> <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="n">trait_set_key</span><span class="p">]</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">property_type</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
         <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMismatch</span><span class="p">(</span>
@@ -113,6 +124,109 @@
     <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">selfie</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">property_type</span><span class="p">)</span>
 
 </div>
+<span class="k">def</span> <span class="nf">_merge_camel_case_names</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">new_name</span><span class="p">):</span>
+    <span class="kn">import</span> <span class="nn">re</span>
+    <span class="n">name_parts</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+        <span class="s">r&#39;([a-z])([A-Z])&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">,</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">(),</span> <span class="n">base_name</span><span class="p">,</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="n">other_parts</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+        <span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
+            <span class="s">r&#39;([a-z])([A-Z])&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">,</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="n">m</span><span class="o">.</span><span class="n">groups</span><span class="p">(),</span> <span class="n">new_name</span><span class="p">,</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;,&quot;</span><span class="p">)</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">name_parts</span>
+    <span class="p">)</span>
+
+    <span class="k">return</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">other_parts</span> <span class="o">+</span> <span class="n">name_parts</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="create_property_type_from_traits"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.create_property_type_from_traits">[docs]</a><span class="k">def</span> <span class="nf">create_property_type_from_traits</span><span class="p">(</span><span class="n">trait_set</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Takes an iterable of trait names, and tries to compose a property type</span>
+<span class="sd">    from that.  Raises an exception if this is not possible.  Extra traits not</span>
+<span class="sd">    requested are not acceptable.</span>
+
+<span class="sd">    If this automatic generation doesn&#39;t work for you for some reason, then</span>
+<span class="sd">    compose your property types manually.</span>
+
+<span class="sd">    The details of this composition should not be relied upon; it may change in</span>
+<span class="sd">    future releases.  However, a given normalize version should behave</span>
+<span class="sd">    consistently for multiple runs, given the same starting sets of properties,</span>
+<span class="sd">    the composition order will be the same every time.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">wanted_traits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">trait_set</span><span class="p">)</span>
+    <span class="n">stock_types</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+        <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span>
+        <span class="nb">set</span><span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="o">.</span><span class="n">issubset</span><span class="p">(</span><span class="n">wanted_traits</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="n">traits_available</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">stock_types</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">traits_available</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="n">missing_traits</span> <span class="o">=</span> <span class="n">wanted_traits</span> <span class="o">-</span> <span class="n">traits_available</span>
+    <span class="k">if</span> <span class="n">missing_traits</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMixinNotPossible</span><span class="p">(</span>
+            <span class="n">traitlist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">trait_set</span><span class="p">),</span>
+            <span class="n">missing</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">missing_traits</span><span class="p">))),</span>
+        <span class="p">)</span>
+
+    <span class="n">made_types</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c"># mix together property types, until we have made the right type.</span>
+    <span class="k">while</span> <span class="n">trait_set</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="p">:</span>
+
+        <span class="c"># be somewhat deterministic: always start with types which provide the</span>
+        <span class="c"># &#39;first&#39; trait on the list</span>
+        <span class="n">start_with</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+            <span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">stock_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">k</span> <span class="ow">and</span> <span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">trait_set</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="p">)</span>
+
+        <span class="c"># prefer extending already composed trait sets, by only adding to the</span>
+        <span class="c"># longest ones</span>
+        <span class="n">longest</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">start_with</span><span class="p">)</span>
+        <span class="n">made_type</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">start_with</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="o">!=</span> <span class="n">longest</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c"># pick a type to join on which reduces the short-fall as much as</span>
+            <span class="c"># possible.</span>
+            <span class="n">shortfall</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wanted_traits</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">base</span><span class="p">)</span>
+            <span class="n">mix_in</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">stock_types</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                <span class="c"># skip mixes that will fail; this means that the type on the</span>
+                <span class="c"># list is a trait subset of &#39;base&#39;</span>
+                <span class="n">mixed_traits</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">mixed_traits</span> <span class="ow">in</span> <span class="n">PROPERTY_TYPES</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="n">this_shortfall</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wanted_traits</span> <span class="o">-</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="o">|</span> <span class="nb">set</span><span class="p">(</span><span class="n">other</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">this_shortfall</span> <span class="o">&lt;</span> <span class="n">shortfall</span><span class="p">:</span>
+                    <span class="n">mix_in</span> <span class="o">=</span> <span class="n">other</span>
+                    <span class="n">mixed_in_product</span> <span class="o">=</span> <span class="n">mixed_traits</span>
+                    <span class="n">shortfall</span> <span class="o">=</span> <span class="n">this_shortfall</span>
+                    <span class="k">if</span> <span class="n">shortfall</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">mix_in</span><span class="p">:</span>
+                <span class="n">base_type</span> <span class="o">=</span> <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="n">base</span><span class="p">]</span>
+                <span class="n">other_type</span> <span class="o">=</span> <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="n">other</span><span class="p">]</span>
+                <span class="n">new_name</span> <span class="o">=</span> <span class="n">_merge_camel_case_names</span><span class="p">(</span>
+                    <span class="n">base_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">other_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">new_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">new_name</span><span class="p">,</span> <span class="p">(</span><span class="n">base_type</span><span class="p">,</span> <span class="n">other_type</span><span class="p">),</span> <span class="p">{})</span>
+                <span class="n">stock_types</span><span class="p">[</span><span class="n">mixed_in_product</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_type</span>
+                <span class="n">made_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_type</span><span class="p">)</span>
+                <span class="n">made_type</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">made_type</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyTypeMixinFailure</span><span class="p">(</span>
+                <span class="n">traitlist</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">trait_set</span><span class="p">),</span>
+                <span class="n">newtypelist</span><span class="o">=</span><span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s">&quot;</span><span class="si">%r</span><span class="s"> (</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">traits</span><span class="p">,</span> <span class="n">x</span><span class="o">.</span><span class="n">__name__</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">made_types</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+</div>
 <div class="viewcode-block" id="MetaProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.MetaProperty">[docs]</a><span class="k">class</span> <span class="nc">MetaProperty</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;MetaClass for the various Property types, which allows for</span>
 <span class="sd">    composing the various Property mix-ins, depending on options</span>
@@ -121,10 +235,12 @@
 <div class="viewcode-block" id="MetaProperty.__new__"><a class="viewcode-back" href="../../../property.html#normalize.property.meta.MetaProperty.__new__">[docs]</a>    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;This __new__ method is called when new property trait combinations</span>
 <span class="sd">        are created.&quot;&quot;&quot;</span>
-        <span class="n">selfie</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">selfie</span> <span class="o">=</span> <span class="p">[</span><span class="bp">None</span><span class="p">,</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;default_kwargs&#39;</span><span class="p">,</span> <span class="p">{})]</span>
 
         <span class="k">def</span> <span class="nf">_has</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">has</span><span class="p">(</span><span class="n">selfie</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">mixed_kwargs</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">selfie</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">mixed_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">has</span><span class="p">(</span><span class="n">selfie</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">mixed_kwargs</span><span class="p">)</span>
 
         <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;__new__&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_has</span>
         <span class="n">duckwargs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -154,7 +270,7 @@
         <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;all_duckwargs&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">all_duckwargs</span>
         <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">MetaProperty</span><span class="p">,</span> <span class="n">mcs</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
         <span class="n">PROPERTY_TYPES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">traits</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
-        <span class="n">selfie</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">selfie</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="n">trait</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">kwarg</span> <span class="ow">in</span> <span class="n">duckwargs</span><span class="p">:</span>
                 <span class="n">DUCKWARGS</span><span class="p">[</span><span class="n">kwarg</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">((</span><span class="n">trait</span><span class="p">,</span> <span class="bp">self</span><span class="p">))</span>
@@ -192,7 +308,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" >normalize.property</a> &raquo;</li> 

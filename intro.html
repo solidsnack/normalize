@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>An introduction to using normalize &mdash; normalize 0.1.2 documentation</title>
+    <title>An introduction to using normalize &mdash; normalize 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.2 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.2.0 documentation" href="index.html" />
     <link rel="next" title="normalize.property reference" href="property.html" />
     <link rel="prev" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.1.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -160,6 +160,15 @@ can expect an error:</p>
 <p>What happened was that the passed value did not satisfy the type
 constraint (ie, the type passed to <tt class="docutils literal"><span class="pre">isa</span></tt>).  So, the descriptor
 started <em>coercion</em>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Adding any of the three <em>type constraint</em> options to a Property
+(<tt class="docutils literal"><span class="pre">isa=</span></tt>, <tt class="docutils literal"><span class="pre">required=</span></tt>, or <tt class="docutils literal"><span class="pre">check=</span></tt>) automatically mixes in the
+&#8216;safe&#8217; trait, turning your <tt class="docutils literal"><span class="pre">Property</span></tt> into a <tt class="docutils literal"><span class="pre">SafeProperty</span></tt> via
+the facility described in <a class="reference internal" href="property.html#meta"><em>Addendum: Property MetaClass</em></a>.  This ensures that any rules
+you specify for assignment to an attribute are also caught by
+assignment to that attribute.</p>
+</div>
 </div>
 <div class="section" id="property-type-coercion">
 <span id="coercion"></span><h2>Property Type Coercion<a class="headerlink" href="#property-type-coercion" title="Permalink to this headline">¶</a></h2>
@@ -876,7 +885,7 @@ WARRANTY?  :-)  Patches and bug reports welcome.</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.1.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

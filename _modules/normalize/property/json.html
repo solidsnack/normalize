@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property.json &mdash; normalize 0.1.2 documentation</title>
+    <title>normalize.property.json &mdash; normalize 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.property" href="../property.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
@@ -51,8 +51,6 @@
   <h1>Source code for normalize.property.json</h1><div class="highlight"><pre>
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">LazyProperty</span>
-<span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">LazySafeProperty</span>
 <span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">Property</span>
 <span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">SafeProperty</span>
 <span class="kn">from</span> <span class="nn">normalize.property.coll</span> <span class="kn">import</span> <span class="n">ListProperty</span>
@@ -123,14 +121,6 @@
     <span class="k">pass</span>
 
 </div>
-<div class="viewcode-block" id="LazyJsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.LazyJsonProperty">[docs]</a><span class="k">class</span> <span class="nc">LazyJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazyProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-</div>
-<div class="viewcode-block" id="LazySafeJsonProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.LazySafeJsonProperty">[docs]</a><span class="k">class</span> <span class="nc">LazySafeJsonProperty</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="n">LazySafeProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-</div>
 <div class="viewcode-block" id="JsonListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.JsonListProperty">[docs]</a><span class="k">class</span> <span class="nc">JsonListProperty</span><span class="p">(</span><span class="n">ListProperty</span><span class="p">,</span> <span class="n">JsonProperty</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;A property which map to a list of records in JSON.</span>
 
@@ -140,14 +130,9 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">pass</span>
 
-</div>
-<div class="viewcode-block" id="SafeJsonListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.json.SafeJsonListProperty">[docs]</a><span class="k">class</span> <span class="nc">SafeJsonListProperty</span><span class="p">(</span><span class="n">JsonListProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
-    <span class="k">pass</span>
-
 
 <span class="c"># deprecated compatibility exports</span></div>
 <span class="n">JsonCollectionProperty</span> <span class="o">=</span> <span class="n">JsonListProperty</span>
-<span class="n">SafeJsonCollectionProperty</span> <span class="o">=</span> <span class="n">SafeJsonListProperty</span>
 </pre></div>
 
           </div>
@@ -181,7 +166,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../property.html" >normalize.property</a> &raquo;</li> 

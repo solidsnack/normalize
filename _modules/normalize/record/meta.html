@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.meta &mdash; normalize 0.1.2 documentation</title>
+    <title>normalize.record.meta &mdash; normalize 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.1.2',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.1.2 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.record" href="../record.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
@@ -56,9 +56,16 @@
 
 
 <span class="k">class</span> <span class="nc">RecordMeta</span><span class="p">(</span><span class="nb">type</span><span class="p">):</span>
-<div class="viewcode-block" id="RecordMeta"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta">[docs]</a>    <span class="sd">&quot;&quot;&quot;Metaclass to reify descriptors properly&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="RecordMeta"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta">[docs]</a>    <span class="sd">&quot;&quot;&quot;Metaclass for ``Record`` types.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
-<div class="viewcode-block" id="RecordMeta.__new__"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta.__new__">[docs]</a>
+<div class="viewcode-block" id="RecordMeta.__new__"><a class="viewcode-back" href="../../../record.html#normalize.record.meta.RecordMeta.__new__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Invoked when a new ``Record`` type is declared, and is responsible</span>
+<span class="sd">        for copying the ``properties`` from superclass ``Record`` classes,</span>
+<span class="sd">        processing the ``primary_key`` declaration, and calling</span>
+<span class="sd">        :py:meth:`normalize.property.Property.bind` to link</span>
+<span class="sd">        :py:class:`normalize.property.Property` instances to their containing</span>
+<span class="sd">        :py:class:`normalize.record.Record` classes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">properties</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="n">bases</span><span class="p">:</span>
@@ -152,7 +159,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.1.2 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
           <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
