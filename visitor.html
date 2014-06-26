@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.visitor reference &mdash; normalize 0.2.0 documentation</title>
+    <title>normalize.visitor reference &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="index.html" />
-    <link rel="prev" title="normalize.diff reference" href="diff.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="index.html" />
+    <link rel="prev" title="Comparing Records - normalize.diff" href="diff.html" /> 
   </head>
   <body>
     <div class="related">
@@ -37,9 +37,9 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="diff.html" title="normalize.diff reference"
+          <a href="diff.html" title="Comparing Records - normalize.diff"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,105 +50,6 @@
             
   <div class="section" id="module-normalize.visitor">
 <span id="normalize-visitor-reference"></span><h1><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference<a class="headerlink" href="#module-normalize.visitor" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="normalize.visitor.Visitor">
-<em class="property">class </em><tt class="descclassname">normalize.visitor.</tt><tt class="descname">Visitor</tt><big>(</big><em>ignore_none=True</em>, <em>ignore_empty_string=False</em>, <em>apply_records=False</em>, <em>apply_empty_slots=False</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for writing Record visitor pattern functions.  This Visitor is
-intended to be subclassed; a generic version which can take the apply and
-reduce functions as arguments may be implemented later.</p>
-<dl class="method">
-<dt id="normalize.visitor.Visitor.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>ignore_none=True</em>, <em>ignore_empty_string=False</em>, <em>apply_records=False</em>, <em>apply_empty_slots=False</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new visitor.  The built-in parameters, which affect the
-default &#8216;map&#8217; function operation, are:</p>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">ignore_none</span></tt> (bool)</dt>
-<dd>If the &#8216;apply&#8217; function returns <tt class="docutils literal"><span class="pre">None</span></tt>, treat it as if the
-slot or object did not exist.  On by default.</dd>
-<dt><tt class="docutils literal"><span class="pre">ignore_empty_string</span></tt> (bool)</dt>
-<dd>If the &#8216;apply&#8217; function returns the empty string, treat it as if
-the slot or object did not exist.  Not on by default.</dd>
-<dt><tt class="docutils literal"><span class="pre">apply_records</span></tt> (bool)</dt>
-<dd>Normally, traversal happens in depth-first order, and fields
-which are Records never have <tt class="docutils literal"><span class="pre">apply</span></tt> called on them.  If you
-want them to, set this field.  This affects the arguments passed
-to <tt class="docutils literal"><span class="pre">reduce_record</span></tt>
-If the <tt class="docutils literal"><span class="pre">apply</span></tt> function returns
-<tt class="docutils literal"><span class="pre">self.StopVisiting</span></tt> (or an instance of it), then traversal
-does not descend into the fields of the record.  If it returns
-something else, then <tt class="docutils literal"><span class="pre">reduce_record</span></tt> is expected to take a
-tuple of the return value, and the dictio</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.apply">
-<tt class="descname">apply</tt><big>(</big><em>value</em>, <em>fs</em>, <em>prop=None</em>, <em>parent_obj=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;apply&#8217; is a general place to put a function which is called
-on every extant record slot.</p>
-<p>Data structures are normally traversed in depth-first order.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_record">
-<tt class="descname">reduce_record</tt><big>(</big><em>result_dict</em>, <em>fs</em>, <em>record_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook called for each record, with the results of mapping each
-member.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_collection">
-<tt class="descname">reduce_collection</tt><big>(</big><em>result_coll_generator</em>, <em>fs</em>, <em>coll_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook called for each normalize.coll.Collection.  The first argument
-is a generator, which returns (key, value) pairs (like
-Collection.itertuples())</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_complex">
-<tt class="descname">reduce_complex</tt><big>(</big><em>record_result</em>, <em>coll_result</em>, <em>fs</em>, <em>value_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_complex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_complex" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a Collection has properties that map to something, this
-reduction.</p>
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.visitor.Visitor.StopVisiting">
-<em class="property">class </em><tt class="descname">StopVisiting</tt><big>(</big><em>return_value</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.StopVisiting"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.StopVisiting" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
-<dt id="normalize.visitor.Visitor.StopVisiting.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>return_value</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.StopVisiting.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.StopVisiting.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.visitor.Visitor.StopVisiting.return_value">
-<tt class="descname">return_value</tt><em class="property"> = None</em><a class="headerlink" href="#normalize.visitor.Visitor.StopVisiting.return_value" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map">
-<tt class="descclassname">Visitor.</tt><tt class="descname">map</tt><big>(</big><em>value</em>, <em>fs=None</em>, <em>value_type=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_record">
-<tt class="descclassname">Visitor.</tt><tt class="descname">map_record</tt><big>(</big><em>record</em>, <em>fs</em>, <em>record_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Function responsible for descending an object.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_prop">
-<tt class="descclassname">Visitor.</tt><tt class="descname">map_prop</tt><big>(</big><em>record</em>, <em>prop</em>, <em>fs</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_prop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_collection">
-<tt class="descclassname">Visitor.</tt><tt class="descname">map_collection</tt><big>(</big><em>coll</em>, <em>fs</em>, <em>coll_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_collection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -159,7 +60,7 @@ reduction.</p>
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="diff.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">normalize.diff</span></tt> reference</a></p>
+                        title="previous chapter">Comparing Records - <tt class="docutils literal"><span class="pre">normalize.diff</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/visitor.txt"
@@ -192,9 +93,9 @@ reduction.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="diff.html" title="normalize.diff reference"
+          <a href="diff.html" title="Comparing Records - normalize.diff"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

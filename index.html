@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>the normalize library &mdash; normalize 0.2.0 documentation</title>
+    <title>the normalize library &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="#" />
+    <link rel="top" title="normalize 0.4.2 documentation" href="#" />
     <link rel="next" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="N">next</a> |</li>
-        <li><a href="#">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -97,7 +97,7 @@ the features of those packages.</p>
 <li class="toctree-l2"><a class="reference internal" href="intro.html#gotchas">Gotchas</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="property.html"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="property.html">Defining Properties - <tt class="docutils literal"><span class="pre">normalize.property</span></tt></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property">Core Property Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="property.html#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li class="toctree-l3"><a class="reference internal" href="property.html#safeproperty"><tt class="docutils literal"><span class="pre">SafeProperty</span></tt></a></li>
@@ -115,7 +115,7 @@ the features of those packages.</p>
 <li class="toctree-l2"><a class="reference internal" href="property.html#module-normalize.property.meta">Addendum: Property MetaClass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="record.html"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="record.html">Defining Records - <tt class="docutils literal"><span class="pre">normalize.record</span></tt></a><ul>
 <li class="toctree-l2"><a class="reference internal" href="record.html#record-flavors">Record Flavors</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="record.html#collection-types">Collection Types</a></li>
 <li class="toctree-l3"><a class="reference internal" href="record.html#module-normalize.record.json"><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></a></li>
@@ -124,8 +124,14 @@ the features of those packages.</p>
 <li class="toctree-l2"><a class="reference internal" href="record.html#module-normalize.record.meta">Record MetaClass</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="selector.html"><tt class="docutils literal"><span class="pre">normalize.selector</span></tt> reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="diff.html"><tt class="docutils literal"><span class="pre">normalize.diff</span></tt> reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="selector.html">Referring to components of Records - <tt class="docutils literal"><span class="pre">normalize.selector</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="selector.html#class-reference">Class reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="diff.html">Comparing Records - <tt class="docutils literal"><span class="pre">normalize.diff</span></tt></a><ul>
+<li class="toctree-l2"><a class="reference internal" href="diff.html#class-reference">Class reference</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="visitor.html"><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference</a></li>
 </ul>
 </div>
@@ -140,52 +146,34 @@ be a bug!</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">exports</span></tt></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.DictCollection</span></tt></td>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.DictCollection</span></tt></td>
 <td>An implementation of keyed collections which obey the <cite>Record</cite> property protocol and the tuple collection protocol.</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.exc</span></tt></td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.exc</span></tt></td>
 <td>Structured exception module.</td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelector</span></tt></td>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelector</span></tt></td>
 <td>A way to refer to fields/record/properties within a data structure.</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelectorException</span></tt></td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelectorException</span></tt></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.from_json</span></tt></td>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.from_json</span></tt></td>
 <td>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON types/hints on types being converted to, but does not require them.</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonCollection</span></tt></td>
-<td>An implementation of sequences which obey the <cite>Record</cite> property protocol and the tuple collection protocol.</td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonCollectionProperty</span></tt></td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonListProperty</span></tt></td>
 <td></td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonListProperty</span></tt></td>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonProperty</span></tt></td>
 <td></td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonProperty</span></tt></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecord</span></tt></td>
+<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecord</span></tt></td>
 <td>Version of a Record which deals primarily in JSON form.</td>
 </tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecordList</span></tt></td>
+<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecordList</span></tt></td>
 <td>Version of a RecordList which deals primarily in JSON</td>
 </tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazyJsonProperty</span></tt></td>
-<td></td>
-</tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazyProperty</span></tt></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazySafeJsonProperty</span></tt></td>
-<td></td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazySafeProperty</span></tt></td>
 <td></td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ListCollection</span></tt></td>
@@ -198,7 +186,7 @@ be a bug!</p>
 <td>Makes a new <tt class="docutils literal"><span class="pre">Property</span></tt> type, which supplies the given arguments as defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.MultiFieldSelector</span></tt></td>
-<td></td>
+<td>Version of a FieldSelector which stores multiple FieldSelectors combined into a single tree structure.</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.Property</span></tt></td>
 <td></td>
@@ -214,12 +202,6 @@ be a bug!</p>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.RecordMeta</span></tt></td>
 <td>Metaclass for <tt class="docutils literal"><span class="pre">Record</span></tt> types.</td>
-</tr>
-<tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeJsonListProperty</span></tt></td>
-<td></td>
-</tr>
-<tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeJsonProperty</span></tt></td>
-<td></td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeProperty</span></tt></td>
 <td></td>
@@ -292,7 +274,7 @@ be a bug!</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >next</a> |</li>
-        <li><a href="#">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

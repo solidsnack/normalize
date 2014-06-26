@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property reference &mdash; normalize 0.2.0 documentation</title>
+    <title>Defining Properties - normalize.property &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="index.html" />
-    <link rel="next" title="normalize.record reference" href="record.html" />
+    <link rel="top" title="normalize 0.4.2 documentation" href="index.html" />
+    <link rel="next" title="Defining Records - normalize.record" href="record.html" />
     <link rel="prev" title="An introduction to using normalize" href="intro.html" /> 
   </head>
   <body>
@@ -38,12 +38,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="record.html" title="normalize.record reference"
+          <a href="record.html" title="Defining Records - normalize.record"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="intro.html" title="An introduction to using normalize"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,8 +52,8 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="normalize-property-reference">
-<h1><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference<a class="headerlink" href="#normalize-property-reference" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="defining-properties-normalize-property">
+<h1>Defining Properties - <tt class="docutils literal"><span class="pre">normalize.property</span></tt><a class="headerlink" href="#defining-properties-normalize-property" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
 <p>The <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor usually returns a different object
@@ -75,13 +75,13 @@ documentation.</p>
 <h3><tt class="docutils literal"><span class="pre">Property</span></tt><a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="normalize.property.Property">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">Property</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">Property</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the base class for all property types.  It is a data descriptor,
 so care should be taken before adding any <tt class="docutils literal"><span class="pre">SPECIALMETHODS</span></tt> which might
 change the way it behaves.</p>
 <dl class="method">
 <dt id="normalize.property.Property.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Declares a new standard Property.  Note: if you pass arguments which
 are not understood by this constructor, or pass extra property traits
 to <tt class="docutils literal"><span class="pre">traits</span></tt>, then the call will be redirected to a sub-class; see
@@ -122,6 +122,8 @@ extra traits on.</dd>
 the <tt class="docutils literal"><span class="pre">Record</span></tt> equality operator.  Visitor functions typically
 ignore extraneous properties or require an extra option to
 process them.</dd>
+<dt><tt class="docutils literal"><span class="pre">doc=</span></tt><em>STR</em></dt>
+<dd>Specify a docstring for the property.</dd>
 </dl>
 </div></blockquote>
 </dd></dl>
@@ -146,7 +148,7 @@ attached to, and attribute name it is attached as.</p>
 <h3><tt class="docutils literal"><span class="pre">SafeProperty</span></tt><a class="headerlink" href="#safeproperty" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="normalize.property.SafeProperty">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">SafeProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SafeProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SafeProperty" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">SafeProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SafeProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SafeProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.property.Property" title="normalize.property.Property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.Property</span></tt></a></p>
 <p>A version of Property which always checks all assignments to
 properties.</p>
@@ -216,7 +218,7 @@ function which provides the initial value on first access; this
 function is called at most once for each instance.</p>
 <dl class="class">
 <dt id="normalize.property.ROProperty">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">ROProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">ROProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read-only property throws an exception when the attribute slot is
 assigned to</p>
 </dd></dl>
@@ -397,37 +399,6 @@ which will select the &#8220;<tt class="docutils literal"><span class="pre">json
 <dt id="normalize.property.json.JsonProperty">
 <em class="property">class </em><tt class="descclassname">normalize.property.json.</tt><tt class="descname">JsonProperty</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Object property wrapper for record json data</p>
-<dl class="method">
-<dt id="normalize.property.json.JsonProperty.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>json_name=&lt;prop.name&gt;</em>, <em>json_in=None</em>, <em>json_out=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new property with JSON mapping overrides.  You
-generally don&#8217;t need to use this directly; simply specifying the
-options using <tt class="docutils literal"><span class="pre">json_</span></tt><em>X</em> to a superclass like <tt class="docutils literal"><span class="pre">Property()</span></tt>
-is sufficient.</p>
-<dl class="docutils">
-<dt>Arguments:</dt>
-<dd><dl class="first last docutils">
-<dt><tt class="docutils literal"><span class="pre">json_name=</span></tt><em>STR</em></dt>
-<dd>Specify the key in the input/output dictionary to use
-for this property when marshalling to/from JSON.</dd>
-<dt><tt class="docutils literal"><span class="pre">json_in=</span></tt><em>FUNCTION</em></dt>
-<dd>Specify a function which converts the JSON form of this
-property to the python form.  This is called <em>before</em> the
-<tt class="docutils literal"><span class="pre">isa=</span></tt> check and <tt class="docutils literal"><span class="pre">coerce=</span></tt> function, and is always
-called if the key exists on the marshaled in structure.
-This function can recurse into
-<tt class="xref py py-func docutils literal"><span class="pre">normalize.record.from_json()</span></tt> if required.</dd>
-<dt><tt class="docutils literal"><span class="pre">json_out=</span></tt><em>FUNCTION</em></dt>
-<dd>Specify a function which converts a property from the
-python form to a form which your JSON library can handle.
-You&#8217;ll probably want to convert native python objects to
-strings, in a form which can be reversed by the
-<tt class="docutils literal"><span class="pre">json_in</span></tt> function.</dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 <dl class="attribute">
 <dt id="normalize.property.json.JsonProperty.json_name">
 <tt class="descname">json_name</tt><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.json_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.json_name" title="Permalink to this definition">¶</a></dt>
@@ -534,7 +505,7 @@ are created.</p>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a><ul>
+<li><a class="reference internal" href="#">Defining Properties - <tt class="docutils literal"><span class="pre">normalize.property</span></tt></a><ul>
 <li><a class="reference internal" href="#module-normalize.property">Core Property Types</a><ul>
 <li><a class="reference internal" href="#property"><tt class="docutils literal"><span class="pre">Property</span></tt></a></li>
 <li><a class="reference internal" href="#safeproperty"><tt class="docutils literal"><span class="pre">SafeProperty</span></tt></a></li>
@@ -559,7 +530,7 @@ are created.</p>
                         title="previous chapter">An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="record.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a></p>
+                        title="next chapter">Defining Records - <tt class="docutils literal"><span class="pre">normalize.record</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/property.txt"
@@ -592,12 +563,12 @@ are created.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="record.html" title="normalize.record reference"
+          <a href="record.html" title="Defining Records - normalize.record"
              >next</a> |</li>
         <li class="right" >
           <a href="intro.html" title="An introduction to using normalize"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

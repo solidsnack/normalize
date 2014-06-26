@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.json &mdash; normalize 0.2.0 documentation</title>
+    <title>normalize.record.json &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="../../../index.html" />
-    <link rel="up" title="normalize.record" href="../record.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="../../../index.html" />
+    <link rel="up" title="Module code" href="../../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,10 +36,8 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
-          <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
+        <li><a href="../../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -64,6 +62,18 @@
 <span class="kn">from</span> <span class="nn">normalize.property.json</span> <span class="kn">import</span> <span class="n">JsonProperty</span>
 <span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">OhPickle</span>
 <span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
+
+
+<span class="k">def</span> <span class="nf">_json_to_value_initializer</span><span class="p">(</span><span class="n">json_val</span><span class="p">,</span> <span class="n">proptype</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">proptype</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">json_val</span>
+        <span class="k">elif</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="s">&quot;from_json&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">proptype</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_val</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">Record</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_val</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">from_json</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">json_val</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">json_val</span>
 
 
 <span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="n">record_type</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -95,8 +105,11 @@
             <span class="k">if</span> <span class="n">json_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">json_name</span> <span class="ow">in</span> <span class="n">json_struct</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">propname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                        <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span>
-                            <span class="n">json_struct</span><span class="p">[</span><span class="n">json_name</span><span class="p">]</span>
+                        <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_json_to_value_initializer</span><span class="p">(</span>
+                            <span class="n">prop</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span>
+                                <span class="n">json_struct</span><span class="p">[</span><span class="n">json_name</span><span class="p">]</span>
+                            <span class="p">),</span>
+                            <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span><span class="p">,</span>
                         <span class="p">)</span>
                     <span class="n">unknown_keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">json_name</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">json_struct</span><span class="p">:</span>
@@ -104,14 +117,9 @@
             <span class="n">unknown_keys</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
                 <span class="n">proptype</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span>
-                <span class="k">if</span> <span class="n">proptype</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="s">&quot;from_json&quot;</span><span class="p">):</span>
-                        <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">proptype</span><span class="o">.</span><span class="n">from_json</span><span class="p">(</span><span class="n">json_val</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
-                        <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">from_json</span><span class="p">(</span><span class="n">proptype</span><span class="p">,</span> <span class="n">json_val</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="c"># let the property&#39;s &#39;check&#39; etc figure it out.</span>
-                        <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">json_val</span>
+                <span class="n">kwargs</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">_json_to_value_initializer</span><span class="p">(</span>
+                    <span class="n">json_val</span><span class="p">,</span> <span class="n">proptype</span><span class="p">,</span>
+                <span class="p">)</span>
     <span class="k">if</span> <span class="n">unknown_keys</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s">&quot;unknown_json_keys&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">json_struct</span><span class="p">[</span><span class="n">k</span><span class="p">]))</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">unknown_keys</span>
@@ -309,7 +317,7 @@
 
     <span class="k">def</span> <span class="nf">diff_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
 <div class="viewcode-block" id="JsonRecord.diff_iter"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff_iter">[docs]</a>        <span class="sd">&quot;&quot;&quot;Generator method which returns the differences from the invocant to</span>
-<span class="sd">        the argument.  This specializes :py:method:`Record.diff_iter` by</span>
+<span class="sd">        the argument.  This specializes :py:meth:`Record.diff_iter` by</span>
 <span class="sd">        returning :py:class:`JsonDiffInfo` objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">(</span><span class="n">JsonRecord</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">diff_iter</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -319,7 +327,7 @@
 
     <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
 <div class="viewcode-block" id="JsonRecord.diff"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff">[docs]</a>        <span class="sd">&quot;&quot;&quot;Compare an object with another.  This specializes</span>
-<span class="sd">        :py:method:`Record.diff` by returning a :py:class:`JsonDiff` object.</span>
+<span class="sd">        :py:meth:`Record.diff` by returning a :py:class:`JsonDiff` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">JsonDiff</span><span class="p">(</span>
             <span class="n">base_type_name</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
@@ -426,10 +434,8 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../../normalize.html" >normalize</a> &raquo;</li>
-          <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
+        <li><a href="../../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.selector &mdash; normalize 0.2.0 documentation</title>
+    <title>normalize.selector &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="../../index.html" />
-    <link rel="up" title="normalize" href="../normalize.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,28 +66,34 @@
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    A way to refer to fields/record/properties within a data structure.</span>
 
-<span class="sd">    Properties/Indicies are tracked as elements in a list:</span>
-<span class="sd">    * A string specifies an attribute of an object.</span>
+<span class="sd">    This is modeled as a list of either attribute names or collection indices,</span>
+<span class="sd">    where:</span>
+
+<span class="sd">    * A string specifies an attribute of an object (or a dictionary key)</span>
 <span class="sd">    * An integer specifies an index into a collection.</span>
 <span class="sd">    * &#39;None&#39; specifies the full collection.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-<div class="viewcode-block" id="FieldSelector.__init__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @param other Provides a way to copy an existing FieldSelector or</span>
-<span class="sd">                     instantiate one from an iterable.</span>
+<div class="viewcode-block" id="FieldSelector.__init__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">expr</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initializer for FieldSelector instances.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``expr=``\ *FieldSelector*\ \|\ *&lt;iterable&gt;*</span>
+<span class="sd">                Starting expression for the selector; can copy an existing</span>
+<span class="sd">                FieldSelector or instantiate one from an iterable list of</span>
+<span class="sd">                attribute names/indices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">=</span> <span class="p">[]</span>
 
-        <span class="k">if</span> <span class="n">other</span><span class="p">:</span>
-            <span class="n">other_selectors</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s">&quot;selectors&quot;</span><span class="p">):</span>
-                <span class="n">other_selectors</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">selectors</span>
+        <span class="k">if</span> <span class="n">expr</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="s">&quot;selectors&quot;</span><span class="p">):</span>
+                <span class="n">expr_selectors</span> <span class="o">=</span> <span class="n">expr</span><span class="o">.</span><span class="n">selectors</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">other_selectors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+                <span class="n">expr_selectors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span>
 
             <span class="c"># Validate the selector</span>
             <span class="k">if</span> <span class="nb">any</span><span class="p">(</span>
-                <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">other_selectors</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="n">e</span> <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">expr_selectors</span> <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span>
                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="ow">or</span>
                     <span class="nb">isinstance</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">))</span> <span class="ow">or</span> <span class="n">e</span> <span class="ow">is</span> <span class="bp">None</span>
                 <span class="p">)</span>
@@ -98,9 +103,11 @@
                     <span class="s">&quot;strings, and None&quot;</span>
                 <span class="p">)</span>
             <span class="c"># shallow copying via slice is faster than copy.copy()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">=</span> <span class="n">other_selectors</span><span class="p">[:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">=</span> <span class="n">expr_selectors</span><span class="p">[:]</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.add_property"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.add_property">[docs]</a>    <span class="k">def</span> <span class="nf">add_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extends the selector, adding a new attribute property lookup at the</span>
+<span class="sd">        end, specified by name.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s">&quot;properties must be specified by their string name&quot;</span>
@@ -108,30 +115,45 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.add_index"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.add_index">[docs]</a>    <span class="k">def</span> <span class="nf">add_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extends the selector, adding a new indexed collection lookup at the</span>
+<span class="sd">        end.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;index must be an int or a long&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.add_full_collection"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.add_full_collection">[docs]</a>    <span class="k">def</span> <span class="nf">add_full_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Extends the selector, making it refer to *all* items in the</span>
+<span class="sd">        collection at this point.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.extend"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.extend">[docs]</a>    <span class="k">def</span> <span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Extends this field selector with another FieldSelector</span>
+<span class="sd">        Extends this field selector with another FieldSelector, combining them</span>
+<span class="sd">        to one longer field selector.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span>  <span class="c"># Useful for chaining</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__getnewargs__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__getnewargs__">[docs]</a>    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Serialize as a list.</span>
+<span class="sd">        The pickle protocol is supported on this type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">),)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.get"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Applies this FieldSelector to the specified Record to get the</span>
-<span class="sd">        field/property/record specified by this FieldSelector</span>
+<span class="sd">        Evaluate the FieldSelector&#39;s path to get a specific attribute (or</span>
+<span class="sd">        collection of attributes, if there is a ``None`` in the selector</span>
+<span class="sd">        expression) from the passed record.</span>
+
+<span class="sd">        If there is a problem, this method will typically raise</span>
+<span class="sd">        :py:class:`FieldSelectorException`.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">           record.foo = &quot;bar&quot;</span>
+<span class="sd">           field_selector = FieldSelector([&quot;foo&quot;])</span>
+<span class="sd">           print field_selector.get(record)  # &quot;bar&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">:</span>
@@ -141,7 +163,7 @@
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">selector</span><span class="p">]</span>
-                <span class="k">except</span> <span class="ne">LookupError</span><span class="p">:</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">FieldSelectorKeyError</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">selector</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">selector</span><span class="p">):</span>
@@ -155,9 +177,10 @@
 <span class="sd">        Sets the field referenced by this field selector for the given Record</span>
 <span class="sd">        with the given value.</span>
 
-<span class="sd">        If put() is going to be called on the same Record from</span>
-<span class="sd">        multiple/different FieldSelectors, then put() needs to called in</span>
-<span class="sd">        the sorted order of the FieldSelectors.</span>
+<span class="sd">        ::</span>
+
+<span class="sd">           field_selector.put(record, &quot;baz&quot;)</span>
+<span class="sd">           print record.foo  # &quot;baz&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -210,6 +233,13 @@
 
 <span class="sd">        Returns the number of values set; may be 0 if there is &#39;None&#39; in the</span>
 <span class="sd">        selector and there were no existing items in that collection.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">           field_selector = FieldSelector([&quot;stuff&quot;, 0, &quot;name&quot;])</span>
+<span class="sd">           obj = SomeObject()</span>
+<span class="sd">           field_selector.post(obj, &quot;Bob&quot;)</span>
+<span class="sd">           print obj.stuff[0].name  # &quot;Bob&quot;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
@@ -242,6 +272,8 @@
         <span class="k">return</span> <span class="mi">1</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__eq__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implemented; field selectors must have identical paths to compare</span>
+<span class="sd">        equal.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">FieldSelector</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                 <span class="s">&quot;Cannot compare FieldSelector with </span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span>
@@ -257,6 +289,10 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">selectors</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__lt__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__lt__">[docs]</a>    <span class="k">def</span> <span class="nf">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Ordering field selectors makes sure that all integer-indexed</span>
+<span class="sd">        selectors are incrementing.  This is mainly needed for</span>
+<span class="sd">        :py:meth:`FieldSelector.post`, which will only auto-extend collections</span>
+<span class="sd">        items at the end.&quot;&quot;&quot;</span>
         <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">selectors</span><span class="p">):</span>
             <span class="n">end</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
@@ -280,12 +316,27 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__str__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a compact representation of the field selector, shown as a</span>
+<span class="sd">        python expression.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">: </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__repr__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;FieldSelector(</span><span class="si">%r</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span>
+        <span class="sd">&quot;&quot;&quot;Returns a evaluable representation of a field selector.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">(</span><span class="si">%r</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__class__</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__add__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__add__">[docs]</a>    <span class="k">def</span> <span class="nf">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a new FieldSelector, with the two attribute/index expression</span>
+<span class="sd">        lists concatenated.  Like :py:meth:`extend` but creates a new</span>
+<span class="sd">        ``FieldSelector``.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            fs = FieldSelector([&quot;foo&quot;])</span>
+<span class="sd">            bar = FieldSelector([&quot;bar&quot;])</span>
+
+<span class="sd">            print fs + bar  # &lt;FieldSelector: .foo.bar&gt;</span>
+<span class="sd">            print fs + [0]  # &lt;FieldSelector: .foo[0]&gt;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
             <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span> <span class="o">+</span> <span class="p">[</span><span class="n">other</span><span class="p">])</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Iterable</span><span class="p">):</span>
@@ -298,16 +349,39 @@
             <span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__len__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__len__">[docs]</a>    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the number of elements in the field selector expression.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__getitem__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Indexing can be used to return a particular item from the selector</span>
+<span class="sd">        expression, and slicing can be used to make a new FieldSelector which</span>
+<span class="sd">        has a shorter expression.  For instance, to trim the last:</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">           trimmed_fs = field_selector[:-1]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>
             <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.startswith"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.startswith">[docs]</a>    <span class="k">def</span> <span class="nf">startswith</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_or_fs</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_or_fs</span><span class="p">,</span> <span class="n">FieldSelector</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Can be used to assert how the field selector begins.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``key_or_fs=``\ *FieldSelector*\ \|\ *&lt;attribute-or-index&gt;*</span>
+
+<span class="sd">                If the argument is another FieldSelector (or a tuple/list), it</span>
+<span class="sd">                checks that the invocant&#39;s first selector expression components</span>
+<span class="sd">                match that passed.</span>
+
+<span class="sd">                If the argument is a valid index/key or attribute name, it will</span>
+<span class="sd">                check that the first member in the expression is the same as</span>
+<span class="sd">                that passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key_or_fs</span><span class="p">,</span> <span class="p">(</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
             <span class="k">return</span> <span class="nb">all</span><span class="p">(</span>
                 <span class="n">key_or_fs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span>
                     <span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">key_or_fs</span><span class="p">),</span>
@@ -318,6 +392,14 @@
 </div>
     <span class="nd">@property</span>
 <div class="viewcode-block" id="FieldSelector.path"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.path">[docs]</a>    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This property returns something that looks a bit like a python</span>
+<span class="sd">        representation of the implied expression.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            foo = FieldSelector([&quot;foo&quot;, 2, &quot;b ar&quot;, None, &quot;baz&quot;])</span>
+<span class="sd">            print foo.path  # foo[2][&#39;b ar&#39;][*].baz</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selector_parts</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
@@ -333,10 +415,15 @@
 
 </div></div>
 <div class="viewcode-block" id="MultiFieldSelector"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector">[docs]</a><span class="k">class</span> <span class="nc">MultiFieldSelector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Version of a FieldSelector which stores multiple FieldSelectors combined</span>
+<span class="sd">    into a single tree structure.&quot;&quot;&quot;</span>
+
     <span class="n">FieldSelector</span> <span class="o">=</span> <span class="n">FieldSelector</span>
 
-    <span class="sd">&quot;&quot;&quot;Version of a FieldSelector which stores &#39;selectors&#39; as a tree&quot;&quot;&quot;</span>
 <div class="viewcode-block" id="MultiFieldSelector.__init__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">others</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns a MultiFieldSelector based on combining the passed-in</span>
+<span class="sd">        FieldSelector and MultiFieldSelector objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">selectors</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
         <span class="n">heads</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">other</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
@@ -374,14 +461,15 @@
                 <span class="s">&quot;object at the same level: </span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
             <span class="p">)</span>
 </div>
-<div class="viewcode-block" id="MultiFieldSelector.__str__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s">&quot;&lt;MultiFieldSelector: </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
-            <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">tail</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">all</span> <span class="k">else</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/...&quot;</span> <span class="o">%</span> <span class="n">head</span> <span class="k">for</span>
-                     <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">iteritems</span><span class="p">)</span>
+            <span class="s">&quot;,&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">head</span> <span class="k">if</span> <span class="n">tail</span> <span class="ow">is</span> <span class="nb">all</span> <span class="k">else</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/...&quot;</span> <span class="o">%</span> <span class="n">head</span> <span class="k">for</span>
+                     <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">iteritems</span><span class="p">())</span>
         <span class="p">)</span>
-</div>
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Generates FieldSelectors from this MultiFieldSelector&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="MultiFieldSelector.__iter__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__iter__">[docs]</a>    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator for all FieldSelectors this MultiFieldSelector</span>
+<span class="sd">        contains.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">head</span><span class="p">,</span> <span class="n">tail</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
             <span class="n">head_selector</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">FieldSelector</span><span class="p">((</span><span class="n">head</span><span class="p">,))</span>
             <span class="k">if</span> <span class="n">tail</span> <span class="ow">is</span> <span class="nb">all</span><span class="p">:</span>
@@ -391,10 +479,41 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">tail</span><span class="p">:</span>
                     <span class="k">yield</span> <span class="n">head_selector</span> <span class="o">+</span> <span class="n">x</span>
-
-<div class="viewcode-block" id="MultiFieldSelector.__repr__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s">&quot;MultiFieldSelector</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">selectors</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
 </div>
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the MultiFieldSelector that applies to the specified</span>
+<span class="sd">        field/key/index&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">FieldSelector</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;FieldSelector cannot be empty&quot;</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="nb">any</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;can&#39;t compare filtered collection&quot;</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)([</span><span class="bp">None</span><span class="p">])</span> <span class="k">if</span> <span class="n">tail</span> <span class="o">==</span> <span class="nb">all</span> <span class="k">else</span> <span class="n">tail</span>
+
+    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">FieldSelector</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;FieldSelector cannot be empty&quot;</span>
+                <span class="n">head_key</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="p">(</span>
+                    <span class="n">head_key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span> <span class="ow">and</span>
+                    <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">head_key</span><span class="p">]</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="ow">or</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;MultiFieldSelector</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">selectors</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">),)</span>
+
     <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">tail</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">tail</span> <span class="ow">is</span> <span class="nb">all</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -402,6 +521,11 @@
             <span class="k">return</span> <span class="n">tail</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
 <div class="viewcode-block" id="MultiFieldSelector.get"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Creates a copy of the passed object which only contains the parts</span>
+<span class="sd">        which are pointed to by one of the FieldSelectors that were used to</span>
+<span class="sd">        construct the MultiFieldSelector.  Can be used to produce &#39;filtered&#39;</span>
+<span class="sd">        versions of objects.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">ctor</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="n">ListCollection</span><span class="p">)):</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_string</span><span class="p">:</span>
@@ -480,9 +604,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

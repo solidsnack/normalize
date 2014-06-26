@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.selector reference &mdash; normalize 0.2.0 documentation</title>
+    <title>Referring to components of Records - normalize.selector &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="index.html" />
-    <link rel="next" title="normalize.diff reference" href="diff.html" />
-    <link rel="prev" title="normalize.record reference" href="record.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="index.html" />
+    <link rel="next" title="Comparing Records - normalize.diff" href="diff.html" />
+    <link rel="prev" title="Defining Records - normalize.record" href="record.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,12 +38,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="diff.html" title="normalize.diff reference"
+          <a href="diff.html" title="Comparing Records - normalize.diff"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="record.html" title="normalize.record reference"
+          <a href="record.html" title="Defining Records - normalize.record"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,57 +52,95 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="module-normalize.selector">
-<span id="normalize-selector-reference"></span><h1><tt class="docutils literal"><span class="pre">normalize.selector</span></tt> reference<a class="headerlink" href="#module-normalize.selector" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="referring-to-components-of-records-normalize-selector">
+<h1>Referring to components of Records - <tt class="docutils literal"><span class="pre">normalize.selector</span></tt><a class="headerlink" href="#referring-to-components-of-records-normalize-selector" title="Permalink to this headline">¶</a></h1>
+<p>There are two main purposes of <tt class="docutils literal"><span class="pre">normalize.selector</span></tt>:</p>
+<ul class="simple">
+<li>to abstract <em>expressions</em> to individual fields within objects, so
+that the result from a <a class="reference internal" href="diff.html#normalize.diff.diff" title="normalize.diff.diff"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.diff.diff()</span></tt></a> operation can
+specify the field where the difference(s) were discovered.</li>
+<li>to <em>aggregate</em> collections of these expressions, so that <em>filters</em>
+can be created.</li>
+</ul>
+<p>Other functions exist, such as the ability for the fields referred to
+by selectors to be updated (see <tt class="xref py py-meth docutils literal"><span class="pre">FieldSelector.put()</span></tt>), perhaps
+even with auto-vivification of intermediate records and collection
+items (<tt class="xref py py-meth docutils literal"><span class="pre">FieldSelector.put()</span></tt>).</p>
+<div class="section" id="class-reference">
+<h2>Class reference<a class="headerlink" href="#class-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
 <dt id="normalize.selector.FieldSelector">
-<em class="property">class </em><tt class="descclassname">normalize.selector.</tt><tt class="descname">FieldSelector</tt><big>(</big><em>other=None</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.selector.</tt><tt class="descname">FieldSelector</tt><big>(</big><em>expr=None</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector" title="Permalink to this definition">¶</a></dt>
 <dd><p>A way to refer to fields/record/properties within a data structure.</p>
-<p>Properties/Indicies are tracked as elements in a list:
-* A string specifies an attribute of an object.
-* An integer specifies an index into a collection.
-* &#8216;None&#8217; specifies the full collection.</p>
+<p>This is modeled as a list of either attribute names or collection indices,
+where:</p>
+<ul class="simple">
+<li>A string specifies an attribute of an object (or a dictionary key)</li>
+<li>An integer specifies an index into a collection.</li>
+<li>&#8216;None&#8217; specifies the full collection.</li>
+</ul>
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>other=None</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;param other Provides a way to copy an existing FieldSelector or</dt>
-<dd>instantiate one from an iterable.</dd>
+<tt class="descname">__init__</tt><big>(</big><em>expr=None</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initializer for FieldSelector instances.</p>
+<p>args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">expr=</span></tt><em>FieldSelector</em>|<em>&lt;iterable&gt;</em></dt>
+<dd>Starting expression for the selector; can copy an existing
+FieldSelector or instantiate one from an iterable list of
+attribute names/indices</dd>
 </dl>
+</div></blockquote>
 </dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.add_property">
 <tt class="descname">add_property</tt><big>(</big><em>prop</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.add_property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.add_property" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Extends the selector, adding a new attribute property lookup at the
+end, specified by name.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.add_index">
 <tt class="descname">add_index</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.add_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.add_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Extends the selector, adding a new indexed collection lookup at the
+end.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.add_full_collection">
 <tt class="descname">add_full_collection</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.add_full_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.add_full_collection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Extends the selector, making it refer to <em>all</em> items in the
+collection at this point.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.extend">
 <tt class="descname">extend</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.extend"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extends this field selector with another FieldSelector</p>
+<dd><p>Extends this field selector with another FieldSelector, combining them
+to one longer field selector.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__getnewargs__">
 <tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__getnewargs__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__getnewargs__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize as a list.</p>
+<dd><p>The pickle protocol is supported on this type.</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.get">
 <tt class="descname">get</tt><big>(</big><em>record</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies this FieldSelector to the specified Record to get the
-field/property/record specified by this FieldSelector</p>
+<dd><p>Evaluate the FieldSelector&#8217;s path to get a specific attribute (or
+collection of attributes, if there is a <tt class="docutils literal"><span class="pre">None</span></tt> in the selector
+expression) from the passed record.</p>
+<p>If there is a problem, this method will typically raise
+<tt class="xref py py-class docutils literal"><span class="pre">FieldSelectorException</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">record</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
+<span class="n">field_selector</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">field_selector</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>  <span class="c"># &quot;bar&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -110,9 +148,10 @@ field/property/record specified by this FieldSelector</p>
 <tt class="descname">put</tt><big>(</big><em>record</em>, <em>value</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.put" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sets the field referenced by this field selector for the given Record
 with the given value.</p>
-<p>If put() is going to be called on the same Record from
-multiple/different FieldSelectors, then put() needs to called in
-the sorted order of the FieldSelectors.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">field_selector</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="s">&quot;baz&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">record</span><span class="o">.</span><span class="n">foo</span>  <span class="c"># &quot;baz&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
@@ -122,12 +161,20 @@ the sorted order of the FieldSelectors.</p>
 the path, attempts are made to set them to empty values.</p>
 <p>Returns the number of values set; may be 0 if there is &#8216;None&#8217; in the
 selector and there were no existing items in that collection.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">field_selector</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;stuff&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">])</span>
+<span class="n">obj</span> <span class="o">=</span> <span class="n">SomeObject</span><span class="p">()</span>
+<span class="n">field_selector</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="s">&quot;Bob&quot;</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">obj</span><span class="o">.</span><span class="n">stuff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>  <span class="c"># &quot;Bob&quot;</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__eq__">
 <tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Implemented; field selectors must have identical paths to compare
+equal.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__ne__">
@@ -140,59 +187,84 @@ recursion.</p>
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__lt__">
 <tt class="descname">__lt__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__lt__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__lt__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Ordering field selectors makes sure that all integer-indexed
+selectors are incrementing.  This is mainly needed for
+<tt class="xref py py-meth docutils literal"><span class="pre">FieldSelector.post()</span></tt>, which will only auto-extend collections
+items at the end.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__str__">
 <tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__str__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a compact representation of the field selector, shown as a
+python expression.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__repr__">
 <tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns a evaluable representation of a field selector.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__add__">
 <tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__add__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__add__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Creates a new FieldSelector, with the two attribute/index expression
+lists concatenated.  Like <tt class="xref py py-meth docutils literal"><span class="pre">extend()</span></tt> but creates a new
+<tt class="docutils literal"><span class="pre">FieldSelector</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">])</span>
+<span class="n">bar</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;bar&quot;</span><span class="p">])</span>
+
+<span class="k">print</span> <span class="n">fs</span> <span class="o">+</span> <span class="n">bar</span>  <span class="c"># &lt;FieldSelector: .foo.bar&gt;</span>
+<span class="k">print</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c"># &lt;FieldSelector: .foo[0]&gt;</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__len__">
 <tt class="descname">__len__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__len__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__len__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Returns the number of elements in the field selector expression.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.__getitem__">
 <tt class="descname">__getitem__</tt><big>(</big><em>key</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__getitem__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Indexing can be used to return a particular item from the selector
+expression, and slicing can be used to make a new FieldSelector which
+has a shorter expression.  For instance, to trim the last:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">trimmed_fs</span> <span class="o">=</span> <span class="n">field_selector</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.FieldSelector.startswith">
 <tt class="descname">startswith</tt><big>(</big><em>key_or_fs</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.startswith"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.startswith" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Can be used to assert how the field selector begins.</p>
+<p>args:</p>
+<blockquote>
+<div><p><tt class="docutils literal"><span class="pre">key_or_fs=</span></tt><em>FieldSelector</em>|<em>&lt;attribute-or-index&gt;</em></p>
+<blockquote>
+<div><p>If the argument is another FieldSelector (or a tuple/list), it
+checks that the invocant&#8217;s first selector expression components
+match that passed.</p>
+<p>If the argument is a valid index/key or attribute name, it will
+check that the first member in the expression is the same as
+that passed.</p>
+</div></blockquote>
+</div></blockquote>
+</dd></dl>
 
 <dl class="attribute">
 <dt id="normalize.selector.FieldSelector.path">
 <tt class="descname">path</tt><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.FieldSelector.__ge__">
-<tt class="descname">__ge__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.FieldSelector.__ge__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.FieldSelector.__gt__">
-<tt class="descname">__gt__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.FieldSelector.__gt__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.FieldSelector.__le__">
-<tt class="descname">__le__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.FieldSelector.__le__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
+<dd><p>This property returns something that looks a bit like a python
+representation of the implied expression.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">foo</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s">&quot;b ar&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;baz&quot;</span><span class="p">])</span>
+<span class="k">print</span> <span class="n">foo</span><span class="o">.</span><span class="n">path</span>  <span class="c"># foo[2][&#39;b ar&#39;][*].baz</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -200,167 +272,34 @@ recursion.</p>
 <dl class="class">
 <dt id="normalize.selector.MultiFieldSelector">
 <em class="property">class </em><tt class="descclassname">normalize.selector.</tt><tt class="descname">MultiFieldSelector</tt><big>(</big><em>*others</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="class">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector">
-<em class="property">class </em><tt class="descname">FieldSelector</tt><big>(</big><em>other=None</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector" title="Permalink to this definition">¶</a></dt>
-<dd><p>Version of a FieldSelector which stores &#8216;selectors&#8217; as a tree</p>
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__add__">
-<tt class="descname">__add__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__add__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__ge__">
-<tt class="descname">__ge__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__ge__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__ge__(y) &lt;==&gt; x&gt;=y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__getitem__">
-<tt class="descname">__getitem__</tt><big>(</big><em>key</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__getitem__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__getnewargs__">
-<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__getnewargs__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Serialize as a list.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__gt__">
-<tt class="descname">__gt__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__gt__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__gt__(y) &lt;==&gt; x&gt;y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>other=None</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>&#64;param other Provides a way to copy an existing FieldSelector or</dt>
-<dd>instantiate one from an iterable.</dd>
-</dl>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__le__">
-<tt class="descname">__le__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__le__" title="Permalink to this definition">¶</a></dt>
-<dd><p>x.__le__(y) &lt;==&gt; x&lt;=y</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__len__">
-<tt class="descname">__len__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__len__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__lt__">
-<tt class="descname">__lt__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__lt__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__ne__">
-<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__ne__" title="Permalink to this definition">¶</a></dt>
-<dd><p>functools.total_ordering() currently doesn&#8217;t take care of __ne__().
-Don&#8217;t call other comparison methods directly to avoid infinite
-recursion.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.__str__">
-<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.__str__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.add_full_collection">
-<tt class="descname">add_full_collection</tt><big>(</big><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.add_full_collection" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.add_index">
-<tt class="descname">add_index</tt><big>(</big><em>index</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.add_index" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.add_property">
-<tt class="descname">add_property</tt><big>(</big><em>prop</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.add_property" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.extend">
-<tt class="descname">extend</tt><big>(</big><em>other</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.extend" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extends this field selector with another FieldSelector</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.get">
-<tt class="descname">get</tt><big>(</big><em>record</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.get" title="Permalink to this definition">¶</a></dt>
-<dd><p>Applies this FieldSelector to the specified Record to get the
-field/property/record specified by this FieldSelector</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.path">
-<tt class="descname">path</tt><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.path" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.post">
-<tt class="descname">post</tt><big>(</big><em>record</em>, <em>value</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.post" title="Permalink to this definition">¶</a></dt>
-<dd><p>auto-vivifying version of &#8216;put&#8217;; if properties are not found along
-the path, attempts are made to set them to empty values.</p>
-<p>Returns the number of values set; may be 0 if there is &#8216;None&#8217; in the
-selector and there were no existing items in that collection.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.put">
-<tt class="descname">put</tt><big>(</big><em>record</em>, <em>value</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.put" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sets the field referenced by this field selector for the given Record
-with the given value.</p>
-<p>If put() is going to be called on the same Record from
-multiple/different FieldSelectors, then put() needs to called in
-the sorted order of the FieldSelectors.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.FieldSelector.startswith">
-<tt class="descname">startswith</tt><big>(</big><em>key_or_fs</em><big>)</big><a class="headerlink" href="#normalize.selector.MultiFieldSelector.FieldSelector.startswith" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
+<dd><p>Version of a FieldSelector which stores multiple FieldSelectors combined
+into a single tree structure.</p>
 <dl class="method">
 <dt id="normalize.selector.MultiFieldSelector.__init__">
-<tt class="descclassname">MultiFieldSelector.</tt><tt class="descname">__init__</tt><big>(</big><em>*others</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">__init__</tt><big>(</big><em>*others</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a MultiFieldSelector based on combining the passed-in
+FieldSelector and MultiFieldSelector objects.</p>
+</dd></dl>
 
 <dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.__str__">
-<tt class="descclassname">MultiFieldSelector.</tt><tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__str__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="normalize.selector.MultiFieldSelector.__repr__">
-<tt class="descclassname">MultiFieldSelector.</tt><tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="normalize.selector.MultiFieldSelector.__iter__">
+<tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__iter__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for all FieldSelectors this MultiFieldSelector
+contains.</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="normalize.selector.MultiFieldSelector.get">
-<tt class="descclassname">MultiFieldSelector.</tt><tt class="descname">get</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.get" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<tt class="descname">get</tt><big>(</big><em>obj</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a copy of the passed object which only contains the parts
+which are pointed to by one of the FieldSelectors that were used to
+construct the MultiFieldSelector.  Can be used to produce &#8216;filtered&#8217;
+versions of objects.</p>
+</dd></dl>
 
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -369,12 +308,20 @@ the sorted order of the FieldSelectors.</p>
       </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Referring to components of Records - <tt class="docutils literal"><span class="pre">normalize.selector</span></tt></a><ul>
+<li><a class="reference internal" href="#class-reference">Class reference</a></li>
+</ul>
+</li>
+</ul>
+
   <h4>Previous topic</h4>
   <p class="topless"><a href="record.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a></p>
+                        title="previous chapter">Defining Records - <tt class="docutils literal"><span class="pre">normalize.record</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="diff.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">normalize.diff</span></tt> reference</a></p>
+                        title="next chapter">Comparing Records - <tt class="docutils literal"><span class="pre">normalize.diff</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/selector.txt"
@@ -407,12 +354,12 @@ the sorted order of the FieldSelectors.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="diff.html" title="normalize.diff reference"
+          <a href="diff.html" title="Comparing Records - normalize.diff"
              >next</a> |</li>
         <li class="right" >
-          <a href="record.html" title="normalize.record reference"
+          <a href="record.html" title="Defining Records - normalize.record"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

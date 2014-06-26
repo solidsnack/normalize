@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.coll &mdash; normalize 0.2.0 documentation</title>
+    <title>normalize.coll &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="../../index.html" />
-    <link rel="up" title="normalize" href="../normalize.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -51,6 +50,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">types</span>
 
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
@@ -364,6 +364,9 @@
         <span class="n">GENERIC_TYPES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span>
             <span class="n">generic_name</span><span class="p">,</span> <span class="p">(</span><span class="n">coll</span><span class="p">,</span> <span class="n">_Generic</span><span class="p">),</span> <span class="nb">dict</span><span class="p">(</span><span class="n">itemtype</span><span class="o">=</span><span class="n">of</span><span class="p">,</span> <span class="n">generic_key</span><span class="o">=</span><span class="n">key</span><span class="p">)</span>
         <span class="p">)</span>
+        <span class="n">mod</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">of</span><span class="o">.</span><span class="n">__module__</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">generic_name</span><span class="p">):</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">mod</span><span class="p">,</span> <span class="n">generic_name</span><span class="p">,</span> <span class="n">GENERIC_TYPES</span><span class="p">[</span><span class="n">key</span><span class="p">])</span>
     <span class="k">return</span> <span class="n">GENERIC_TYPES</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 </pre></div>
 
@@ -398,9 +401,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

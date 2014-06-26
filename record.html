@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record reference &mdash; normalize 0.2.0 documentation</title>
+    <title>Defining Records - normalize.record &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,9 +23,9 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="index.html" />
-    <link rel="next" title="normalize.selector reference" href="selector.html" />
-    <link rel="prev" title="normalize.property reference" href="property.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="index.html" />
+    <link rel="next" title="Referring to components of Records - normalize.selector" href="selector.html" />
+    <link rel="prev" title="Defining Properties - normalize.property" href="property.html" /> 
   </head>
   <body>
     <div class="related">
@@ -38,12 +38,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="selector.html" title="normalize.selector reference"
+          <a href="selector.html" title="Referring to components of Records - normalize.selector"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="property.html" title="normalize.property reference"
+          <a href="property.html" title="Defining Properties - normalize.property"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -53,140 +53,7 @@
           <div class="body">
             
   <div class="section" id="module-normalize.record">
-<span id="normalize-record-reference"></span><h1><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference<a class="headerlink" href="#module-normalize.record" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
-<dt id="normalize.record.Record">
-<em class="property">class </em><tt class="descclassname">normalize.record.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Base class for normalize instances and collections.</p>
-<dl class="method">
-<dt id="normalize.record.Record.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Instantiates a new <tt class="docutils literal"><span class="pre">Record</span></tt> type.</p>
-<p>You may specify a <tt class="docutils literal"><span class="pre">dict</span></tt> to initialize from, <em>or</em> use keyword
-argument form.  The default interpretation of the first positional
-argument is to treat it as if its contents were passed in as keyword
-arguments.</p>
-<p>Subclass API: subclasses are permitted to interpret positional
-arguments in non-standard ways, but in general it is expected that if
-keyword arguments are passed, then they are already of the right type
-(or, of a type that the <tt class="docutils literal"><span class="pre">coerce</span></tt> functions associated with the
-properties can accept).  The only exception to this is if <tt class="docutils literal"><span class="pre">init_dict</span></tt>
-is an <tt class="docutils literal"><span class="pre">OhPickle</span></tt> instance, you should probably just return (see
-<a class="reference internal" href="#normalize.record.OhPickle" title="normalize.record.OhPickle"><tt class="xref py py-class docutils literal"><span class="pre">OhPickle</span></tt></a>)</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__getnewargs__">
-<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__getnewargs__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__getnewargs__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stub method which arranges for an <tt class="docutils literal"><span class="pre">OhPickle</span></tt> instance to be passed
-to the constructor above when pickling out.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__getstate__">
-<tt class="descname">__getstate__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__getstate__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement saving, for the pickle out API.  Returns the instance
-dict</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__setstate__">
-<tt class="descname">__setstate__</tt><big>(</big><em>instance_dict</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__setstate__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implement loading, for the pickle in API.  Sets the instance dict
-directly.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__str__">
-<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__str__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marshalling to string form.  This is what you see if you cast the
-object to a string or use the <tt class="docutils literal"><span class="pre">%s</span></tt> format code, and is supposed to be
-an &#8220;informal&#8221; representation when you don&#8217;t want a full object dump
-like <tt class="docutils literal"><span class="pre">repr()</span></tt> would provide.</p>
-<p>If you defined a <tt class="docutils literal"><span class="pre">primary_key</span></tt> for the object, then the values of the
-attributes you specified will be included in the string representation,
-eg <tt class="docutils literal"><span class="pre">&lt;Task</span> <span class="pre">17&gt;</span></tt>.  Otherwise, the <em>implicit</em> primary key (eg, a tuple
-of all of the defined attributes with their values) is included, up to
-the first 30 characters or so.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__repr__">
-<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__repr__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marshalling to Python source.  This is what you will see when
-printing objects using the <tt class="docutils literal"><span class="pre">%r</span></tt> format code.  This function is
-recursive and should generally satisfy the requirement that it is valid
-Python source, assuming all class names are in scope and all values
-implement <tt class="docutils literal"><span class="pre">__repr__</span></tt> as suggested in the python documentation.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__eq__">
-<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__eq__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare two Record classes; recursively compares all attributes for
-equality (except those marked &#8216;extraneous&#8217;).  See also
-<a class="reference internal" href="#normalize.record.Record.diff" title="normalize.record.Record.diff"><tt class="xref py py-meth docutils literal"><span class="pre">diff()</span></tt></a> for a version where the comparison can be
-fine-tuned.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__ne__">
-<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__ne__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__ne__" title="Permalink to this definition">¶</a></dt>
-<dd><p>implemented for compatibility</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="normalize.record.Record.__pk__">
-<tt class="descname">__pk__</tt><a class="reference internal" href="_modules/normalize/record.html#Record.__pk__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__pk__" title="Permalink to this definition">¶</a></dt>
-<dd><p>This property returns the &#8220;primary key&#8221; for this object.  This is
-used when comparing Collections via <a class="reference internal" href="diff.html#module-normalize.diff" title="normalize.diff"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.diff</span></tt></a>, for
-stringification and for the <tt class="docutils literal"><span class="pre">id()</span></tt> built-in.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.__hash__">
-<tt class="descname">__hash__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__hash__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__hash__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Implements <tt class="docutils literal"><span class="pre">id()</span></tt> for Record types.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.diff_iter">
-<tt class="descname">diff_iter</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.diff_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.diff_iter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator method which returns the differences from the invocant to
-the argument.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">other=</span></tt><em>Record*|*Anything</em></dt>
-<dd>The thing to compare against; the types must match, unless
-<tt class="docutils literal"><span class="pre">duck_type=True</span></tt> is passed.</dd>
-<dt><em>diff_option</em>=<em>value</em></dt>
-<dd>Unknown keyword arguments are eventually passed to a
-<em class="xref std std-ref">DiffOptions</em> constructor.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.record.Record.diff">
-<tt class="descname">diff</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.diff" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compare an object with another and return a <tt class="xref py py-class docutils literal"><span class="pre">DiffInfo</span></tt>
-object.  Accepts the same arguments as
-<a class="reference internal" href="#normalize.record.Record.diff_iter" title="normalize.record.Record.diff_iter"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.record.Record.diff_iter()</span></tt></a></p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="normalize.record.OhPickle">
-<em class="property">class </em><tt class="descclassname">normalize.record.</tt><tt class="descname">OhPickle</tt><a class="reference internal" href="_modules/normalize/record.html#OhPickle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.OhPickle" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sentinel type for Un-Pickling.  <tt class="docutils literal"><span class="pre">pickle</span></tt> does not allow a
-<tt class="docutils literal"><span class="pre">__getinitargs__</span></tt>/<tt class="docutils literal"><span class="pre">__getnewargs__</span></tt> to return keyword constructor
-arguments, so this value is passed to <tt class="docutils literal"><span class="pre">__init__</span></tt> when unpickling.  It
-indicates to not perform any immediate post-construction checks and instead
-just return and let <a href="#id1"><span class="problematic" id="id2">``</span></a>__getstate``__ set this object up.</p>
-</dd></dl>
-
+<span id="defining-records-normalize-record"></span><h1>Defining Records - <tt class="docutils literal"><span class="pre">normalize.record</span></tt><a class="headerlink" href="#module-normalize.record" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="record-flavors">
 <h2>Record Flavors<a class="headerlink" href="#record-flavors" title="Permalink to this headline">¶</a></h2>
 <p><tt class="docutils literal"><span class="pre">Record</span></tt> subclasses don&#8217;t have any special mix-in magic like
@@ -468,7 +335,7 @@ not marked as <tt class="docutils literal"><span class="pre">extraneous</span></
 <dt id="normalize.record.json.JsonRecord.diff_iter">
 <tt class="descname">diff_iter</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff_iter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generator method which returns the differences from the invocant to
-the argument.  This specializes <a href="#id3"><span class="problematic" id="id4">:py:method:`Record.diff_iter`</span></a> by
+the argument.  This specializes <tt class="xref py py-meth docutils literal"><span class="pre">Record.diff_iter()</span></tt> by
 returning <a class="reference internal" href="#normalize.record.json.JsonDiffInfo" title="normalize.record.json.JsonDiffInfo"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiffInfo</span></tt></a> objects.</p>
 </dd></dl>
 
@@ -476,7 +343,7 @@ returning <a class="reference internal" href="#normalize.record.json.JsonDiffInf
 <dt id="normalize.record.json.JsonRecord.diff">
 <tt class="descname">diff</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compare an object with another.  This specializes
-<a href="#id5"><span class="problematic" id="id6">:py:method:`Record.diff`</span></a> by returning a <a class="reference internal" href="#normalize.record.json.JsonDiff" title="normalize.record.json.JsonDiff"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiff</span></tt></a> object.</p>
+<tt class="xref py py-meth docutils literal"><span class="pre">Record.diff()</span></tt> by returning a <a class="reference internal" href="#normalize.record.json.JsonDiff" title="normalize.record.json.JsonDiff"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiff</span></tt></a> object.</p>
 </dd></dl>
 
 </dd></dl>
@@ -560,7 +427,7 @@ for copying the <tt class="docutils literal"><span class="pre">properties</span>
 processing the <tt class="docutils literal"><span class="pre">primary_key</span></tt> declaration, and calling
 <tt class="xref py py-meth docutils literal"><span class="pre">normalize.property.Property.bind()</span></tt> to link
 <a class="reference internal" href="property.html#normalize.property.Property" title="normalize.property.Property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.Property</span></tt></a> instances to their containing
-<a class="reference internal" href="#normalize.record.Record" title="normalize.record.Record"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt></a> classes.</p>
+<tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt> classes.</p>
 </dd></dl>
 
 </dd></dl>
@@ -576,7 +443,7 @@ processing the <tt class="docutils literal"><span class="pre">primary_key</span>
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#"><tt class="docutils literal"><span class="pre">normalize.record</span></tt> reference</a><ul>
+<li><a class="reference internal" href="#">Defining Records - <tt class="docutils literal"><span class="pre">normalize.record</span></tt></a><ul>
 <li><a class="reference internal" href="#record-flavors">Record Flavors</a><ul>
 <li><a class="reference internal" href="#collection-types">Collection Types</a></li>
 <li><a class="reference internal" href="#module-normalize.record.json"><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></a><ul>
@@ -592,10 +459,10 @@ processing the <tt class="docutils literal"><span class="pre">primary_key</span>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="property.html"
-                        title="previous chapter"><tt class="docutils literal"><span class="pre">normalize.property</span></tt> reference</a></p>
+                        title="previous chapter">Defining Properties - <tt class="docutils literal"><span class="pre">normalize.property</span></tt></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="selector.html"
-                        title="next chapter"><tt class="docutils literal"><span class="pre">normalize.selector</span></tt> reference</a></p>
+                        title="next chapter">Referring to components of Records - <tt class="docutils literal"><span class="pre">normalize.selector</span></tt></a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/record.txt"
@@ -628,12 +495,12 @@ processing the <tt class="docutils literal"><span class="pre">primary_key</span>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="selector.html" title="normalize.selector reference"
+          <a href="selector.html" title="Referring to components of Records - normalize.selector"
              >next</a> |</li>
         <li class="right" >
-          <a href="property.html" title="normalize.property reference"
+          <a href="property.html" title="Defining Properties - normalize.property"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.2.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

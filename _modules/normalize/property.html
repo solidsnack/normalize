@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property &mdash; normalize 0.2.0 documentation</title>
+    <title>normalize.property &mdash; normalize 0.4.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
+        VERSION:     '0.4.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.2.0 documentation" href="../../index.html" />
-    <link rel="up" title="normalize" href="../normalize.html" /> 
+    <link rel="top" title="normalize 0.4.2 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,9 +36,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" accesskey="U">normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -83,7 +82,7 @@
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="nb">coerce</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
 <div class="viewcode-block" id="Property.__init__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__init__">[docs]</a>                 <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+                 <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Declares a new standard Property.  Note: if you pass arguments which</span>
 <span class="sd">        are not understood by this constructor, or pass extra property traits</span>
 <span class="sd">        to ``traits``, then the call will be redirected to a sub-class; see</span>
@@ -130,9 +129,13 @@
 <span class="sd">                the ``Record`` equality operator.  Visitor functions typically</span>
 <span class="sd">                ignore extraneous properties or require an extra option to</span>
 <span class="sd">                process them.</span>
+
+<span class="sd">            ``doc=``\ *STR*</span>
+<span class="sd">                Specify a docstring for the property.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">class_</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Property</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
@@ -178,11 +181,24 @@
             <span class="n">classname</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">()</span><span class="o">.</span><span class="n">__name__</span>
         <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">.</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">classname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">type_safe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span></div>
+    <span class="k">def</span> <span class="nf">type_safe_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">_none_ok</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is required&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">_none_ok</span> <span class="ow">and</span> <span class="n">new_value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
+                    <span class="c"># allow coerce functions to return &#39;None&#39; to silently</span>
+                    <span class="c"># swallow optional properties on initialization</span>
+                    <span class="k">return</span> <span class="n">_none</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">ValueCoercionError</span><span class="p">(</span>
+                        <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">,</span>
+                        <span class="n">value</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                        <span class="n">coerced</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">new_value</span><span class="p">),</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">new_value</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">check</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s">&quot;</span><span class="si">%s</span><span class="s"> value &#39;</span><span class="si">%r</span><span class="s">&#39; failed type check&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
@@ -204,11 +220,16 @@
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_Default</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_none</span><span class="p">:</span>
+        <span class="n">new_value</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">_none</span> <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_none</span> <span class="k">else</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">_none_ok</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">new_value</span> <span class="ow">is</span> <span class="n">_none</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is required&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
 
     <span class="k">def</span> <span class="nf">eager_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_none</span>
@@ -216,6 +237,8 @@
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 <div class="viewcode-block" id="Property.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Default getter; does NOT fall back to regular descriptor behavior</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
@@ -263,6 +286,8 @@
 <div class="viewcode-block" id="LazyProperty.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.LazyProperty.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This getter is called when there is no value set, and calls the</span>
 <span class="sd">        default method/function.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
         <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
         <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -287,6 +312,8 @@
 <div class="viewcode-block" id="ROLazyProperty"><a class="viewcode-back" href="../../property.html#normalize.property.ROLazyProperty">[docs]</a>    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 <div class="viewcode-block" id="ROLazyProperty.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.ROLazyProperty.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This getter checks to see if the slot is already set in the object</span>
 <span class="sd">        and if so, returns it.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">ROLazyProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
@@ -319,6 +346,8 @@
 <div class="viewcode-block" id="LazySafeProperty"><a class="viewcode-back" href="../../property.html#normalize.property.LazySafeProperty">[docs]</a>    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
 <div class="viewcode-block" id="LazySafeProperty.__get__"><a class="viewcode-back" href="../../property.html#normalize.property.LazySafeProperty.__get__">[docs]</a>        <span class="sd">&quot;&quot;&quot;This getter checks to see if the slot is already set in the object</span>
 <span class="sd">        and if so, returns it.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">LazySafeProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
@@ -429,9 +458,8 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.2.0 documentation</a> &raquo;</li>
-          <li><a href="../index.html" >Module code</a> &raquo;</li>
-          <li><a href="../normalize.html" >normalize</a> &raquo;</li> 
+        <li><a href="../../index.html">normalize 0.4.2 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
