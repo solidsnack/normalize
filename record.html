@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Defining Records - normalize.record &mdash; normalize 0.4.2 documentation</title>
+    <title>Defining Records - normalize.record &mdash; normalize 0.4.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.2',
+        VERSION:     '0.4.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.2 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.4.3 documentation" href="index.html" />
     <link rel="next" title="Referring to components of Records - normalize.selector" href="selector.html" />
     <link rel="prev" title="Defining Properties - normalize.property" href="property.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="property.html" title="Defining Properties - normalize.property"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -62,6 +62,75 @@ explicitly derive it.  The most useful classes for general use are
 <a class="reference internal" href="#normalize.record.json.JsonRecord" title="normalize.record.json.JsonRecord"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecord</span></tt></a>,
 <tt class="xref py py-class docutils literal"><span class="pre">normalize.record.RecordList</span></tt> and the combination,
 <a class="reference internal" href="#normalize.record.json.JsonRecordList" title="normalize.record.json.JsonRecordList"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecordList</span></tt></a>.</p>
+<p>Here&#8217;s a guide to choosing a class:</p>
+<p><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></p>
+<blockquote>
+<div><p>This is a good choice for codebases where you typically want to
+pass the JSON (string or data) as the first positional argument to
+a constructor.  There is one JSON mapping which is the default,
+and it is accessed by <tt class="docutils literal"><span class="pre">.json_data()</span></tt> (or the constructor).  It
+also has an <tt class="docutils literal"><span class="pre">unknown_json_keys</span></tt> property, which is is marked as
+&#8216;extraneous&#8217; and contains all of the input keys which were not
+known.</p>
+<p>The specifics of this conversion can be overridden in many ways;
+you can set <tt class="docutils literal"><span class="pre">json_name</span></tt> on the property name to override the
+default of using the python property name.  You can also provide
+<tt class="docutils literal"><span class="pre">json_in</span></tt> and <tt class="docutils literal"><span class="pre">json_out</span></tt> lambda functions to transform the
+values on the way in and out.</p>
+<p>More &#8216;radical&#8217; transforms can be achieved by overriding
+<tt class="docutils literal"><span class="pre">json_data</span></tt> in your class for marshal out, and
+<tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt> for marshall in.</p>
+</div></blockquote>
+<p><tt class="docutils literal"><span class="pre">Record</span></tt></p>
+<blockquote>
+<div><p>This version is a good choice where the sources of data are
+typically other python functions.  The default is a conversion
+from a dict, but the keys are the actual property names, not the
+<tt class="docutils literal"><span class="pre">json_name</span></tt> versions like <tt class="docutils literal"><span class="pre">JsonRecord</span></tt>.</p>
+<p>It&#8217;s also good for object types which have multiple JSON mappings,
+where you don&#8217;t want to make any of them more special than any
+other.  Instead of using the <tt class="docutils literal"><span class="pre">.json_data()</span></tt> function, you might
+for instance be using <tt class="xref py py-class docutils literal"><span class="pre">normalize.visitor.Visitor</span></tt>.</p>
+<p>You can still access the same conversion as with <tt class="docutils literal"><span class="pre">JsonRecord</span></tt> by
+using the <a class="reference internal" href="#normalize.record.json.to_json" title="normalize.record.json.to_json"><tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.to_json()</span></tt></a> and
+<a class="reference internal" href="#normalize.record.json.from_json" title="normalize.record.json.from_json"><tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.from_json()</span></tt></a> functions directly.
+These functions will respect any <tt class="xref py py-class docutils literal"><span class="pre">JsonProperty</span></tt> hints
+(<tt class="docutils literal"><span class="pre">json_name</span></tt> etc), even if those hints are on properties which
+are not a part of a <tt class="docutils literal"><span class="pre">JsonRecord</span></tt> class.</p>
+</div></blockquote>
+<p><tt class="docutils literal"><span class="pre">RecordList</span></tt></p>
+<blockquote>
+<div><p>The <tt class="docutils literal"><span class="pre">RecordList</span></tt> type is a specialization of <tt class="docutils literal"><span class="pre">Record</span></tt>, which
+expects its first constructor argument to be a list.  Internally
+this is just a <tt class="docutils literal"><span class="pre">Record</span></tt> which has a <tt class="docutils literal"><span class="pre">values</span></tt> property, and
+this property is the actual collection.  This <tt class="docutils literal"><span class="pre">values</span></tt> property
+isn&#8217;t currently present in the <tt class="docutils literal"><span class="pre">type(Foo).properties</span></tt>
+dictionary, but may some day show up there.</p>
+<p>In theory, <tt class="docutils literal"><span class="pre">RecordList</span></tt> is just one of possibly many types of
+<a class="reference internal" href="#normalize.coll.Collection" title="normalize.coll.Collection"><tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt></a> sets which happens to use
+continuous integers as the key.  Each collection type provides
+methods which know how to interpret iterable things and convert
+them into an iterable of (K, V) pairs.  In practice, the list is
+the only type which is currently reasonably implemented or tested.</p>
+<p>This base class implements the various methods expected of
+collections (iterators, getitem, etc).  It mostly just passes
+these down to the underlying <tt class="docutils literal"><span class="pre">values</span></tt>, but you can expect this
+behavior to get more typesafe as time goes on (so that you can&#8217;t,
+for instance, add records of the wrong type to a list).</p>
+</div></blockquote>
+<p><tt class="docutils literal"><span class="pre">JsonRecordList</span></tt></p>
+<blockquote>
+<div>This is really just a <tt class="docutils literal"><span class="pre">RecordList</span></tt> sub-type which uses
+<tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt> to handle the conversion from and from a
+list.  So by default, the constructor expects a list, and the
+<tt class="docutils literal"><span class="pre">json_data</span></tt> method returns one, too.  You can also use this type
+for when you&#8217;re dealing with Json data which is logically a list,
+but actually is a dict, with some top-level keys, and one of the
+keys with the list in it as well, by customizing the
+<tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt> method.  eg, a &#8220;next page&#8221; URL key, resume
+token, or a count of the size of the set.</div></blockquote>
+<p>That&#8217;s a summary overview; apologies if I end up repeating myself over
+the rest of this page!</p>
 <div class="section" id="collection-types">
 <h3>Collection Types<a class="headerlink" href="#collection-types" title="Permalink to this headline">¶</a></h3>
 <p>Collections are types of records, with a single property <tt class="docutils literal"><span class="pre">values</span></tt>
@@ -500,7 +569,7 @@ processing the <tt class="docutils literal"><span class="pre">primary_key</span>
         <li class="right" >
           <a href="property.html" title="Defining Properties - normalize.property"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.2 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
