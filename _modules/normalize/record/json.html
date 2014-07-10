@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.json &mdash; normalize 0.4.3 documentation</title>
+    <title>normalize.record.json &mdash; normalize 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.3',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,8 +23,8 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.3 documentation" href="../../../index.html" />
-    <link rel="up" title="Module code" href="../../index.html" /> 
+    <link rel="top" title="normalize 0.5.0 documentation" href="../../../index.html" />
+    <link rel="up" title="normalize.record" href="../record.html" /> 
   </head>
   <body>
     <div class="related">
@@ -36,8 +36,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" accesskey="U">Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -47,6 +48,23 @@
           <div class="body">
             
   <h1>Source code for normalize.record.json</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># This file is a part of the normalize python library</span>
+<span class="c">#</span>
+<span class="c"># normalize is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the MIT License.</span>
+<span class="c">#</span>
+<span class="c"># normalize is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># MIT License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the MIT license along with</span>
+<span class="c"># normalize.  If not, refer to the upstream repository at</span>
+<span class="c"># http://github.com/hearsaycorp/normalize</span>
+<span class="c">#</span>
+
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
@@ -76,8 +94,8 @@
     <span class="k">return</span> <span class="n">json_val</span>
 
 
-<span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="n">record_type</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-<div class="viewcode-block" id="json_to_initkwargs"><a class="viewcode-back" href="../../../record.html#normalize.record.json.json_to_initkwargs">[docs]</a>    <span class="sd">&quot;&quot;&quot;This function converts a JSON dict (json_struct) to a set of init</span>
+<div class="viewcode-block" id="json_to_initkwargs"><a class="viewcode-back" href="../../../record.html#normalize.record.json.json_to_initkwargs">[docs]</a><span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="n">record_type</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This function converts a JSON dict (json_struct) to a set of init</span>
 <span class="sd">    keyword arguments for the passed Record (or JsonRecord).</span>
 
 <span class="sd">    It is called by the JsonRecord constructor.  This function takes a JSON</span>
@@ -85,9 +103,8 @@
 <span class="sd">    class constructor.  Any keys in the input dictionary which are not known</span>
 <span class="sd">    are passed as a single ``unknown_json_keys`` value as a dict.</span>
 
-<span class="sd">    It is called by the JsonRecord constructor.  This function should generally</span>
-<span class="sd">    not be called directly, except as a part of a ``__init__`` or specialized</span>
-<span class="sd">    visitor application.</span>
+<span class="sd">    This function should generally not be called directly, except as a part of</span>
+<span class="sd">    a ``__init__`` or specialized visitor application.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">kwargs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -126,9 +143,9 @@
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">kwargs</span>
 
-
-<span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">record_type</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">):</span></div>
-<div class="viewcode-block" id="from_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.from_json">[docs]</a>    <span class="sd">&quot;&quot;&quot;JSON marshall in function: a &#39;visitor&#39; function which looks for JSON</span>
+</div>
+<div class="viewcode-block" id="from_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.from_json">[docs]</a><span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="n">record_type</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;JSON marshall in function: a &#39;visitor&#39; function which looks for JSON</span>
 <span class="sd">    types/hints on types being converted to, but does not require them.</span>
 
 <span class="sd">    Args:</span>
@@ -154,8 +171,8 @@
         <span class="p">)</span>
 
 
-<span class="c"># caches for _json_data</span>
-<span class="n">has_json_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></div>
+<span class="c"># caches for _json_data</span></div>
+<span class="n">has_json_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 <span class="n">json_data_takes_extraneous</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
@@ -184,8 +201,8 @@
             <span class="k">return</span> <span class="n">to_json</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
-<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.to_json">[docs]</a>    <span class="sd">&quot;&quot;&quot;JSON marshall out function: a &#39;visitor&#39; function which implements</span>
+<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;JSON marshall out function: a &#39;visitor&#39; function which implements</span>
 <span class="sd">    marshall out, honoring JSON property types/hints but does not require</span>
 <span class="sd">    them.</span>
 
@@ -241,9 +258,9 @@
             <span class="nb">type</span><span class="p">(</span><span class="n">record</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span>
         <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">JsonRecord</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonRecord"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord">[docs]</a>    <span class="sd">&quot;&quot;&quot;Version of a Record which deals primarily in JSON form.</span>
+</div>
+<div class="viewcode-block" id="JsonRecord"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord">[docs]</a><span class="k">class</span> <span class="nc">JsonRecord</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Version of a Record which deals primarily in JSON form.</span>
 
 <span class="sd">    This means:</span>
 
@@ -257,8 +274,8 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">unknown_json_keys</span> <span class="o">=</span> <span class="n">JsonProperty</span><span class="p">(</span><span class="n">json_name</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<div class="viewcode-block" id="JsonRecord.__init__"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.__init__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Build a new JsonRecord sub-class.</span>
+<div class="viewcode-block" id="JsonRecord.__init__"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a new JsonRecord sub-class.</span>
 
 <span class="sd">        args:</span>
 <span class="sd">            ``json_data=``\ *DICT|other*</span>
@@ -281,24 +298,24 @@
         <span class="k">if</span> <span class="n">json_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">json_to_initkwargs</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonRecord</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span></div>
-    <span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
-<div class="viewcode-block" id="JsonRecord.json_to_initkwargs"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.json_to_initkwargs">[docs]</a>        <span class="sd">&quot;&quot;&quot;Subclassing hook to specialize how JSON data is converted</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="JsonRecord.json_to_initkwargs"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.json_to_initkwargs">[docs]</a>    <span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Subclassing hook to specialize how JSON data is converted</span>
 <span class="sd">        to keyword arguments&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
             <span class="n">json_data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">json_to_initkwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span></div>
-    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">):</span>
-<div class="viewcode-block" id="JsonRecord.from_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.from_json">[docs]</a>        <span class="sd">&quot;&quot;&quot;This method can be overridden to specialize how the class is loaded</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="JsonRecord.from_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.from_json">[docs]</a>    <span class="k">def</span> <span class="nf">from_json</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This method can be overridden to specialize how the class is loaded</span>
 <span class="sd">        when marshalling in; however beware that it is not invoked when the</span>
 <span class="sd">        caller uses the ``from_json()`` function directly.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">json_data</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">json_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonRecord.json_data"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.json_data">[docs]</a>        <span class="sd">&quot;&quot;&quot;Returns the JSON data form of this ``JsonRecord``.  The &#39;unknown&#39;</span>
+</div>
+<div class="viewcode-block" id="JsonRecord.json_data"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.json_data">[docs]</a>    <span class="k">def</span> <span class="nf">json_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Returns the JSON data form of this ``JsonRecord``.  The &#39;unknown&#39;</span>
 <span class="sd">        JSON keys will be merged back in, if:</span>
 
 <span class="sd">        1. the ``extraneous=True`` argument is passed.</span>
@@ -314,9 +331,9 @@
                     <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">jd</span><span class="p">:</span>
                         <span class="n">jd</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
         <span class="k">return</span> <span class="n">jd</span>
-
-    <span class="k">def</span> <span class="nf">diff_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonRecord.diff_iter"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff_iter">[docs]</a>        <span class="sd">&quot;&quot;&quot;Generator method which returns the differences from the invocant to</span>
+</div>
+<div class="viewcode-block" id="JsonRecord.diff_iter"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff_iter">[docs]</a>    <span class="k">def</span> <span class="nf">diff_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator method which returns the differences from the invocant to</span>
 <span class="sd">        the argument.  This specializes :py:meth:`Record.diff_iter` by</span>
 <span class="sd">        returning :py:class:`JsonDiffInfo` objects.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -324,9 +341,9 @@
             <span class="c"># TODO: object copy/upgrade constructor</span>
             <span class="n">newargs</span> <span class="o">=</span> <span class="n">diff</span><span class="o">.</span><span class="n">__getstate__</span><span class="p">()</span>
             <span class="k">yield</span> <span class="n">JsonDiffInfo</span><span class="p">(</span><span class="o">**</span><span class="p">(</span><span class="n">newargs</span><span class="p">))</span>
-
-    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonRecord.diff"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff">[docs]</a>        <span class="sd">&quot;&quot;&quot;Compare an object with another.  This specializes</span>
+</div>
+<div class="viewcode-block" id="JsonRecord.diff"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecord.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compare an object with another.  This specializes</span>
 <span class="sd">        :py:meth:`Record.diff` by returning a :py:class:`JsonDiff` object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">JsonDiff</span><span class="p">(</span>
@@ -335,11 +352,11 @@
             <span class="n">values</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">diff_iter</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">),</span>
         <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">JsonRecordList</span><span class="p">(</span><span class="n">RecordList</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span></div></div>
-<div class="viewcode-block" id="JsonRecordList"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecordList">[docs]</a>    <span class="sd">&quot;&quot;&quot;Version of a RecordList which deals primarily in JSON&quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<div class="viewcode-block" id="JsonRecordList.__init__"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecordList.__init__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Build a new JsonRecord sub-class.</span>
+</div></div>
+<div class="viewcode-block" id="JsonRecordList"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecordList">[docs]</a><span class="k">class</span> <span class="nc">JsonRecordList</span><span class="p">(</span><span class="n">RecordList</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Version of a RecordList which deals primarily in JSON&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="JsonRecordList.__init__"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonRecordList.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">json_data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Build a new JsonRecord sub-class.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``json_data=``\ *LIST|other*</span>
@@ -356,8 +373,8 @@
         <span class="k">if</span> <span class="n">json_data</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">json_to_initkwargs</span><span class="p">(</span><span class="n">json_data</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonRecordList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span></div>
+</div>
+    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">json_to_initkwargs</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">json_struct</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
         <span class="n">member_type</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">itemtype</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;values&#39;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -387,9 +404,9 @@
         <span class="n">super_repr</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">JsonRecordList</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
         <span class="k">return</span> <span class="n">super_repr</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;[&quot;</span><span class="p">,</span> <span class="s">&quot;values=[&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">JsonDiffInfo</span><span class="p">(</span><span class="n">DiffInfo</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonDiffInfo"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonDiffInfo">[docs]</a>    <span class="sd">&quot;&quot;&quot;Version of &#39;DiffInfo&#39; that supports ``.json_data()``&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="JsonDiffInfo"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonDiffInfo">[docs]</a><span class="k">class</span> <span class="nc">JsonDiffInfo</span><span class="p">(</span><span class="n">DiffInfo</span><span class="p">,</span> <span class="n">JsonRecord</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Version of &#39;DiffInfo&#39; that supports ``.json_data()``&quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">json_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span>
             <span class="n">diff_type</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">diff_type</span><span class="o">.</span><span class="n">canonical_name</span><span class="p">,</span>
@@ -397,11 +414,11 @@
             <span class="n">other</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">selectors</span><span class="p">,</span>
         <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">JsonDiff</span><span class="p">(</span><span class="n">Diff</span><span class="p">,</span> <span class="n">JsonRecordList</span><span class="p">):</span></div>
-<div class="viewcode-block" id="JsonDiff"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonDiff">[docs]</a>    <span class="sd">&quot;&quot;&quot;Version of &#39;Diff&#39; that supports ``.json_data()``&quot;&quot;&quot;</span>
-    <span class="n">itemtype</span> <span class="o">=</span> <span class="n">JsonDiffInfo</span>
-</pre></div></div>
+</div>
+<div class="viewcode-block" id="JsonDiff"><a class="viewcode-back" href="../../../record.html#normalize.record.json.JsonDiff">[docs]</a><span class="k">class</span> <span class="nc">JsonDiff</span><span class="p">(</span><span class="n">Diff</span><span class="p">,</span> <span class="n">JsonRecordList</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Version of &#39;Diff&#39; that supports ``.json_data()``&quot;&quot;&quot;</span>
+    <span class="n">itemtype</span> <span class="o">=</span> <span class="n">JsonDiffInfo</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -434,8 +451,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
-          <li><a href="../../index.html" >Module code</a> &raquo;</li> 
+        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

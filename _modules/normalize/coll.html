@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.coll &mdash; normalize 0.4.3 documentation</title>
+    <title>normalize.coll &mdash; normalize 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.4.3',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.3 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -47,6 +47,23 @@
           <div class="body">
             
   <h1>Source code for normalize.coll</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># This file is a part of the normalize python library</span>
+<span class="c">#</span>
+<span class="c"># normalize is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the MIT License.</span>
+<span class="c">#</span>
+<span class="c"># normalize is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># MIT License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the MIT license along with</span>
+<span class="c"># normalize.  If not, refer to the upstream repository at</span>
+<span class="c"># http://github.com/hearsaycorp/normalize</span>
+<span class="c">#</span>
+
+
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
@@ -68,8 +85,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">f</span><span class="p">(</span><span class="n">owner</span><span class="p">)</span>
 
 
-<span class="k">class</span> <span class="nc">Collection</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection">[docs]</a>    <span class="sd">&quot;&quot;&quot;This is the base class for Record property values which contain</span>
+<div class="viewcode-block" id="Collection"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection">[docs]</a><span class="k">class</span> <span class="nc">Collection</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This is the base class for Record property values which contain</span>
 <span class="sd">    iterable sets of values with a particular common type.</span>
 
 <span class="sd">    All collections are modeled as a mapping from some index to a value.</span>
@@ -113,8 +130,8 @@
     <span class="k">def</span> <span class="nf">record_cls</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">itemtype</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection.__init__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__init__">[docs]</a>        <span class="sd">&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Collection.__init__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">values</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Default collection constructor.</span>
 
 <span class="sd">        args:</span>
@@ -132,41 +149,41 @@
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">coll_to_tuples</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">Collection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+</div>
+    <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;The default iterator always iterates over the *values* of a</span>
 <span class="sd">        Collection.&quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">x</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection.__eq__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__eq__">[docs]</a>        <span class="sd">&quot;&quot;&quot;To be ``==``, collections must have exactly the same ``itemtype``</span>
+<div class="viewcode-block" id="Collection.__eq__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;To be ``==``, collections must have exactly the same ``itemtype``</span>
 <span class="sd">        and ``colltype``, and equal ``values``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">itemtype</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s">&quot;itemtype&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span> <span class="ow">and</span> \
             <span class="bp">self</span><span class="o">.</span><span class="n">values</span> <span class="o">==</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="s">&quot;values&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span></div>
-<div class="viewcode-block" id="Collection.__ne__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__ne__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Implemented, for compatibility&quot;&quot;&quot;</span>
+</div>
+<div class="viewcode-block" id="Collection.__ne__"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.__ne__">[docs]</a>    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implemented, for compatibility&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+</div>
+    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Forwarded to the ``values`` property.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">coerce_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection.coerce_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.coerce_tuples">[docs]</a>        <span class="sd">&quot;&quot;&quot;This class method converts a generator of ``(K, V)`` tuples (the</span>
+<div class="viewcode-block" id="Collection.coerce_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.coerce_tuples">[docs]</a>    <span class="k">def</span> <span class="nf">coerce_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This class method converts a generator of ``(K, V)`` tuples (the</span>
 <span class="sd">        *tuple protocol*), where ``V`` is not yet of the correct type, to a</span>
 <span class="sd">        generator where it is of the correct type (using the ``coerceitem``</span>
 <span class="sd">        class property)</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
             <span class="k">yield</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span> <span class="k">else</span> <span class="n">cls</span><span class="o">.</span><span class="n">coerceitem</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
-
-    <span class="nd">@classmethod</span></div>
-    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection.tuples_to_coll"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.tuples_to_coll">[docs]</a>        <span class="sd">&quot;&quot;&quot;*required virtual method* This class method, part of the sub-class</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Collection.tuples_to_coll"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.tuples_to_coll">[docs]</a>    <span class="k">def</span> <span class="nf">tuples_to_coll</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;*required virtual method* This class method, part of the sub-class</span>
 <span class="sd">        API, converts a generator of ``(K, V)`` tuples (the *tuple protocol*)</span>
 <span class="sd">        to one of the underlying collection type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -175,26 +192,26 @@
                 <span class="nb">property</span><span class="o">=</span><span class="s">&#39;tuples_to_coll&#39;</span><span class="p">,</span>
                 <span class="n">coll</span><span class="o">=</span><span class="s">&#39;Collection&#39;</span><span class="p">,</span>
             <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">itertuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="Collection.itertuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.itertuples">[docs]</a>        <span class="sd">&quot;&quot;&quot;Iterate over the items in the collection; return (k, v) where k is</span>
+</div>
+<div class="viewcode-block" id="Collection.itertuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.itertuples">[docs]</a>    <span class="k">def</span> <span class="nf">itertuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate over the items in the collection; return (k, v) where k is</span>
 <span class="sd">        the key, index etc into the collection (or potentially the value</span>
 <span class="sd">        itself, for sets).  This form is the *tuple protocol*&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CollectionDefinitionError</span><span class="p">(</span>
             <span class="nb">property</span><span class="o">=</span><span class="s">&#39;itertuples&#39;</span><span class="p">,</span>
             <span class="n">coll</span><span class="o">=</span><span class="s">&#39;Collection&#39;</span><span class="p">,</span>
         <span class="p">)</span>
-
-    <span class="nd">@classmethod</span></div>
-    <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
-<div class="viewcode-block" id="Collection.coll_to_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.coll_to_tuples">[docs]</a>        <span class="sd">&quot;&quot;&quot;Generate &#39;conformant&#39; tuples from an input collection, similar to</span>
+</div>
+    <span class="nd">@classmethod</span>
+<div class="viewcode-block" id="Collection.coll_to_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.Collection.coll_to_tuples">[docs]</a>    <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generate &#39;conformant&#39; tuples from an input collection, similar to</span>
 <span class="sd">        itertuples&quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CollectionDefinitionError</span><span class="p">(</span>
             <span class="nb">property</span><span class="o">=</span><span class="s">&#39;coll_to_tuples&#39;</span><span class="p">,</span>
             <span class="n">coll</span><span class="o">=</span><span class="s">&#39;Collection&#39;</span><span class="p">,</span>
         <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+</div>
+    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
             <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
@@ -207,14 +224,14 @@
                 <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">key_fs</span><span class="p">):</span>
                     <span class="k">yield</span> <span class="n">x</span>
 
-
-<span class="k">class</span> <span class="nc">KeyedCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span></div>
+</div>
+<span class="k">class</span> <span class="nc">KeyedCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
 
 
-<span class="k">class</span> <span class="nc">DictCollection</span><span class="p">(</span><span class="n">KeyedCollection</span><span class="p">):</span>
-<div class="viewcode-block" id="DictCollection"><a class="viewcode-back" href="../../record.html#normalize.coll.DictCollection">[docs]</a>    <span class="sd">&quot;&quot;&quot;An implementation of keyed collections which obey the `Record` property</span>
+<div class="viewcode-block" id="DictCollection"><a class="viewcode-back" href="../../record.html#normalize.coll.DictCollection">[docs]</a><span class="k">class</span> <span class="nc">DictCollection</span><span class="p">(</span><span class="n">KeyedCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An implementation of keyed collections which obey the `Record` property</span>
 <span class="sd">    protocol and the tuple collection protocol.  *Warning*: largely untested,</span>
 <span class="sd">    patches welcome.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -249,11 +266,10 @@
     <span class="k">def</span> <span class="nf">itertuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
 
-
-<span class="k">class</span> <span class="nc">ListCollection</span><span class="p">(</span><span class="n">KeyedCollection</span><span class="p">):</span></div>
-<div class="viewcode-block" id="ListCollection"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection">[docs]</a>    <span class="sd">&quot;&quot;&quot;An implementation of sequences which obey the `Record` property protocol</span>
-<span class="sd">    and the tuple collection protocol.  *Warning*: largely untested, patches</span>
-<span class="sd">    welcome.</span>
+</div>
+<div class="viewcode-block" id="ListCollection"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection">[docs]</a><span class="k">class</span> <span class="nc">ListCollection</span><span class="p">(</span><span class="n">KeyedCollection</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;An implementation of sequences which obey the `Record` property protocol</span>
+<span class="sd">    and the tuple collection protocol.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">suffix</span> <span class="o">=</span> <span class="s">&quot;List&quot;</span>
     <span class="n">colltype</span> <span class="o">=</span> <span class="nb">list</span>
@@ -264,8 +280,8 @@
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">colltype</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">tuples</span><span class="p">)</span>
 
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
-<div class="viewcode-block" id="ListCollection.coll_to_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.coll_to_tuples">[docs]</a>        <span class="sd">&quot;&quot;&quot;``coll_to_tuples`` is capable of unpacking its own collection types</span>
+<div class="viewcode-block" id="ListCollection.coll_to_tuples"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.coll_to_tuples">[docs]</a>    <span class="k">def</span> <span class="nf">coll_to_tuples</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">coll</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``coll_to_tuples`` is capable of unpacking its own collection types</span>
 <span class="sd">        (`list`), ``collections.Mapping`` objects, as well generators,</span>
 <span class="sd">        sequences and iterators.  Returns ``(*int*, Value)``.  Does not coerce</span>
 <span class="sd">        items.</span>
@@ -290,34 +306,34 @@
                 <span class="n">giventype</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">coll</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                 <span class="n">fortype</span><span class="o">=</span><span class="n">cls</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
             <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span></div>
-<div class="viewcode-block" id="ListCollection.append"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.append">[docs]</a>        <span class="sd">&quot;&quot;&quot;``Sequence`` API, currently passed through to underlying collection.</span>
+</div>
+<div class="viewcode-block" id="ListCollection.append"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;``Sequence`` API, currently passed through to underlying collection.</span>
 <span class="sd">        Type-checking is currently TODO.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">itertuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+</div>
+    <span class="k">def</span> <span class="nf">itertuples</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">coll_to_tuples</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<div class="viewcode-block" id="ListCollection.__str__"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.__str__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Informal stringification returns the type of collection, and the</span>
+<div class="viewcode-block" id="ListCollection.__str__"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Informal stringification returns the type of collection, and the</span>
 <span class="sd">        length.  For example, ``&lt;MyRecordList: 8 item(s)&gt;``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s">: </span><span class="si">%d</span><span class="s"> item(s)&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
             <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
-<div class="viewcode-block" id="ListCollection.__repr__"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.__repr__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Implemented: prints a valid constructor.</span>
+</div>
+<div class="viewcode-block" id="ListCollection.__repr__"><a class="viewcode-back" href="../../record.html#normalize.coll.ListCollection.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implemented: prints a valid constructor.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">property_info</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">ListCollection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__repr__</span><span class="p">()</span>
         <span class="n">list_info</span> <span class="o">=</span> <span class="s">&quot;[</span><span class="si">%s</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">repr</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
         <span class="n">optional_comma</span> <span class="o">=</span> <span class="s">&quot;&quot;</span> <span class="k">if</span> <span class="n">property_info</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;()&quot;</span><span class="p">)</span> <span class="k">else</span> <span class="s">&quot;, &quot;</span>
         <span class="k">return</span> <span class="n">property_info</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;(&quot;</span><span class="p">,</span> <span class="s">&quot;(&quot;</span> <span class="o">+</span> <span class="n">list_info</span> <span class="o">+</span> <span class="n">optional_comma</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 
-
-<span class="n">GENERIC_TYPES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span></div></div>
+</div></div>
+<span class="n">GENERIC_TYPES</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 
 <span class="k">class</span> <span class="nc">_GenericPickler</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -401,7 +417,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>

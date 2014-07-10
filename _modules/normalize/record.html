@@ -1,0 +1,291 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.record &mdash; normalize 0.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.record</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># This file is a part of the normalize python library</span>
+<span class="c">#</span>
+<span class="c"># normalize is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the MIT License.</span>
+<span class="c">#</span>
+<span class="c"># normalize is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># MIT License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the MIT license along with</span>
+<span class="c"># normalize.  If not, refer to the upstream repository at</span>
+<span class="c"># http://github.com/hearsaycorp/normalize</span>
+<span class="c">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+<span class="kn">from</span> <span class="nn">normalize.identity</span> <span class="kn">import</span> <span class="n">record_id</span>
+<span class="kn">from</span> <span class="nn">normalize.record.meta</span> <span class="kn">import</span> <span class="n">RecordMeta</span>
+
+
+<span class="k">class</span> <span class="nc">_Unset</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="Record"><a class="viewcode-back" href="../../record.html#normalize.record.Record">[docs]</a><span class="k">class</span> <span class="nc">Record</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for normalize instances and collections.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">RecordMeta</span>
+
+<div class="viewcode-block" id="Record.__init__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">init_dict</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Instantiates a new ``Record`` type.</span>
+
+<span class="sd">        You may specify a ``dict`` to initialize from, *or* use keyword</span>
+<span class="sd">        argument form.  The default interpretation of the first positional</span>
+<span class="sd">        argument is to treat it as if its contents were passed in as keyword</span>
+<span class="sd">        arguments.</span>
+
+<span class="sd">        Subclass API: subclasses are permitted to interpret positional</span>
+<span class="sd">        arguments in non-standard ways, but in general it is expected that if</span>
+<span class="sd">        keyword arguments are passed, then they are already of the right type</span>
+<span class="sd">        (or, of a type that the ``coerce`` functions associated with the</span>
+<span class="sd">        properties can accept).  The only exception to this is if ``init_dict``</span>
+<span class="sd">        is an ``OhPickle`` instance, you should probably just return (see</span>
+<span class="sd">        :py:class:`OhPickle`)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">init_dict</span><span class="p">,</span> <span class="n">OhPickle</span><span class="p">):</span>
+            <span class="k">return</span>
+        <span class="k">if</span> <span class="n">init_dict</span> <span class="ow">and</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">AmbiguousConstruction</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">init_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span> <span class="o">=</span> <span class="n">kwargs</span>
+        <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">init_dict</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">meta_prop</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">meta_prop</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">PropertyNotKnown</span><span class="p">(</span>
+                    <span class="n">propname</span><span class="o">=</span><span class="n">prop</span><span class="p">,</span>
+                    <span class="n">typename</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="n">meta_prop</span><span class="o">.</span><span class="n">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+        <span class="n">missing</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">eager_properties</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">init_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="k">for</span> <span class="n">propname</span> <span class="ow">in</span> <span class="n">missing</span><span class="p">:</span>
+            <span class="n">meta_prop</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span>
+            <span class="n">meta_prop</span><span class="o">.</span><span class="n">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Record.__getnewargs__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__getnewargs__">[docs]</a>    <span class="k">def</span> <span class="nf">__getnewargs__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Stub method which arranges for an ``OhPickle`` instance to be passed</span>
+<span class="sd">        to the constructor above when pickling out.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">OhPickle</span><span class="p">(),)</span>
+</div>
+<div class="viewcode-block" id="Record.__getstate__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__getstate__">[docs]</a>    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement saving, for the pickle out API.  Returns the instance</span>
+<span class="sd">        dict&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span>
+</div>
+<div class="viewcode-block" id="Record.__setstate__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__setstate__">[docs]</a>    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance_dict</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implement loading, for the pickle in API.  Sets the instance dict</span>
+<span class="sd">        directly.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">instance_dict</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Record.__str__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__str__">[docs]</a>    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Marshalling to string form.  This is what you see if you cast the</span>
+<span class="sd">        object to a string or use the ``%s`` format code, and is supposed to be</span>
+<span class="sd">        an &quot;informal&quot; representation when you don&#39;t want a full object dump</span>
+<span class="sd">        like ``repr()`` would provide.</span>
+
+<span class="sd">        If you defined a ``primary_key`` for the object, then the values of the</span>
+<span class="sd">        attributes you specified will be included in the string representation,</span>
+<span class="sd">        eg ``&lt;Task 17&gt;``.  Otherwise, the *implicit* primary key (eg, a tuple</span>
+<span class="sd">        of all of the defined attributes with their values) is included, up to</span>
+<span class="sd">        the first 30 characters or so.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pk__</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="nb">repr</span><span class="p">(</span><span class="n">pk</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pk</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">pk</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;</span><span class="si">%s</span><span class="s"> </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span> <span class="n">key</span><span class="p">[:</span><span class="mi">30</span><span class="p">]</span> <span class="o">+</span> <span class="s">&quot;...&quot;</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">key</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">32</span> <span class="k">else</span> <span class="n">key</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Record.__repr__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__repr__">[docs]</a>    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Marshalling to Python source.  This is what you will see when</span>
+<span class="sd">        printing objects using the ``%r`` format code.  This function is</span>
+<span class="sd">        recursive and should generally satisfy the requirement that it is valid</span>
+<span class="sd">        Python source, assuming all class names are in scope and all values</span>
+<span class="sd">        implement ``__repr__`` as suggested in the python documentation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">typename</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span>
+        <span class="n">values</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">propname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">propname</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s">=</span><span class="si">%r</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">propname</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="n">propname</span><span class="p">]))</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">(</span><span class="si">%s</span><span class="s">)&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">typename</span><span class="p">,</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">values</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Record.__eq__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compare two Record classes; recursively compares all attributes for</span>
+<span class="sd">        equality (except those marked &#39;extraneous&#39;).  See also</span>
+<span class="sd">        :py:meth:`diff` for a version where the comparison can be</span>
+<span class="sd">        fine-tuned.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">for</span> <span class="n">propname</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">prop</span><span class="o">.</span><span class="n">extraneous</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_Unset</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">other</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_Unset</span>
+                <span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
+        <span class="k">return</span> <span class="bp">True</span>
+</div>
+<div class="viewcode-block" id="Record.__ne__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__ne__">[docs]</a>    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;implemented for compatibility&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+</div>
+    <span class="nd">@property</span>
+<div class="viewcode-block" id="Record.__pk__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__pk__">[docs]</a>    <span class="k">def</span> <span class="nf">__pk__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This property returns the &quot;primary key&quot; for this object.  This is</span>
+<span class="sd">        similar to what is used when comparing Collections via</span>
+<span class="sd">        :py:mod:`normalize.diff`, and is used for stringification and for the</span>
+<span class="sd">        ``id()`` built-in.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">record_id</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="Record.__hash__"><a class="viewcode-back" href="../../record.html#normalize.record.Record.__hash__">[docs]</a>    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Implements ``id()`` for Record types.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__pk__</span><span class="o">.</span><span class="n">__hash__</span><span class="p">()</span>
+</div>
+    <span class="k">def</span> <span class="nf">diff_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator method which returns the differences from the invocant to</span>
+<span class="sd">        the argument.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``other=``\ *Record*\ \|\ *Anything*</span>
+<span class="sd">                 The thing to compare against; the types must match, unless</span>
+<span class="sd">                 ``duck_type=True`` is passed.</span>
+
+<span class="sd">            *diff_option*\ =\ *value*</span>
+<span class="sd">                 Unknown keyword arguments are eventually passed to a</span>
+<span class="sd">                 :ref:`DiffOptions` constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">normalize.diff</span> <span class="kn">import</span> <span class="n">diff_iter</span>
+        <span class="k">return</span> <span class="n">diff_iter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compare an object with another and return a :py:class:`DiffInfo`</span>
+<span class="sd">        object.  Accepts the same arguments as</span>
+<span class="sd">        :py:meth:`normalize.record.Record.diff_iter`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span> <span class="nn">normalize.diff</span> <span class="kn">import</span> <span class="n">diff</span>
+        <span class="k">return</span> <span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+                <span class="n">prop_fs</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">prop_fs</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">prop_fs</span><span class="p">):</span>
+                        <span class="k">yield</span> <span class="n">x</span>
+
+</div>
+<span class="k">class</span> <span class="nc">OhPickle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sentinel type for Un-Pickling.  ``pickle`` does not allow a</span>
+<span class="sd">    ``__getinitargs__``/``__getnewargs__`` to return keyword constructor</span>
+<span class="sd">    arguments, so this value is passed to ``__init__`` when unpickling.  It</span>
+<span class="sd">    indicates to not perform any immediate post-construction checks and instead</span>
+<span class="sd">    just return and let ``__getstate``__ set this object up.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;&lt;OhPickle&gt;&quot;</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>

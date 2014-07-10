@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property.coll &mdash; normalize 0.4.3 documentation</title>
+    <title>normalize.property.coll &mdash; normalize 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.4.3',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.3 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.5.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.property" href="../property.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../property.html" accesskey="U">normalize.property</a> &raquo;</li> 
       </ul>
@@ -48,6 +48,23 @@
           <div class="body">
             
   <h1>Source code for normalize.property.coll</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># This file is a part of the normalize python library</span>
+<span class="c">#</span>
+<span class="c"># normalize is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the MIT License.</span>
+<span class="c">#</span>
+<span class="c"># normalize is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># MIT License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the MIT license along with</span>
+<span class="c"># normalize.  If not, refer to the upstream repository at</span>
+<span class="c"># http://github.com/hearsaycorp/normalize</span>
+<span class="c">#</span>
+
+
 <span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">ListCollection</span>
 <span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">_make_generic</span>
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
@@ -55,14 +72,14 @@
 <span class="kn">from</span> <span class="nn">normalize.property</span> <span class="kn">import</span> <span class="n">SafeProperty</span>
 
 
-<span class="k">class</span> <span class="nc">CollectionProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>
-<div class="viewcode-block" id="CollectionProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.CollectionProperty">[docs]</a>    <span class="sd">&quot;&quot;&quot;Base class for properties which contain collections; responsible for</span>
+<div class="viewcode-block" id="CollectionProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.CollectionProperty">[docs]</a><span class="k">class</span> <span class="nc">CollectionProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Base class for properties which contain collections; responsible for</span>
 <span class="sd">    creating new collection types (via :py:func:`normalize.coll._make_generic`)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;coll&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">of</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">coll</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-<div class="viewcode-block" id="CollectionProperty.__init__"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.CollectionProperty.__init__">[docs]</a>        <span class="sd">&quot;&quot;&quot;Create a new Collection property.</span>
+<div class="viewcode-block" id="CollectionProperty.__init__"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.CollectionProperty.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">of</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">coll</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new Collection property.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ``of=``\ *TYPE*</span>
@@ -90,16 +107,16 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">CollectionProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">isa</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">SafeCollectionProperty</span><span class="p">(</span><span class="n">CollectionProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span></div></div>
-<div class="viewcode-block" id="SafeCollectionProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.SafeCollectionProperty">[docs]</a>    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+</div></div>
+<div class="viewcode-block" id="SafeCollectionProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.SafeCollectionProperty">[docs]</a><span class="k">class</span> <span class="nc">SafeCollectionProperty</span><span class="p">(</span><span class="n">CollectionProperty</span><span class="p">,</span> <span class="n">SafeProperty</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">SafeCollectionProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__set__</span><span class="p">(</span>
             <span class="n">obj</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
         <span class="p">)</span>
 
-
-<span class="k">class</span> <span class="nc">ListProperty</span><span class="p">(</span><span class="n">CollectionProperty</span><span class="p">):</span></div>
-<div class="viewcode-block" id="ListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.ListProperty">[docs]</a>    <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;list&quot;</span>
+</div>
+<div class="viewcode-block" id="ListProperty"><a class="viewcode-back" href="../../../property.html#normalize.property.coll.ListProperty">[docs]</a><span class="k">class</span> <span class="nc">ListProperty</span><span class="p">(</span><span class="n">CollectionProperty</span><span class="p">):</span>
+    <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;list&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">list_of</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">list_of</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
@@ -114,8 +131,8 @@
 
         <span class="nb">super</span><span class="p">(</span><span class="n">ListProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span>
             <span class="n">of</span><span class="o">=</span><span class="n">list_of</span><span class="p">,</span> <span class="n">coll</span><span class="o">=</span><span class="n">colltype</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
-        <span class="p">)</span>
-</pre></div></div>
+        <span class="p">)</span></div>
+</pre></div>
 
           </div>
         </div>
@@ -148,7 +165,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.4.3 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../property.html" >normalize.property</a> &raquo;</li> 
       </ul>

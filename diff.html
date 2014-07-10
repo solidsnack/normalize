@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Comparing Records - normalize.diff &mdash; normalize 0.4.3 documentation</title>
+    <title>Comparing Records - normalize.diff &mdash; normalize 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.3',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.3 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
     <link rel="next" title="normalize.visitor reference" href="visitor.html" />
     <link rel="prev" title="Referring to components of Records - normalize.selector" href="selector.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,6 +67,8 @@ these are passed to the <tt class="xref py py-class docutils literal"><span clas
 result is passed recursively to itself to compare deeply.  The
 exception to this is the keyword argument <tt class="docutils literal"><span class="pre">options=</span></tt>, which
 specifies a pre-constructed, perhaps derived <tt class="docutils literal"><span class="pre">DiffOptions</span></tt> instance.</p>
+<p>There are some examples of this in <a class="reference internal" href="intro.html#intro-to-diff"><em>Comparing object structures</em></a>, and more in
+the normalize test suite.</p>
 <div class="section" id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
@@ -138,6 +140,18 @@ values diffed.</p>
 <dd><p>Enumeration describing the type of difference; a <tt class="xref py py-class docutils literal"><span class="pre">DiffType</span></tt> value.</p>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="normalize.diff.DiffInfo.base">
+<tt class="descname">base</tt><a class="headerlink" href="#normalize.diff.DiffInfo.base" title="Permalink to this definition">¶</a></dt>
+<dd><p>A FieldSelector object referring to the location within the base object that the changed field was found.  If the <tt class="docutils literal"><span class="pre">diff_type</span></tt> is <tt class="docutils literal"><span class="pre">DiffTypes.ADDED</span></tt>, then this will be the location of the record the field was added in, not the (non-existant) field itself.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.diff.DiffInfo.other">
+<tt class="descname">other</tt><a class="headerlink" href="#normalize.diff.DiffInfo.other" title="Permalink to this definition">¶</a></dt>
+<dd><p>A FieldSelector object referring to the location within the &#8216;other&#8217; object that the changed field was found.  If the <tt class="docutils literal"><span class="pre">diff_type</span></tt> is <tt class="docutils literal"><span class="pre">DiffTypes.REMOVED</span></tt>, then this will be location of the record the field was removed from, not the (non-existant) field itself.</p>
+</dd></dl>
+
 </dd></dl>
 
 <dl class="class">
@@ -172,7 +186,7 @@ individual difference.</p>
 <em class="property">class </em><tt class="descclassname">normalize.diff.</tt><tt class="descname">DiffOptions</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional data structure to pass diff options down.  Some functions are
 delegated to this object, allowing for further customization of operation,
-using a sub-class API.</p>
+forming the <em>DiffOptions sub-class API</em>.</p>
 <dl class="method">
 <dt id="normalize.diff.DiffOptions.__init__">
 <tt class="descname">__init__</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions.__init__" title="Permalink to this definition">¶</a></dt>
@@ -317,6 +331,84 @@ corresponding fields of the alien class.</p>
 </dd></dl>
 
 </div>
+<div class="section" id="comparison-functions">
+<h2>Comparison functions<a class="headerlink" href="#comparison-functions" title="Permalink to this headline">¶</a></h2>
+<p>These functions call each other recursively, depending on the value
+encountered during walking the base object.  They are documented here
+to give insight into the workings of more user-facing APIs such as
+<tt class="docutils literal"><span class="pre">diff</span></tt>, but should be considered to be implementation details.</p>
+<dl class="function">
+<dt id="normalize.diff.compare_record_iter">
+<tt class="descclassname">normalize.diff.</tt><tt class="descname">compare_record_iter</tt><big>(</big><em>a</em>, <em>b</em>, <em>fs_a=None</em>, <em>fs_b=None</em>, <em>options=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#compare_record_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.compare_record_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>This generator function compares a record, slot by slot, and yields
+differences found as <tt class="docutils literal"><span class="pre">DiffInfo</span></tt> objects.</p>
+<p>args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">a=</span></tt><em>Record</em></dt>
+<dd>The base object</dd>
+<dt><tt class="docutils literal"><span class="pre">b=</span></tt><em>Record</em>|<em>object</em></dt>
+<dd>The &#8216;other&#8217; object, which must be the same type as <tt class="docutils literal"><span class="pre">a</span></tt>, unless
+<tt class="docutils literal"><span class="pre">options.duck_type</span></tt> is set.</dd>
+<dt><tt class="docutils literal"><span class="pre">fs_a=</span></tt><a href="#id1"><span class="problematic" id="id2">*</span></a>FieldSelector*</dt>
+<dd>The current diff context, prefixed to any returned <tt class="docutils literal"><span class="pre">base</span></tt> field
+in yielded <tt class="docutils literal"><span class="pre">DiffInfo</span></tt> objects.  Defaults to an empty
+FieldSelector.</dd>
+<dt><tt class="docutils literal"><span class="pre">fs_b=</span></tt><a href="#id3"><span class="problematic" id="id4">*</span></a>FieldSelector*</dt>
+<dd>The <tt class="docutils literal"><span class="pre">other</span></tt> object context.  This will differ from <tt class="docutils literal"><span class="pre">fs_a</span></tt> in
+the case of collections, where a value has moved slots.  Defaults
+to an empty FieldSelector.</dd>
+<dt><tt class="docutils literal"><span class="pre">options=</span></tt><a href="#id5"><span class="problematic" id="id6">*</span></a>DiffOptions*</dt>
+<dd>A constructed <tt class="docutils literal"><span class="pre">DiffOptions</span></tt> object; a default one is created if
+not passed in.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.diff.compare_collection_iter">
+<tt class="descclassname">normalize.diff.</tt><tt class="descname">compare_collection_iter</tt><big>(</big><em>propval_a</em>, <em>propval_b</em>, <em>fs_a=None</em>, <em>fs_b=None</em>, <em>options=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#compare_collection_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.compare_collection_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator function to compare two collections, and yield differences.
+This function does not currently report moved items in collections, and
+uses the <tt class="xref py py-meth docutils literal"><span class="pre">DiffOptions.record_id()</span></tt> method to decide if objects are
+to be considered the same, and differences within returned.</p>
+<p>Arguments are the same as <tt class="xref py py-func docutils literal"><span class="pre">compare_record_iter()</span></tt>.</p>
+<p>Note that <tt class="docutils literal"><span class="pre">diff_iter</span></tt> and <tt class="docutils literal"><span class="pre">compare_record_iter</span></tt> will call <em>both</em> this
+function and <tt class="docutils literal"><span class="pre">compare_record_iter</span></tt> on <tt class="docutils literal"><span class="pre">RecordList</span></tt> types.  However, as
+most <tt class="docutils literal"><span class="pre">RecordList</span></tt> types have no extra properties, no differences are
+yielded by the <tt class="docutils literal"><span class="pre">compare_record_iter</span></tt> method.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.diff.compare_list_iter">
+<tt class="descclassname">normalize.diff.</tt><tt class="descname">compare_list_iter</tt><big>(</big><em>propval_a</em>, <em>propval_b</em>, <em>fs_a=None</em>, <em>fs_b=None</em>, <em>options=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#compare_list_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.compare_list_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for comparing &#8216;simple&#8217; lists when they are encountered.  This
+does not currently recurse further.  Arguments are as per other
+<tt class="docutils literal"><span class="pre">compare_</span></tt><em>X</em> functions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.diff.compare_dict_iter">
+<tt class="descclassname">normalize.diff.</tt><tt class="descname">compare_dict_iter</tt><big>(</big><em>propval_a</em>, <em>propval_b</em>, <em>fs_a=None</em>, <em>fs_b=None</em>, <em>options=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#compare_dict_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.compare_dict_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator for comparing &#8216;simple&#8217; dicts when they are encountered.  This
+does not currently recurse further.  Arguments are as per other
+<tt class="docutils literal"><span class="pre">compare_</span></tt><em>X</em> functions.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.diff.collection_generator">
+<tt class="descclassname">normalize.diff.</tt><tt class="descname">collection_generator</tt><big>(</big><em>collection</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#collection_generator"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.collection_generator" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function returns a generator which iterates over the collection,
+similar to Collection.itertuples().  Collections are viewed by this module,
+regardless of type, as a mapping from an index to the value.  For sets, the
+&#8220;index&#8221; is the value itself (ie, (V, V)).  For dicts, it&#8217;s a string, and
+for lists, it&#8217;s an int.</p>
+<p>In general, this function defers to <tt class="docutils literal"><span class="pre">itertuples</span></tt> and/or <tt class="docutils literal"><span class="pre">iteritems</span></tt>
+methods defined on the instances; however, when duck typing, this function
+typically provides the generator.</p>
+</dd></dl>
+
+</div>
 </div>
 
 
@@ -329,6 +421,7 @@ corresponding fields of the alien class.</p>
   <ul>
 <li><a class="reference internal" href="#">Comparing Records - <tt class="docutils literal"><span class="pre">normalize.diff</span></tt></a><ul>
 <li><a class="reference internal" href="#class-reference">Class reference</a></li>
+<li><a class="reference internal" href="#comparison-functions">Comparison functions</a></li>
 </ul>
 </li>
 </ul>
@@ -376,7 +469,7 @@ corresponding fields of the alien class.</p>
         <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.3 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

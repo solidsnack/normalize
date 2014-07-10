@@ -1,0 +1,536 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>normalize.visitor &mdash; normalize 0.5.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.5.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for normalize.visitor</h1><div class="highlight"><pre>
+<span class="c">#</span>
+<span class="c"># This file is a part of the normalize python library</span>
+<span class="c">#</span>
+<span class="c"># normalize is free software: you can redistribute it and/or modify</span>
+<span class="c"># it under the terms of the MIT License.</span>
+<span class="c">#</span>
+<span class="c"># normalize is distributed in the hope that it will be useful,</span>
+<span class="c"># but WITHOUT ANY WARRANTY; without even the implied warranty of</span>
+<span class="c"># MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the</span>
+<span class="c"># MIT License for more details.</span>
+<span class="c">#</span>
+<span class="c"># You should have received a copy of the MIT license along with</span>
+<span class="c"># normalize.  If not, refer to the upstream repository at</span>
+<span class="c"># http://github.com/hearsaycorp/normalize</span>
+<span class="c">#</span>
+
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">import</span> <span class="nn">types</span>
+
+<span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">Collection</span>
+<span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
+<span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
+<span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+
+
+<div class="viewcode-block" id="Visitor"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor">[docs]</a><span class="k">class</span> <span class="nc">Visitor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class for writing Record visitor pattern functions.  This Visitor is</span>
+<span class="sd">    intended to be subclassed; a generic version which can take the apply and</span>
+<span class="sd">    reduce functions as arguments may be implemented later.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+<div class="viewcode-block" id="Visitor.__init__"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ignore_empty_string</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">apply_records</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">apply_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Create a new visitor.  The built-in parameters, which affect the</span>
+<span class="sd">        default &#39;map&#39; function operation, are:</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``ignore_none=``\ *bool*</span>
+<span class="sd">                If the &#39;apply&#39; function returns ``None``, treat it as if the</span>
+<span class="sd">                slot or object did not exist.  ``True`` by default.</span>
+
+<span class="sd">            ``ignore_empty_string=``\ *bool*</span>
+<span class="sd">                If the &#39;apply&#39; function returns the empty string, treat it as</span>
+<span class="sd">                if the slot or object did not exist.  ``False`` by default.</span>
+
+<span class="sd">            ``apply_records=``\ *bool*</span>
+<span class="sd">                Normally, traversal happens in depth-first order, and fields</span>
+<span class="sd">                which are Records never have ``apply`` called on them.  If you</span>
+<span class="sd">                want them to, set this field.  This affects the arguments</span>
+<span class="sd">                passed to ``reduce_record``.</span>
+
+<span class="sd">                If the ``apply`` function returns ``self.StopVisiting`` (or an</span>
+<span class="sd">                instance of it), then traversal does not descend into the</span>
+<span class="sd">                fields of the record.  If it returns something else, then</span>
+<span class="sd">                ``reduce_record`` is passed a tuple as its first argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span> <span class="o">=</span> <span class="n">ignore_none</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span> <span class="o">=</span> <span class="n">ignore_empty_string</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span> <span class="o">=</span> <span class="n">apply_records</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">apply_empty_slots</span> <span class="o">=</span> <span class="n">apply_empty_slots</span>
+</div>
+<div class="viewcode-block" id="Visitor.apply"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">parent_obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;&#39;apply&#39; is a general place to put a function which is called</span>
+<span class="sd">        on every extant record slot.</span>
+
+<span class="sd">        Data structures are normally applied in depth-first order.  If you</span>
+<span class="sd">        specify ``apply_records`` to the constructor, this function is called</span>
+<span class="sd">        on the actual records first, and may prevent recursion by returning</span>
+<span class="sd">        ``self.StopVisiting(return_value)``.  Any value (other than ``None``)</span>
+<span class="sd">        returned by applying to a record changes the value passed to</span>
+<span class="sd">        ``reduce_record``.</span>
+
+<span class="sd">        The default implementation passes through the slot value as-is, but</span>
+<span class="sd">        expected exceptions are converted to ``None``.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``value=``\ *value*\ \|\ *AttributeError*\ \|\ *KeyError*</span>
+<span class="sd">                This is the value currently in the slot, or the Record itself</span>
+<span class="sd">                with ``apply_records``.  *AttributeError* will only be received</span>
+<span class="sd">                if you passed ``apply_empty_slots``, and *KeyError* will be</span>
+<span class="sd">                passed if ``parent_obj`` is a ``dict`` (see</span>
+<span class="sd">                :py:meth:`Visitor.map_prop` for details about when this might</span>
+<span class="sd">                happen)</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                This is the location of ``value``, relative to where the</span>
+<span class="sd">                visiting started.</span>
+
+<span class="sd">            ``prop=``\ *Property*\ \|\ ``None``</span>
+<span class="sd">                This is the :py:class:`normalize.Property` instance which</span>
+<span class="sd">                represents the field being traversed.  ``None`` with</span>
+<span class="sd">                ``apply_records``</span>
+<span class="sd">                </span>
+<span class="sd">            ``parent_obj=``\ *Record*\ \|\ ``None``</span>
+<span class="sd">                This is the instance which the value exists in.</span>
+<span class="sd">                ``prop.get(parent_obj)`` will return ``value`` (or throw</span>
+<span class="sd">                ``AttributeError``). ``None`` with ``apply_records``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">None</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">))</span> <span class="k">else</span>
+            <span class="n">value</span>
+        <span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Visitor.reduce_record"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_record">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">applied</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hook called for each record, with the results of mapping each</span>
+<span class="sd">        member.</span>
+
+<span class="sd">        The default implementation returns the first argument as-is.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``applied=``\ *dict*\ \|\ *tuple*</span>
+
+<span class="sd">                This is the result of mapping the individual slots in the</span>
+<span class="sd">                record as a dict.  The keys are the attribute names, and the</span>
+<span class="sd">                values the result from their ``apply`` call.  With</span>
+<span class="sd">                ``ignore_none`` (the default), this dictionary will be missing</span>
+<span class="sd">                those keys.  Similarly with ``ignore_empty_string`` and empty</span>
+<span class="sd">                string applied results.</span>
+
+<span class="sd">                With ``apply_records``, if the first call to ``apply`` on the</span>
+<span class="sd">                Record returned anything other than ``this.StopVisiting(x)`` or</span>
+<span class="sd">                ``None``, the value will be a tuple, with the first item the</span>
+<span class="sd">                result of the first call to ``apply`` on the Record, and the</span>
+<span class="sd">                second item the result of applying the individual slots.  If</span>
+<span class="sd">                you did return ``this.StopVisiting(x)``, then ``applied`` will</span>
+<span class="sd">                be ``x``, whatever that was.</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                This is the location of the record being reduced, relative to</span>
+<span class="sd">                the starting point.</span>
+
+<span class="sd">            ``record_type=``\ *RecordType*</span>
+<span class="sd">                This is the :py:class:`normalize.Record` *class* which</span>
+<span class="sd">                is currently being reduced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">applied</span>
+</div>
+<div class="viewcode-block" id="Visitor.reduce_collection"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_collection">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">result_coll_generator</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">coll_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Hook called for each normalize.coll.Collection.</span>
+
+<span class="sd">        The default implementation calls</span>
+<span class="sd">        :py:meth:`normalize.coll.Collection.tuples_to_coll` with</span>
+<span class="sd">        ``coerce=False``, which just re-assembles the collection into a native</span>
+<span class="sd">        python collection type of the same type of the input collection.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``result_coll_generator=`` *generator func*</span>
+<span class="sd">                Generator which returns (key, value) pairs (like</span>
+<span class="sd">                :py:meth:`normalize.coll.Collection.itertuples`)</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                This is the location of the collection, relative to the</span>
+<span class="sd">                starting point.</span>
+
+<span class="sd">            ``coll_type=``\ *CollectionType*</span>
+<span class="sd">                This is the :py:class:`normalize.coll.Collection`-derived</span>
+<span class="sd">                *class* which is currently being reduced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">tuples_to_coll</span><span class="p">(</span><span class="n">result_coll_generator</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Visitor.reduce_complex"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.reduce_complex">[docs]</a>    <span class="k">def</span> <span class="nf">reduce_complex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record_result</span><span class="p">,</span> <span class="n">coll_result</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;If a Collection also has properties that map to something (which you</span>
+<span class="sd">        can only do by sub-classing ``RecordList`` or another</span>
+<span class="sd">        :py:class:`normalize.coll.Collection` and adding properties), this</span>
+<span class="sd">        reduction is called to combine the two applied/reduced values into a</span>
+<span class="sd">        single value for return.</span>
+
+<span class="sd">        The default implementation throws ``coll_result`` into</span>
+<span class="sd">        ``record_result[&#39;values&#39;]``, and throws an exception if it was already</span>
+<span class="sd">        present.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``record_result=``\ *dict*</span>
+<span class="sd">                This contains whatever ``reduce_record`` returned, which will</span>
+<span class="sd">                generally be a dictionary.</span>
+
+<span class="sd">            ``coll_result=``\ *list\*\ \|\ *set*\ \|\ *etc*</span>
+<span class="sd">                This contains whatever ``reduce_collection`` returned, normally</span>
+<span class="sd">                a list.</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">            </span>
+
+<span class="sd">            ``value_type=``\ *CollectionType*</span>
+<span class="sd">                This is the :py:class:`normalize.coll.Collection`-derived</span>
+<span class="sd">                *class* which is currently being reduced.  Remember that</span>
+<span class="sd">                ``Collection`` is a ``Record`` sub-class, so it has</span>
+<span class="sd">                ``properties`` and all those other fields available.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">record_result</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;values&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">VisitorTooSimple</span><span class="p">(</span>
+                <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">,</span>
+                <span class="n">value_type_name</span><span class="o">=</span><span class="n">value_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="n">visitor</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">record_result</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coll_result</span>
+        <span class="k">return</span> <span class="n">record_result</span>
+</div>
+    <span class="k">class</span> <span class="nc">StopVisiting</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="n">return_value</span> <span class="o">=</span> <span class="bp">None</span>
+
+        <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_value</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="n">return_value</span>
+
+<div class="viewcode-block" id="Visitor.map"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map">[docs]</a>    <span class="k">def</span> <span class="nf">map</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">value_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This is the &#39;front door&#39; to the Visitor, and is called recursively.</span>
+<span class="sd">        It calls the various ``map_``\ *X* methods on its argument, and the</span>
+<span class="sd">        ``reduce_``\ *X* methods to collate the result.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``value=``\ *object*</span>
+<span class="sd">                The value to visit.  Normally (but not always) a</span>
+<span class="sd">                :py:class:`normalize.record.Record` instance.</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                This is used to pass down the current selector context to</span>
+<span class="sd">                ``apply`` functions, etc.  In case they need it.  I&#39;m not sure</span>
+<span class="sd">                what for, either.  Posterity and debug messages, if nothing</span>
+<span class="sd">                else.</span>
+
+<span class="sd">            ``value_type=``\ *RecordType*</span>
+<span class="sd">                This is the ``Record`` subclass to interpret ``value`` as.  The</span>
+<span class="sd">                default is ``type(value)``.  If you specify this, then the type</span>
+<span class="sd">                information on ``value`` is essentially ignored (with the</span>
+<span class="sd">                caveat mentioned below on :py:meth:`Visitor.map_prop`, and may</span>
+<span class="sd">                be a ``dict``, ``list``, etc.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value_type</span><span class="p">:</span>
+            <span class="n">value_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="n">prune</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+            <span class="n">record_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_record</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">record_mapped</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">record_mapped</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span>
+            <span class="p">):</span>
+                <span class="n">record_mapped</span> <span class="o">=</span> <span class="n">record_mapped</span><span class="o">.</span><span class="n">return_value</span>
+                <span class="n">prune</span> <span class="o">=</span> <span class="bp">True</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prune</span> <span class="ow">and</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
+            <span class="n">coll_mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_collection</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">map_collection</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">),</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">coll_mapped</span> <span class="ow">and</span> <span class="n">record_mapped</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_complex</span><span class="p">(</span>
+                    <span class="n">record_mapped</span><span class="p">,</span> <span class="n">coll_mapped</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="n">coll_mapped</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">coll_mapped</span>
+
+        <span class="k">return</span> <span class="n">record_mapped</span>
+</div>
+<div class="viewcode-block" id="Visitor.map_record"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_record">[docs]</a>    <span class="k">def</span> <span class="nf">map_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method responsible for calling apply on each of the fields of the</span>
+<span class="sd">        object, and returning the value passed to</span>
+<span class="sd">        :py:meth:`Visitor.reduce_record`.</span>
+
+<span class="sd">        The default implementation first calls :py:meth:`Visitor.apply` on the</span>
+<span class="sd">        record (with ``apply_records``), skipping recursion if that method</span>
+<span class="sd">        returns ``self.StopVisiting`` (or an instance thereof)</span>
+
+<span class="sd">        It then iterates over the properties (of the type, not the instance) in</span>
+<span class="sd">        more-or-less random order, calling into :py:meth:`Visitor.map_prop` for</span>
+<span class="sd">        each, the results of which end up being the dictionary return value.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``record=``\ *Record*</span>
+<span class="sd">                The instance being iterated over</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                The current path in iteration.</span>
+
+<span class="sd">            ``record_type=``\ *RecordType*</span>
+<span class="sd">                The :py:class:`normalize.record.Record` sub-class which applies</span>
+<span class="sd">                to the instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">record_type</span><span class="p">:</span>
+            <span class="n">record_type</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">fs</span><span class="p">:</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span> <span class="ow">or</span> \
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">StopVisiting</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">return_value</span>
+
+        <span class="n">result_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">record_type</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_prop</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">mapped</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">result_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped</span>
+
+        <span class="n">to_reduce</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">result_dict</span> <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_records</span> <span class="ow">or</span> <span class="n">result</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span>
+            <span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="n">result_dict</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">reduce_record</span><span class="p">(</span><span class="n">to_reduce</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">record_type</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="Visitor.map_prop"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_prop">[docs]</a>    <span class="k">def</span> <span class="nf">map_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Method responsible for retrieving a value from the slot of an</span>
+<span class="sd">        object, and calling :py:meth:`Visitor.apply` on it.  With</span>
+<span class="sd">        ``apply_empty_slots``, this value will be an ``AttributeError``.</span>
+
+<span class="sd">        The default implementation of this will happily handle non-Record</span>
+<span class="sd">        objects which respond to the same accessor fetches.  Otherwise, if the</span>
+<span class="sd">        ``record`` is a dictionary, it will pull out the named key and call</span>
+<span class="sd">        ``Visitor.apply()`` on that instead.  With ``apply_empty_slots``, the</span>
+<span class="sd">        value will be a ``KeyError``.</span>
+
+<span class="sd">        This function will recurse back into :py:meth:`Visitor.map` if the</span>
+<span class="sd">        type on the *property* indicates that the value contains a record</span>
+<span class="sd">       </span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``record=``\ *Record*</span>
+<span class="sd">                The instance being iterated over</span>
+
+<span class="sd">            ``fs=``\ *FieldSelector*</span>
+<span class="sd">                The current path in iteration.</span>
+
+<span class="sd">            ``record_type=``\ *RecordType*</span>
+<span class="sd">                The :py:class:`normalize.record.Record` sub-class which applies</span>
+<span class="sd">                to the instance.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">e</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">,</span> <span class="n">ae</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">ae</span>
+
+        <span class="n">mapped</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply_empty_slots</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+            <span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">fs</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">value_type</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">or</span> <span class="nb">type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map_type_union</span><span class="p">(</span>
+                    <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">record</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">record</span><span class="p">)</span>
+                    
+        <span class="k">return</span> <span class="n">mapped</span>
+</div>
+<div class="viewcode-block" id="Visitor.map_collection"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.map_collection">[docs]</a>    <span class="k">def</span> <span class="nf">map_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coll</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">coll_type</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Generator method responsible for iterating over items in a</span>
+<span class="sd">        collection, and recursively calling :py:meth:`Visitor.map()` on them to</span>
+<span class="sd">        build a result.  Yields the tuple protocol: always (K, V).</span>
+
+<span class="sd">        The default implementation calls the ``.itertuples()`` method of the</span>
+<span class="sd">        value, falling back to ``coll_type.coll_to_tuples(coll)`` (see</span>
+<span class="sd">        :py:meth:`normalize.coll.Collection.coll_to_tuples`).  On each item, it</span>
+<span class="sd">        recurses to ``self.map()``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">coll</span><span class="o">.</span><span class="n">itertuples</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="n">generator</span> <span class="o">=</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">coll_to_tuples</span><span class="p">(</span><span class="n">coll</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">generator</span><span class="p">:</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">mapped</span> <span class="o">==</span> <span class="s">&quot;&quot;</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">yield</span> <span class="n">key</span><span class="p">,</span> <span class="n">mapped</span>
+</div>
+    <span class="k">def</span> <span class="nf">map_type_union</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">type_tuple</span><span class="p">,</span> <span class="o">*</span><span class="n">apply_args</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This corner-case method applies when visiting a value and</span>
+<span class="sd">        encountering a type union in the ``Property.valuetype`` field.</span>
+
+<span class="sd">        It first checks to see if the value happens to be an instance of one or</span>
+<span class="sd">        more of the types in the union, and then calls :py:meth:`Visitor.map`</span>
+<span class="sd">        on those, in order, until one of them returns something.  If none of</span>
+<span class="sd">        these return anything, the last one called is the applied result.</span>
+
+<span class="sd">        If the value is not an instance of any of them, then it tries again,</span>
+<span class="sd">        this time calling ``map()`` with the type of each of the ``Record``</span>
+<span class="sd">        types in the union, in turn.  If any of them return a non-empty dict,</span>
+<span class="sd">        then that is returned.  If none of these attempts return anything (or</span>
+<span class="sd">        there are no ``Record`` sub-classes in the type union), then</span>
+<span class="sd">        :py:meth:`Visitor.apply` is called on the slot instead.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># this code has the same problem that record_id does;</span>
+        <span class="c"># that is, it doesn&#39;t know which of the type union the</span>
+        <span class="c"># value is.</span>
+        <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">matching_record_types</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">type_tuple</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
+                <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_type</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span>
+                <span class="n">matching_record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_type</span><span class="p">)</span>
+
+        <span class="n">mapped</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">matching_record_types</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">matching_record_types</span><span class="p">:</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+                    <span class="k">break</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">record_types</span><span class="p">:</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">mapped</span><span class="p">:</span>
+                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fs</span><span class="p">,</span> <span class="o">*</span><span class="n">apply_args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">mapped</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+          <li><a href="../index.html" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Sam Vilain, Hearsay Social.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+    </div>
+  </body>
+</html>
