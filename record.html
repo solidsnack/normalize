@@ -35,6 +35,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              accesskey="N">next</a> |</li>
         <li class="right" >
@@ -56,9 +59,9 @@
 <p><tt class="docutils literal"><span class="pre">Record</span></tt> subclasses don&#8217;t have any special mix-in magic like
 <tt class="docutils literal"><span class="pre">Property</span></tt> subclasses do.  To use a <tt class="docutils literal"><span class="pre">Record</span></tt> subclass you must
 explicitly derive it.  The most useful classes for general use are
-<tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecord</span></tt>,
+<a class="reference internal" href="#normalize.record.json.JsonRecord" title="normalize.record.json.JsonRecord"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecord</span></tt></a>,
 <tt class="xref py py-class docutils literal"><span class="pre">normalize.record.RecordList</span></tt> and the combination,
-<tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecordList</span></tt>.</p>
+<a class="reference internal" href="#normalize.record.json.JsonRecordList" title="normalize.record.json.JsonRecordList"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.json.JsonRecordList</span></tt></a>.</p>
 <p>Here&#8217;s a guide to choosing a class:</p>
 <p><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></p>
 <blockquote>
@@ -89,8 +92,8 @@ where you don&#8217;t want to make any of them more special than any
 other.  Instead of using the <tt class="docutils literal"><span class="pre">.json_data()</span></tt> function, you might
 for instance be using <tt class="xref py py-class docutils literal"><span class="pre">normalize.visitor.Visitor</span></tt>.</p>
 <p>You can still access the same conversion as with <tt class="docutils literal"><span class="pre">JsonRecord</span></tt> by
-using the <tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.to_json()</span></tt> and
-<tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.from_json()</span></tt> functions directly.
+using the <a class="reference internal" href="#normalize.record.json.to_json" title="normalize.record.json.to_json"><tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.to_json()</span></tt></a> and
+<a class="reference internal" href="#normalize.record.json.from_json" title="normalize.record.json.from_json"><tt class="xref py py-func docutils literal"><span class="pre">normalize.record.json.from_json()</span></tt></a> functions directly.
 These functions will respect any <tt class="xref py py-class docutils literal"><span class="pre">JsonProperty</span></tt> hints
 (<tt class="docutils literal"><span class="pre">json_name</span></tt> etc), even if those hints are on properties which
 are not a part of a <tt class="docutils literal"><span class="pre">JsonRecord</span></tt> class.</p>
@@ -104,7 +107,7 @@ this property is the actual collection.  This <tt class="docutils literal"><span
 isn&#8217;t currently present in the <tt class="docutils literal"><span class="pre">type(Foo).properties</span></tt>
 dictionary, but may some day show up there.</p>
 <p>In theory, <tt class="docutils literal"><span class="pre">RecordList</span></tt> is just one of possibly many types of
-<tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt> sets which happens to use
+<a class="reference internal" href="#normalize.coll.Collection" title="normalize.coll.Collection"><tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt></a> sets which happens to use
 continuous integers as the key.  Each collection type provides
 methods which know how to interpret iterable things and convert
 them into an iterable of (K, V) pairs.  In practice, the list is
@@ -130,14 +133,430 @@ token, or a count of the size of the set.</div></blockquote>
 the rest of this page!</p>
 <div class="section" id="record">
 <h3><tt class="docutils literal"><span class="pre">Record</span></tt><a class="headerlink" href="#record" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="normalize.record.Record">
+<em class="property">class </em><tt class="descclassname">normalize.record.</tt><tt class="descname">Record</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for normalize instances and collections.</p>
+<dl class="method">
+<dt id="normalize.record.Record.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>init_dict=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Instantiates a new <tt class="docutils literal"><span class="pre">Record</span></tt> type.</p>
+<p>You may specify a <tt class="docutils literal"><span class="pre">dict</span></tt> to initialize from, <em>or</em> use keyword
+argument form.  The default interpretation of the first positional
+argument is to treat it as if its contents were passed in as keyword
+arguments.</p>
+<p>Subclass API: subclasses are permitted to interpret positional
+arguments in non-standard ways, but in general it is expected that if
+keyword arguments are passed, then they are already of the right type
+(or, of a type that the <tt class="docutils literal"><span class="pre">coerce</span></tt> functions associated with the
+properties can accept).  The only exception to this is if <tt class="docutils literal"><span class="pre">init_dict</span></tt>
+is an <tt class="docutils literal"><span class="pre">OhPickle</span></tt> instance, you should probably just return (see
+<tt class="xref py py-class docutils literal"><span class="pre">OhPickle</span></tt>)</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__getnewargs__">
+<tt class="descname">__getnewargs__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__getnewargs__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__getnewargs__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Stub method which arranges for an <tt class="docutils literal"><span class="pre">OhPickle</span></tt> instance to be passed
+to the constructor above when pickling out.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__getstate__">
+<tt class="descname">__getstate__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__getstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__getstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement saving, for the pickle out API.  Returns the instance
+dict</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__setstate__">
+<tt class="descname">__setstate__</tt><big>(</big><em>instance_dict</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__setstate__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__setstate__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implement loading, for the pickle in API.  Sets the instance dict
+directly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__str__">
+<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to string form.  This is what you see if you cast the
+object to a string or use the <tt class="docutils literal"><span class="pre">%s</span></tt> format code, and is supposed to be
+an &#8220;informal&#8221; representation when you don&#8217;t want a full object dump
+like <tt class="docutils literal"><span class="pre">repr()</span></tt> would provide.</p>
+<p>If you defined a <tt class="docutils literal"><span class="pre">primary_key</span></tt> for the object, then the values of the
+attributes you specified will be included in the string representation,
+eg <tt class="docutils literal"><span class="pre">&lt;Task</span> <span class="pre">17&gt;</span></tt>.  Otherwise, the <em>implicit</em> primary key (eg, a tuple
+of all of the defined attributes with their values) is included, up to
+the first 30 characters or so.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marshalling to Python source.  This is what you will see when
+printing objects using the <tt class="docutils literal"><span class="pre">%r</span></tt> format code.  This function is
+recursive and should generally satisfy the requirement that it is valid
+Python source, assuming all class names are in scope and all values
+implement <tt class="docutils literal"><span class="pre">__repr__</span></tt> as suggested in the python documentation.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare two Record classes; recursively compares all attributes for
+equality (except those marked &#8216;extraneous&#8217;).  See also
+<tt class="xref py py-meth docutils literal"><span class="pre">diff()</span></tt> for a version where the comparison can be
+fine-tuned.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__ne__">
+<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__ne__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>implemented for compatibility</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="normalize.record.Record.__pk__">
+<tt class="descname">__pk__</tt><a class="reference internal" href="_modules/normalize/record.html#Record.__pk__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__pk__" title="Permalink to this definition">¶</a></dt>
+<dd><p>This property returns the &#8220;primary key&#8221; for this object.  This is
+similar to what is used when comparing Collections via
+<tt class="xref py py-mod docutils literal"><span class="pre">normalize.diff</span></tt>, and is used for stringification and for the
+<tt class="docutils literal"><span class="pre">id()</span></tt> built-in.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.Record.__hash__">
+<tt class="descname">__hash__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/record.html#Record.__hash__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.Record.__hash__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implements <tt class="docutils literal"><span class="pre">id()</span></tt> for Record types.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="collection-types">
 <h3>Collection Types<a class="headerlink" href="#collection-types" title="Permalink to this headline">¶</a></h3>
 <p>Collections are types of records, with a single property <tt class="docutils literal"><span class="pre">values</span></tt>
 which contains the underlying collection object.</p>
+<span class="target" id="module-normalize.coll"></span><dl class="class">
+<dt id="normalize.coll.Collection">
+<em class="property">class </em><tt class="descclassname">normalize.coll.</tt><tt class="descname">Collection</tt><big>(</big><em>values=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>This is the base class for Record property values which contain
+iterable sets of values with a particular common type.</p>
+<p>All collections are modeled as a mapping from some index to a value.
+Bags are not currently supported, ie the keys must be unique for the diff
+machinery as currently written to function.</p>
+<p>The type of members in the collection is defined using a sub-class API:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><em>classproperty</em> <strong>itemtype</strong>=<em>Record sub-class</em></dt>
+<dd>This property must be defined for instances to be instantiable.
+It declares the type of values.</dd>
+<dt><em>classproperty</em> <strong>coerceitem</strong>=<em>FUNC</em></dt>
+<dd>Defaults to <em>itemtype</em> and is the function or constructor which
+will accept items during construction of a collection which are not
+already of the correct type.</dd>
+<dt><em>classproperty</em> <strong>colltype</strong>=<em>collection type</em></dt>
+<dd>This is the type of the underlying container.  <tt class="docutils literal"><span class="pre">list</span></tt>, <tt class="docutils literal"><span class="pre">dict</span></tt>,
+etc.</dd>
+</dl>
+</div></blockquote>
+<dl class="method">
+<dt id="normalize.coll.Collection.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>values=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Default collection constructor.</p>
+<p>args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">values=</span></tt><em>iterable</em></dt>
+<dd>Specify the initial contents of the collection.  It will be
+converted to the correct type using <a class="reference internal" href="#normalize.coll.Collection.coll_to_tuples" title="normalize.coll.Collection.coll_to_tuples"><tt class="xref py py-meth docutils literal"><span class="pre">coll_to_tuples()</span></tt></a>
+and <a class="reference internal" href="#normalize.coll.Collection.tuples_to_coll" title="normalize.coll.Collection.tuples_to_coll"><tt class="xref py py-meth docutils literal"><span class="pre">tuples_to_coll()</span></tt></a></dd>
+<dt><tt class="docutils literal"><span class="pre">attribute=</span></tt><em>VALUE</em></dt>
+<dd>It is possible to add extra properties to <tt class="docutils literal"><span class="pre">Collection</span></tt>
+objects; this is how you specify them on construction.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.Collection.__eq__">
+<tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.__eq__" title="Permalink to this definition">¶</a></dt>
+<dd><p>To be <tt class="docutils literal"><span class="pre">==</span></tt>, collections must have exactly the same <tt class="docutils literal"><span class="pre">itemtype</span></tt>
+and <tt class="docutils literal"><span class="pre">colltype</span></tt>, and equal <tt class="docutils literal"><span class="pre">values</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.Collection.__ne__">
+<tt class="descname">__ne__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.__ne__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.__ne__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implemented, for compatibility</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.coll.Collection.coerce_tuples">
+<em class="property">classmethod </em><tt class="descname">coerce_tuples</tt><big>(</big><em>generator</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.coerce_tuples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.coerce_tuples" title="Permalink to this definition">¶</a></dt>
+<dd><p>This class method converts a generator of <tt class="docutils literal"><span class="pre">(K,</span> <span class="pre">V)</span></tt> tuples (the
+<em>tuple protocol</em>), where <tt class="docutils literal"><span class="pre">V</span></tt> is not yet of the correct type, to a
+generator where it is of the correct type (using the <tt class="docutils literal"><span class="pre">coerceitem</span></tt>
+class property)</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.coll.Collection.tuples_to_coll">
+<em class="property">classmethod </em><tt class="descname">tuples_to_coll</tt><big>(</big><em>generator</em>, <em>coerce=False</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.tuples_to_coll"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.tuples_to_coll" title="Permalink to this definition">¶</a></dt>
+<dd><p><em>required virtual method</em> This class method, part of the sub-class
+API, converts a generator of <tt class="docutils literal"><span class="pre">(K,</span> <span class="pre">V)</span></tt> tuples (the <em>tuple protocol</em>)
+to one of the underlying collection type.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.Collection.itertuples">
+<tt class="descname">itertuples</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.itertuples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.itertuples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Iterate over the items in the collection; return (k, v) where k is
+the key, index etc into the collection (or potentially the value
+itself, for sets).  This form is the <em>tuple protocol</em></p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.coll.Collection.coll_to_tuples">
+<em class="property">classmethod </em><tt class="descname">coll_to_tuples</tt><big>(</big><em>coll</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#Collection.coll_to_tuples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.Collection.coll_to_tuples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate &#8216;conformant&#8217; tuples from an input collection, similar to
+itertuples</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.coll.DictCollection">
+<em class="property">class </em><tt class="descclassname">normalize.coll.</tt><tt class="descname">DictCollection</tt><big>(</big><em>values=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#DictCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.DictCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>An implementation of keyed collections which obey the <cite>Record</cite> property
+protocol and the tuple collection protocol.  <em>Warning</em>: largely untested,
+patches welcome.</p>
+<dl class="attribute">
+<dt id="normalize.coll.DictCollection.colltype">
+<tt class="descname">colltype</tt><a class="headerlink" href="#normalize.coll.DictCollection.colltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">dict</span></tt></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.coll.ListCollection">
+<em class="property">class </em><tt class="descclassname">normalize.coll.</tt><tt class="descname">ListCollection</tt><big>(</big><em>values=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#ListCollection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.ListCollection" title="Permalink to this definition">¶</a></dt>
+<dd><p>An implementation of sequences which obey the <cite>Record</cite> property protocol
+and the tuple collection protocol.</p>
+<dl class="attribute">
+<dt id="normalize.coll.ListCollection.colltype">
+<tt class="descname">colltype</tt><a class="headerlink" href="#normalize.coll.ListCollection.colltype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <tt class="xref py py-class docutils literal"><span class="pre">list</span></tt></p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.coll.ListCollection.coll_to_tuples">
+<em class="property">classmethod </em><tt class="descname">coll_to_tuples</tt><big>(</big><em>coll</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#ListCollection.coll_to_tuples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.ListCollection.coll_to_tuples" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">coll_to_tuples</span></tt> is capable of unpacking its own collection types
+(<cite>list</cite>), <tt class="docutils literal"><span class="pre">collections.Mapping</span></tt> objects, as well generators,
+sequences and iterators.  Returns <tt class="docutils literal"><span class="pre">(*int*,</span> <span class="pre">Value)</span></tt>.  Does not coerce
+items.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.ListCollection.append">
+<tt class="descname">append</tt><big>(</big><em>item</em><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#ListCollection.append"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.ListCollection.append" title="Permalink to this definition">¶</a></dt>
+<dd><p><tt class="docutils literal"><span class="pre">Sequence</span></tt> API, currently passed through to underlying collection.
+Type-checking is currently TODO.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.ListCollection.__str__">
+<tt class="descname">__str__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#ListCollection.__str__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.ListCollection.__str__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Informal stringification returns the type of collection, and the
+length.  For example, <tt class="docutils literal"><span class="pre">&lt;MyRecordList:</span> <span class="pre">8</span> <span class="pre">item(s)&gt;</span></tt></p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.coll.ListCollection.__repr__">
+<tt class="descname">__repr__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/coll.html#ListCollection.__repr__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.coll.ListCollection.__repr__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Implemented: prints a valid constructor.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
-<div class="section" id="jsonrecord">
-<h3><tt class="docutils literal"><span class="pre">JsonRecord</span></tt><a class="headerlink" href="#jsonrecord" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-normalize.record.json">
+<span id="jsonrecord"></span><h3><tt class="docutils literal"><span class="pre">JsonRecord</span></tt><a class="headerlink" href="#module-normalize.record.json" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="normalize.record.json.json_to_initkwargs">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">json_to_initkwargs</tt><big>(</big><em>record_type</em>, <em>json_struct</em>, <em>kwargs=None</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#json_to_initkwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function converts a JSON dict (json_struct) to a set of init
+keyword arguments for the passed Record (or JsonRecord).</p>
+<p>It is called by the JsonRecord constructor.  This function takes a JSON
+data structure and returns a keyword argument list to be passed to the
+class constructor.  Any keys in the input dictionary which are not known
+are passed as a single <tt class="docutils literal"><span class="pre">unknown_json_keys</span></tt> value as a dict.</p>
+<p>This function should generally not be called directly, except as a part of
+a <tt class="docutils literal"><span class="pre">__init__</span></tt> or specialized visitor application.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.record.json.from_json">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">from_json</tt><big>(</big><em>record_type</em>, <em>json_struct</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON
+types/hints on types being converted to, but does not require them.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>TYPE</em></dt>
+<dd>Record type to convert data to</dd>
+<dt><tt class="docutils literal"><span class="pre">json_struct=</span></tt><em>DICT|LIST</em></dt>
+<dd>a loaded (via <tt class="docutils literal"><span class="pre">json.loads</span></tt>) data structure, normally a
+dict or a list.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="normalize.record.json.to_json">
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">to_json</tt><big>(</big><em>record</em>, <em>extraneous=True</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>JSON marshall out function: a &#8216;visitor&#8217; function which implements
+marshall out, honoring JSON property types/hints but does not require
+them.</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">record=</span></tt><em>anything</em></dt>
+<dd>This object can be of any type; a best-effort attempt is made to
+convert to a form which <tt class="docutils literal"><span class="pre">json.dumps</span></tt> can accept; this function
+will call itself recursively, respecting any types which define
+<tt class="docutils literal"><span class="pre">.json_data()</span></tt> as a method and calling that.</dd>
+<dt><tt class="docutils literal"><span class="pre">extraneous=</span></tt><em>BOOL</em></dt>
+<dd>This parameter is passed through to any <tt class="docutils literal"><span class="pre">json_data()</span></tt> methods
+which support it.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonRecord">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonRecord</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of a Record which deals primarily in JSON form.</p>
+<p>This means:</p>
+<ol class="arabic simple">
+<li>The first argument to the constructor is assumed to be a JSON data
+dictionary, and passed through the class&#8217; <tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt>
+method before being used to set actual properties</li>
+<li>Unknown keys are permitted, and saved in the &#8220;unknown_json_keys&#8221;
+property, which is merged back on output (ie, calling <tt class="docutils literal"><span class="pre">.json_data()</span></tt>
+or <tt class="docutils literal"><span class="pre">to_json()</span></tt>)</li>
+</ol>
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<dl class="docutils">
+<dt>args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">json_data=</span></tt><em>DICT|other</em></dt>
+<dd>JSON data (string or already <tt class="docutils literal"><span class="pre">json.loads</span></tt>&#8216;d).  If not
+a JSON dictionary with keys corresponding to the
+<tt class="docutils literal"><span class="pre">json_name</span></tt> or the properties within, then
+<tt class="docutils literal"><span class="pre">json_to_initkwargs</span></tt> should be overridden to handle
+the unpacking differently</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd><tt class="docutils literal"><span class="pre">JsonRecord</span></tt> instances may also be constructed by
+passing in attribute initializers in keyword form.  The
+keys here should be the names of the attributes and the
+python values, not the JSON names or form.</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.record.json.JsonRecord.json_to_initkwargs">
+<em class="property">classmethod </em><tt class="descname">json_to_initkwargs</tt><big>(</big><em>json_data</em>, <em>kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.json_to_initkwargs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.json_to_initkwargs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Subclassing hook to specialize how JSON data is converted
+to keyword arguments</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.record.json.JsonRecord.from_json">
+<em class="property">classmethod </em><tt class="descname">from_json</tt><big>(</big><em>json_data</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.from_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.from_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This method can be overridden to specialize how the class is loaded
+when marshalling in; however beware that it is not invoked when the
+caller uses the <tt class="docutils literal"><span class="pre">from_json()</span></tt> function directly.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.json_data">
+<tt class="descname">json_data</tt><big>(</big><em>extraneous=False</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.json_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.json_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the JSON data form of this <tt class="docutils literal"><span class="pre">JsonRecord</span></tt>.  The &#8216;unknown&#8217;
+JSON keys will be merged back in, if:</p>
+<ol class="arabic simple">
+<li>the <tt class="docutils literal"><span class="pre">extraneous=True</span></tt> argument is passed.</li>
+<li>the <tt class="docutils literal"><span class="pre">unknown_json_keys</span></tt> property on this class is replaced by one
+not marked as <tt class="docutils literal"><span class="pre">extraneous</span></tt></li>
+</ol>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.diff_iter">
+<tt class="descname">diff_iter</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff_iter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generator method which returns the differences from the invocant to
+the argument.  This specializes <tt class="xref py py-meth docutils literal"><span class="pre">Record.diff_iter()</span></tt> by
+returning <a class="reference internal" href="#normalize.record.json.JsonDiffInfo" title="normalize.record.json.JsonDiffInfo"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiffInfo</span></tt></a> objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.record.json.JsonRecord.diff">
+<tt class="descname">diff</tt><big>(</big><em>other</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecord.diff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecord.diff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare an object with another.  This specializes
+<tt class="xref py py-meth docutils literal"><span class="pre">Record.diff()</span></tt> by returning a <a class="reference internal" href="#normalize.record.json.JsonDiff" title="normalize.record.json.JsonDiff"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiff</span></tt></a> object.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonRecordList">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonRecordList</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of a RecordList which deals primarily in JSON</p>
+<dl class="method">
+<dt id="normalize.record.json.JsonRecordList.__init__">
+<tt class="descname">__init__</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonRecordList.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonRecordList.__init__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build a new JsonRecord sub-class.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt><tt class="docutils literal"><span class="pre">json_data=</span></tt><em>LIST|other</em></dt>
+<dd>JSON data (string or already <tt class="docutils literal"><span class="pre">json.loads</span></tt>&#8216;d)</dd>
+<dt><tt class="docutils literal"><span class="pre">**kwargs</span></tt></dt>
+<dd>Other initializer attributes, for lists with extra
+attributes (eg, paging information)</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonDiffInfo">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonDiffInfo</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonDiffInfo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonDiffInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of &#8216;DiffInfo&#8217; that supports <tt class="docutils literal"><span class="pre">.json_data()</span></tt></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="normalize.record.json.JsonDiff">
+<em class="property">class </em><tt class="descclassname">normalize.record.json.</tt><tt class="descname">JsonDiff</tt><big>(</big><em>json_data=None</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#JsonDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.JsonDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Version of &#8216;Diff&#8217; that supports <tt class="docutils literal"><span class="pre">.json_data()</span></tt></p>
+<dl class="attribute">
+<dt id="normalize.record.json.JsonDiff.itemtype">
+<tt class="descname">itemtype</tt><a class="headerlink" href="#normalize.record.json.JsonDiff.itemtype" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <a class="reference internal" href="#normalize.record.json.JsonDiffInfo" title="normalize.record.json.JsonDiffInfo"><tt class="xref py py-class docutils literal"><span class="pre">JsonDiffInfo</span></tt></a></p>
+</dd></dl>
+
+</dd></dl>
+
 <div class="section" id="customizing-jsonrecord-marshalling">
 <h4>Customizing JsonRecord Marshalling<a class="headerlink" href="#customizing-jsonrecord-marshalling" title="Permalink to this headline">¶</a></h4>
 <p>JSON record marshalling can be overridden in two important ways:</p>
@@ -147,13 +566,13 @@ able to pass in values like this from Python as well) and
 <tt class="docutils literal"><span class="pre">json_out</span></tt> on your <tt class="docutils literal"><span class="pre">Properties</span></tt>, and the <tt class="docutils literal"><span class="pre">json_name</span></tt> key.</p>
 <p>Remember, you don&#8217;t need to explicitly instantiate <tt class="docutils literal"><span class="pre">JsonProperty</span></tt>
 objects; you can throw on these JSON specialization flags on any
-property and <tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.meta</span></tt> will mix them in for
+property and <a class="reference internal" href="property.html#module-normalize.property.meta" title="normalize.property.meta"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.meta</span></tt></a> will mix them in for
 you.</p>
 <p>See <a class="reference internal" href="property.html#json"><em>Declaring JSON hints on Properties</em></a> for more details.</p>
 </li>
 <li><p class="first">Via the sub-class API.  The most convenient hooks are
-<tt class="xref py py-meth docutils literal"><span class="pre">JsonRecord.json_to_initkwargs()</span></tt> (you must derive
-<tt class="docutils literal"><span class="pre">JsonRecord</span></tt> for this) and <tt class="xref py py-meth docutils literal"><span class="pre">JsonRecord.json_data()</span></tt> (any
+<a class="reference internal" href="#normalize.record.json.JsonRecord.json_to_initkwargs" title="normalize.record.json.JsonRecord.json_to_initkwargs"><tt class="xref py py-meth docutils literal"><span class="pre">JsonRecord.json_to_initkwargs()</span></tt></a> (you must derive
+<tt class="docutils literal"><span class="pre">JsonRecord</span></tt> for this) and <a class="reference internal" href="#normalize.record.json.JsonRecord.json_data" title="normalize.record.json.JsonRecord.json_data"><tt class="xref py py-meth docutils literal"><span class="pre">JsonRecord.json_data()</span></tt></a> (any
 class can define this).  This is a more general API which can perform
 more &#8216;drastic&#8217; conversions, for instance if you want to marshall your
 class to a JSON Array.</p>
@@ -162,8 +581,25 @@ class to a JSON Array.</p>
 </div>
 </div>
 </div>
-<div class="section" id="record-metaclass">
-<h2>Record MetaClass<a class="headerlink" href="#record-metaclass" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-normalize.record.meta">
+<span id="record-metaclass"></span><h2>Record MetaClass<a class="headerlink" href="#module-normalize.record.meta" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="normalize.record.meta.RecordMeta">
+<em class="property">class </em><tt class="descclassname">normalize.record.meta.</tt><tt class="descname">RecordMeta</tt><a class="reference internal" href="_modules/normalize/record/meta.html#RecordMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.meta.RecordMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass for <tt class="docutils literal"><span class="pre">Record</span></tt> types.</p>
+<dl class="staticmethod">
+<dt id="normalize.record.meta.RecordMeta.__new__">
+<em class="property">static </em><tt class="descname">__new__</tt><big>(</big><em>mcs</em>, <em>name</em>, <em>bases</em>, <em>attrs</em><big>)</big><a class="reference internal" href="_modules/normalize/record/meta.html#RecordMeta.__new__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.meta.RecordMeta.__new__" title="Permalink to this definition">¶</a></dt>
+<dd><p>Invoked when a new <tt class="docutils literal"><span class="pre">Record</span></tt> type is declared, and is responsible
+for copying the <tt class="docutils literal"><span class="pre">properties</span></tt> from superclass <tt class="docutils literal"><span class="pre">Record</span></tt> classes,
+processing the <tt class="docutils literal"><span class="pre">primary_key</span></tt> declaration, and calling
+<tt class="xref py py-meth docutils literal"><span class="pre">normalize.property.Property.bind()</span></tt> to link
+<a class="reference internal" href="property.html#normalize.property.Property" title="normalize.property.Property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.Property</span></tt></a> instances to their containing
+<a class="reference internal" href="#normalize.record.Record" title="normalize.record.Record"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt></a> classes.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 </div>
 
@@ -179,13 +615,13 @@ class to a JSON Array.</p>
 <li><a class="reference internal" href="#record-flavors">Record Flavors</a><ul>
 <li><a class="reference internal" href="#record"><tt class="docutils literal"><span class="pre">Record</span></tt></a></li>
 <li><a class="reference internal" href="#collection-types">Collection Types</a></li>
-<li><a class="reference internal" href="#jsonrecord"><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></a><ul>
+<li><a class="reference internal" href="#module-normalize.record.json"><tt class="docutils literal"><span class="pre">JsonRecord</span></tt></a><ul>
 <li><a class="reference internal" href="#customizing-jsonrecord-marshalling">Customizing JsonRecord Marshalling</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#record-metaclass">Record MetaClass</a></li>
+<li><a class="reference internal" href="#module-normalize.record.meta">Record MetaClass</a></li>
 </ul>
 </li>
 </ul>
@@ -224,6 +660,9 @@ class to a JSON Array.</p>
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              >next</a> |</li>

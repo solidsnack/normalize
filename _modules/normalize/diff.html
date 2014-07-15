@@ -33,6 +33,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">normalize 0.4.4 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
@@ -115,8 +118,24 @@
         <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
         <span class="n">doc</span><span class="o">=</span><span class="s">&quot;Enumeration describing the type of difference; a &quot;</span>
             <span class="s">&quot;:py:class:`DiffType` value.&quot;</span><span class="p">)</span>
-    <span class="n">base</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-    <span class="n">other</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span><span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span>
+        <span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s">&quot;A FieldSelector object referring to the location within the &quot;</span>
+            <span class="s">&quot;base object that the changed field was found.  If the &quot;</span>
+            <span class="s">&quot;``diff_type`` is ``DiffTypes.ADDED``, then this will be the &quot;</span>
+            <span class="s">&quot;location of the record the field was added in, not the &quot;</span>
+            <span class="s">&quot;(non-existant) field itself.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">other</span> <span class="o">=</span> <span class="n">SafeProperty</span><span class="p">(</span>
+        <span class="n">isa</span><span class="o">=</span><span class="n">FieldSelector</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s">&quot;A FieldSelector object referring to the location within the &quot;</span>
+            <span class="s">&quot;&#39;other&#39; object that the changed field was found.  If the &quot;</span>
+            <span class="s">&quot;``diff_type`` is ``DiffTypes.REMOVED``, then this will be &quot;</span>
+            <span class="s">&quot;location of the record the field was removed from, not the &quot;</span>
+            <span class="s">&quot;(non-existant) field itself.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">path</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
@@ -146,7 +165,7 @@
 <div class="viewcode-block" id="DiffOptions"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions">[docs]</a><span class="k">class</span> <span class="nc">DiffOptions</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Optional data structure to pass diff options down.  Some functions are</span>
 <span class="sd">    delegated to this object, allowing for further customization of operation,</span>
-<span class="sd">    using a sub-class API.</span>
+<span class="sd">    forming the *DiffOptions sub-class API*.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">_nothing</span> <span class="o">=</span> <span class="n">_nothing</span>
 
@@ -333,7 +352,33 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span> <span class="ow">and</span> <span class="n">fs</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span>
 
 </div>
-<span class="k">def</span> <span class="nf">compare_record_iter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="compare_record_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_record_iter">[docs]</a><span class="k">def</span> <span class="nf">compare_record_iter</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;This generator function compares a record, slot by slot, and yields</span>
+<span class="sd">    differences found as ``DiffInfo`` objects.</span>
+
+<span class="sd">    args:</span>
+
+<span class="sd">        ``a=``\ *Record*</span>
+<span class="sd">            The base object</span>
+
+<span class="sd">        ``b=``\ *Record*\ \|\ *object*</span>
+<span class="sd">            The &#39;other&#39; object, which must be the same type as ``a``, unless</span>
+<span class="sd">            ``options.duck_type`` is set.</span>
+
+<span class="sd">        ``fs_a=``\ *FieldSelector\*</span>
+<span class="sd">            The current diff context, prefixed to any returned ``base`` field</span>
+<span class="sd">            in yielded ``DiffInfo`` objects.  Defaults to an empty</span>
+<span class="sd">            FieldSelector.</span>
+
+<span class="sd">        ``fs_b=``\ *FieldSelector\*</span>
+<span class="sd">            The ``other`` object context.  This will differ from ``fs_a`` in</span>
+<span class="sd">            the case of collections, where a value has moved slots.  Defaults</span>
+<span class="sd">            to an empty FieldSelector.</span>
+
+<span class="sd">        ``options=``\ *DiffOptions\*</span>
+<span class="sd">            A constructed ``DiffOptions`` object; a default one is created if</span>
+<span class="sd">            not passed in.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">options</span><span class="p">:</span>
         <span class="n">options</span> <span class="o">=</span> <span class="n">DiffOptions</span><span class="p">()</span>
 
@@ -398,13 +443,17 @@
                 <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">propname</span><span class="p">],</span>
             <span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">collection_generator</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="collection_generator"><a class="viewcode-back" href="../../diff.html#normalize.diff.collection_generator">[docs]</a><span class="k">def</span> <span class="nf">collection_generator</span><span class="p">(</span><span class="n">collection</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;This function returns a generator which iterates over the collection,</span>
 <span class="sd">    similar to Collection.itertuples().  Collections are viewed by this module,</span>
 <span class="sd">    regardless of type, as a mapping from an index to the value.  For sets, the</span>
-<span class="sd">    &quot;index&quot; is always None.  For dicts, it&#39;s a string, and for lists, it&#39;s an</span>
-<span class="sd">    int.</span>
+<span class="sd">    &quot;index&quot; is the value itself (ie, (V, V)).  For dicts, it&#39;s a string, and</span>
+<span class="sd">    for lists, it&#39;s an int.</span>
+
+<span class="sd">    In general, this function defers to ``itertuples`` and/or ``iteritems``</span>
+<span class="sd">    methods defined on the instances; however, when duck typing, this function</span>
+<span class="sd">    typically provides the generator.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">collection</span><span class="p">,</span> <span class="s">&quot;itertuples&quot;</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">collection</span><span class="o">.</span><span class="n">itertuples</span><span class="p">()</span>
@@ -422,16 +471,28 @@
 
         <span class="k">def</span> <span class="nf">generator</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">collection</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">generator</span><span class="p">()</span>
 
 
 <span class="c"># There&#39;s a lot of repetition in the following code.  It could be served by one</span>
 <span class="c"># function instead of 3, which would be 3 times fewer places to have bugs, but</span>
-<span class="c"># it would probably also be more than 3 times as difficult to debug.</span>
-<span class="k">def</span> <span class="nf">compare_collection_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<span class="c"># it would probably also be more than 3 times as difficult to debug.</span></div>
+<div class="viewcode-block" id="compare_collection_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_collection_iter">[docs]</a><span class="k">def</span> <span class="nf">compare_collection_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                             <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator function to compare two collections, and yield differences.</span>
+<span class="sd">    This function does not currently report moved items in collections, and</span>
+<span class="sd">    uses the :py:meth:`DiffOptions.record_id` method to decide if objects are</span>
+<span class="sd">    to be considered the same, and differences within returned.</span>
+
+<span class="sd">    Arguments are the same as :py:func:`compare_record_iter`.</span>
+
+<span class="sd">    Note that ``diff_iter`` and ``compare_record_iter`` will call *both* this</span>
+<span class="sd">    function and ``compare_record_iter`` on ``RecordList`` types.  However, as</span>
+<span class="sd">    most ``RecordList`` types have no extra properties, no differences are</span>
+<span class="sd">    yielded by the ``compare_record_iter`` method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
         <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
@@ -503,9 +564,13 @@
             <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">diff</span>
 
-
-<span class="k">def</span> <span class="nf">compare_list_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+</div>
+<div class="viewcode-block" id="compare_list_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_list_iter">[docs]</a><span class="k">def</span> <span class="nf">compare_list_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                       <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator for comparing &#39;simple&#39; lists when they are encountered.  This</span>
+<span class="sd">    does not currently recurse further.  Arguments are as per other</span>
+<span class="sd">    ``compare_``\ *X* functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
         <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
@@ -562,9 +627,13 @@
             <span class="n">other</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
         <span class="p">)</span>
 
-
-<span class="k">def</span> <span class="nf">compare_dict_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+</div>
+<div class="viewcode-block" id="compare_dict_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_dict_iter">[docs]</a><span class="k">def</span> <span class="nf">compare_dict_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                       <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generator for comparing &#39;simple&#39; dicts when they are encountered.  This</span>
+<span class="sd">    does not currently recurse further.  Arguments are as per other</span>
+<span class="sd">    ``compare_``\ *X* functions.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">fs_a</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">fs_a</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
         <span class="n">fs_b</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">(</span><span class="nb">tuple</span><span class="p">())</span>
@@ -619,7 +688,7 @@
             <span class="n">other</span><span class="o">=</span><span class="n">selector</span><span class="p">,</span>
         <span class="p">)</span>
 
-
+</div>
 <span class="n">COMPARE_FUNCTIONS</span> <span class="o">=</span> <span class="p">{</span>
     <span class="nb">list</span><span class="p">:</span> <span class="n">compare_list_iter</span><span class="p">,</span>
     <span class="nb">tuple</span><span class="p">:</span> <span class="n">compare_list_iter</span><span class="p">,</span>
@@ -687,9 +756,41 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">base_type_name</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">other_type_name</span> <span class="k">else</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">base_type_name</span>
         <span class="p">)</span>
-        <span class="k">return</span> <span class="s">&quot;&lt;Diff [{what}]; {n} item(s)&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">diffstate</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">diff_type</span> <span class="o">==</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">ADDED</span><span class="p">:</span>
+                <span class="n">diffstate</span><span class="p">[</span><span class="s">&quot;+NEW&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">diff</span><span class="o">.</span><span class="n">diff_type</span> <span class="o">==</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">REMOVED</span><span class="p">:</span>
+                <span class="n">diffstate</span><span class="p">[</span><span class="s">&quot;-OLD&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">diff</span><span class="o">.</span><span class="n">diff_type</span> <span class="o">==</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">MODIFIED</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">base</span><span class="o">.</span><span class="n">path</span> <span class="o">==</span> <span class="n">diff</span><span class="o">.</span><span class="n">other</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+                    <span class="n">diffstate</span><span class="p">[</span><span class="s">&#39;&lt;&gt;X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">diffstate</span><span class="p">[</span><span class="s">&#39;&lt;-&gt;OLD&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+                    <span class="n">diffstate</span><span class="p">[</span><span class="s">&#39;&lt;+&gt;NEW&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">other</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">diff</span><span class="o">.</span><span class="n">diff_type</span> <span class="o">==</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">:</span>
+                <span class="n">diffstate</span><span class="p">[</span><span class="s">&#39;==X&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">base</span><span class="p">)</span>
+
+        <span class="n">prefix_paths</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">diffstate</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prefix_paths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="s">&quot;{prefix}({paths})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">prefix</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+                    <span class="n">paths</span><span class="o">=</span><span class="n">MultiFieldSelector</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="s">&quot;&lt;Diff [{what}]; {n} diff(s){summary}&gt;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">n</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span>
             <span class="n">what</span><span class="o">=</span><span class="n">what</span><span class="p">,</span>
+            <span class="n">summary</span><span class="o">=</span><span class="p">(</span>
+                <span class="s">&quot;: &quot;</span> <span class="o">+</span> <span class="s">&quot;; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                    <span class="s">&quot;{prefix}({paths})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">prefix</span><span class="o">=</span><span class="n">k</span><span class="p">,</span>
+                        <span class="n">paths</span><span class="o">=</span><span class="n">MultiFieldSelector</span><span class="p">(</span><span class="o">*</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="n">diffstate</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">)</span> <span class="k">if</span> <span class="n">diffstate</span> <span class="k">else</span> <span class="s">&quot;&quot;</span>
+            <span class="p">),</span>
         <span class="p">)</span>
 
 </div>
@@ -729,6 +830,9 @@
         <li class="right" style="margin-right: 10px">
           <a href="../../genindex.html" title="General Index"
              >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
         <li><a href="../../index.html">normalize 0.4.4 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
