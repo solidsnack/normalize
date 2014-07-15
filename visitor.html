@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.visitor reference &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.visitor reference &mdash; normalize 0.4.4 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.4.4',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.4.4 documentation" href="index.html" />
     <link rel="prev" title="Comparing Records - normalize.diff" href="diff.html" /> 
   </head>
   <body>
@@ -34,12 +34,9 @@
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.4 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,275 +47,6 @@
             
   <div class="section" id="normalize-visitor-reference">
 <h1><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference<a class="headerlink" href="#normalize-visitor-reference" title="Permalink to this headline">¶</a></h1>
-<p>This Visitor class is an early attempt at abstracting the various
-visitor functions used through the rest of the module.</p>
-<p>It is not currently complete; notably, it should be possible to use
-this class without an instance, such as to implement marshal in.
-There is also the gaping lack of support for avoiding infinite
-recursion in the event of data structures with cycles, just like the
-rest of this module.</p>
-<div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">Don&#8217;t pass data structures with cycles into any normalize
-visitor function.  You have been warned.</p>
-</div>
-<dl class="class">
-<dt id="normalize.visitor.Visitor">
-<em class="property">class </em><tt class="descclassname">normalize.visitor.</tt><tt class="descname">Visitor</tt><big>(</big><em>ignore_none=True</em>, <em>ignore_empty_string=False</em>, <em>apply_records=False</em>, <em>apply_empty_slots=False</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class for writing Record visitor pattern functions.  This Visitor is
-intended to be subclassed; a generic version which can take the apply and
-reduce functions as arguments may be implemented later.</p>
-<dl class="method">
-<dt id="normalize.visitor.Visitor.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>ignore_none=True</em>, <em>ignore_empty_string=False</em>, <em>apply_records=False</em>, <em>apply_empty_slots=False</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.__init__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new visitor.  The built-in parameters, which affect the
-default &#8216;map&#8217; function operation, are:</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">ignore_none=</span></tt><em>bool</em></dt>
-<dd>If the &#8216;apply&#8217; function returns <tt class="docutils literal"><span class="pre">None</span></tt>, treat it as if the
-slot or object did not exist.  <tt class="docutils literal"><span class="pre">True</span></tt> by default.</dd>
-<dt><tt class="docutils literal"><span class="pre">ignore_empty_string=</span></tt><em>bool</em></dt>
-<dd>If the &#8216;apply&#8217; function returns the empty string, treat it as
-if the slot or object did not exist.  <tt class="docutils literal"><span class="pre">False</span></tt> by default.</dd>
-<dt><tt class="docutils literal"><span class="pre">apply_records=</span></tt><em>bool</em></dt>
-<dd><p class="first">Normally, traversal happens in depth-first order, and fields
-which are Records never have <tt class="docutils literal"><span class="pre">apply</span></tt> called on them.  If you
-want them to, set this field.  This affects the arguments
-passed to <tt class="docutils literal"><span class="pre">reduce_record</span></tt>.</p>
-<p class="last">If the <tt class="docutils literal"><span class="pre">apply</span></tt> function returns <tt class="docutils literal"><span class="pre">self.StopVisiting</span></tt> (or an
-instance of it), then traversal does not descend into the
-fields of the record.  If it returns something else, then
-<tt class="docutils literal"><span class="pre">reduce_record</span></tt> is passed a tuple as its first argument.</p>
-</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.apply">
-<tt class="descname">apply</tt><big>(</big><em>value</em>, <em>fs</em>, <em>prop=None</em>, <em>parent_obj=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.apply"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.apply" title="Permalink to this definition">¶</a></dt>
-<dd><p>&#8216;apply&#8217; is a general place to put a function which is called
-on every extant record slot.</p>
-<p>Data structures are normally applied in depth-first order.  If you
-specify <tt class="docutils literal"><span class="pre">apply_records</span></tt> to the constructor, this function is called
-on the actual records first, and may prevent recursion by returning
-<tt class="docutils literal"><span class="pre">self.StopVisiting(return_value)</span></tt>.  Any value (other than <tt class="docutils literal"><span class="pre">None</span></tt>)
-returned by applying to a record changes the value passed to
-<tt class="docutils literal"><span class="pre">reduce_record</span></tt>.</p>
-<p>The default implementation passes through the slot value as-is, but
-expected exceptions are converted to <tt class="docutils literal"><span class="pre">None</span></tt>.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">value=</span></tt><em>value</em>|<em>AttributeError</em>|<em>KeyError</em></dt>
-<dd>This is the value currently in the slot, or the Record itself
-with <tt class="docutils literal"><span class="pre">apply_records</span></tt>.  <em>AttributeError</em> will only be received
-if you passed <tt class="docutils literal"><span class="pre">apply_empty_slots</span></tt>, and <em>KeyError</em> will be
-passed if <tt class="docutils literal"><span class="pre">parent_obj</span></tt> is a <tt class="docutils literal"><span class="pre">dict</span></tt> (see
-<tt class="xref py py-meth docutils literal"><span class="pre">Visitor.map_prop()</span></tt> for details about when this might
-happen)</dd>
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>This is the location of <tt class="docutils literal"><span class="pre">value</span></tt>, relative to where the
-visiting started.</dd>
-<dt><tt class="docutils literal"><span class="pre">prop=</span></tt><em>Property</em>|<tt class="docutils literal"><span class="pre">None</span></tt></dt>
-<dd>This is the <tt class="xref py py-class docutils literal"><span class="pre">normalize.Property</span></tt> instance which
-represents the field being traversed.  <tt class="docutils literal"><span class="pre">None</span></tt> with
-<tt class="docutils literal"><span class="pre">apply_records</span></tt></dd>
-<dt><tt class="docutils literal"><span class="pre">parent_obj=</span></tt><em>Record</em>|<tt class="docutils literal"><span class="pre">None</span></tt></dt>
-<dd>This is the instance which the value exists in.
-<tt class="docutils literal"><span class="pre">prop.get(parent_obj)</span></tt> will return <tt class="docutils literal"><span class="pre">value</span></tt> (or throw
-<tt class="docutils literal"><span class="pre">AttributeError</span></tt>). <tt class="docutils literal"><span class="pre">None</span></tt> with <tt class="docutils literal"><span class="pre">apply_records</span></tt></dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_record">
-<tt class="descname">reduce_record</tt><big>(</big><em>applied</em>, <em>fs</em>, <em>record_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook called for each record, with the results of mapping each
-member.</p>
-<p>The default implementation returns the first argument as-is.</p>
-<p>args:</p>
-<blockquote>
-<div><p><tt class="docutils literal"><span class="pre">applied=</span></tt><em>dict</em>|<em>tuple</em></p>
-<blockquote>
-<div><p>This is the result of mapping the individual slots in the
-record as a dict.  The keys are the attribute names, and the
-values the result from their <tt class="docutils literal"><span class="pre">apply</span></tt> call.  With
-<tt class="docutils literal"><span class="pre">ignore_none</span></tt> (the default), this dictionary will be missing
-those keys.  Similarly with <tt class="docutils literal"><span class="pre">ignore_empty_string</span></tt> and empty
-string applied results.</p>
-<p>With <tt class="docutils literal"><span class="pre">apply_records</span></tt>, if the first call to <tt class="docutils literal"><span class="pre">apply</span></tt> on the
-Record returned anything other than <tt class="docutils literal"><span class="pre">this.StopVisiting(x)</span></tt> or
-<tt class="docutils literal"><span class="pre">None</span></tt>, the value will be a tuple, with the first item the
-result of the first call to <tt class="docutils literal"><span class="pre">apply</span></tt> on the Record, and the
-second item the result of applying the individual slots.  If
-you did return <tt class="docutils literal"><span class="pre">this.StopVisiting(x)</span></tt>, then <tt class="docutils literal"><span class="pre">applied</span></tt> will
-be <tt class="docutils literal"><span class="pre">x</span></tt>, whatever that was.</p>
-</div></blockquote>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>This is the location of the record being reduced, relative to
-the starting point.</dd>
-<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>RecordType</em></dt>
-<dd>This is the <tt class="xref py py-class docutils literal"><span class="pre">normalize.Record</span></tt> <em>class</em> which
-is currently being reduced.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_collection">
-<tt class="descname">reduce_collection</tt><big>(</big><em>result_coll_generator</em>, <em>fs</em>, <em>coll_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Hook called for each normalize.coll.Collection.</p>
-<p>The default implementation calls
-<a class="reference internal" href="record.html#normalize.coll.Collection.tuples_to_coll" title="normalize.coll.Collection.tuples_to_coll"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.coll.Collection.tuples_to_coll()</span></tt></a> with
-<tt class="docutils literal"><span class="pre">coerce=False</span></tt>, which just re-assembles the collection into a native
-python collection type of the same type of the input collection.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">result_coll_generator=</span></tt> <em>generator func</em></dt>
-<dd>Generator which returns (key, value) pairs (like
-<a class="reference internal" href="record.html#normalize.coll.Collection.itertuples" title="normalize.coll.Collection.itertuples"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.coll.Collection.itertuples()</span></tt></a>)</dd>
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>This is the location of the collection, relative to the
-starting point.</dd>
-<dt><tt class="docutils literal"><span class="pre">coll_type=</span></tt><em>CollectionType</em></dt>
-<dd>This is the <a class="reference internal" href="record.html#normalize.coll.Collection" title="normalize.coll.Collection"><tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt></a>-derived
-<em>class</em> which is currently being reduced.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.reduce_complex">
-<tt class="descname">reduce_complex</tt><big>(</big><em>record_result</em>, <em>coll_result</em>, <em>fs</em>, <em>value_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.reduce_complex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.reduce_complex" title="Permalink to this definition">¶</a></dt>
-<dd><p>If a Collection also has properties that map to something (which you
-can only do by sub-classing <tt class="docutils literal"><span class="pre">RecordList</span></tt> or another
-<a class="reference internal" href="record.html#normalize.coll.Collection" title="normalize.coll.Collection"><tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt></a> and adding properties), this
-reduction is called to combine the two applied/reduced values into a
-single value for return.</p>
-<p>The default implementation throws <tt class="docutils literal"><span class="pre">coll_result</span></tt> into
-<tt class="docutils literal"><span class="pre">record_result['values']</span></tt>, and throws an exception if it was already
-present.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">record_result=</span></tt><em>dict</em></dt>
-<dd>This contains whatever <tt class="docutils literal"><span class="pre">reduce_record</span></tt> returned, which will
-generally be a dictionary.</dd>
-<dt><tt class="docutils literal"><span class="pre">coll_result=</span></tt><em>list*|*set</em>|<em>etc</em></dt>
-<dd>This contains whatever <tt class="docutils literal"><span class="pre">reduce_collection</span></tt> returned, normally
-a list.</dd>
-</dl>
-<p><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></p>
-<dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">value_type=</span></tt><em>CollectionType</em></dt>
-<dd>This is the <a class="reference internal" href="record.html#normalize.coll.Collection" title="normalize.coll.Collection"><tt class="xref py py-class docutils literal"><span class="pre">normalize.coll.Collection</span></tt></a>-derived
-<em>class</em> which is currently being reduced.  Remember that
-<tt class="docutils literal"><span class="pre">Collection</span></tt> is a <tt class="docutils literal"><span class="pre">Record</span></tt> sub-class, so it has
-<tt class="docutils literal"><span class="pre">properties</span></tt> and all those other fields available.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map">
-<tt class="descname">map</tt><big>(</big><em>value</em>, <em>fs=None</em>, <em>value_type=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map" title="Permalink to this definition">¶</a></dt>
-<dd><p>This is the &#8216;front door&#8217; to the Visitor, and is called recursively.
-It calls the various <tt class="docutils literal"><span class="pre">map_</span></tt><em>X</em> methods on its argument, and the
-<tt class="docutils literal"><span class="pre">reduce_</span></tt><em>X</em> methods to collate the result.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">value=</span></tt><em>object</em></dt>
-<dd>The value to visit.  Normally (but not always) a
-<a class="reference internal" href="record.html#normalize.record.Record" title="normalize.record.Record"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt></a> instance.</dd>
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>This is used to pass down the current selector context to
-<tt class="docutils literal"><span class="pre">apply</span></tt> functions, etc.  In case they need it.  I&#8217;m not sure
-what for, either.  Posterity and debug messages, if nothing
-else.</dd>
-<dt><tt class="docutils literal"><span class="pre">value_type=</span></tt><em>RecordType</em></dt>
-<dd>This is the <tt class="docutils literal"><span class="pre">Record</span></tt> subclass to interpret <tt class="docutils literal"><span class="pre">value</span></tt> as.  The
-default is <tt class="docutils literal"><span class="pre">type(value)</span></tt>.  If you specify this, then the type
-information on <tt class="docutils literal"><span class="pre">value</span></tt> is essentially ignored (with the
-caveat mentioned below on <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.map_prop()</span></tt>, and may
-be a <tt class="docutils literal"><span class="pre">dict</span></tt>, <tt class="docutils literal"><span class="pre">list</span></tt>, etc.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_record">
-<tt class="descname">map_record</tt><big>(</big><em>record</em>, <em>fs</em>, <em>record_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_record"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_record" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method responsible for calling apply on each of the fields of the
-object, and returning the value passed to
-<tt class="xref py py-meth docutils literal"><span class="pre">Visitor.reduce_record()</span></tt>.</p>
-<p>The default implementation first calls <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.apply()</span></tt> on the
-record (with <tt class="docutils literal"><span class="pre">apply_records</span></tt>), skipping recursion if that method
-returns <tt class="docutils literal"><span class="pre">self.StopVisiting</span></tt> (or an instance thereof)</p>
-<p>It then iterates over the properties (of the type, not the instance) in
-more-or-less random order, calling into <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.map_prop()</span></tt> for
-each, the results of which end up being the dictionary return value.</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">record=</span></tt><em>Record</em></dt>
-<dd>The instance being iterated over</dd>
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>The current path in iteration.</dd>
-<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>RecordType</em></dt>
-<dd>The <a class="reference internal" href="record.html#normalize.record.Record" title="normalize.record.Record"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt></a> sub-class which applies
-to the instance.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_prop">
-<tt class="descname">map_prop</tt><big>(</big><em>record</em>, <em>prop</em>, <em>fs</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_prop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_prop" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method responsible for retrieving a value from the slot of an
-object, and calling <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.apply()</span></tt> on it.  With
-<tt class="docutils literal"><span class="pre">apply_empty_slots</span></tt>, this value will be an <tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</p>
-<p>The default implementation of this will happily handle non-Record
-objects which respond to the same accessor fetches.  Otherwise, if the
-<tt class="docutils literal"><span class="pre">record</span></tt> is a dictionary, it will pull out the named key and call
-<tt class="docutils literal"><span class="pre">Visitor.apply()</span></tt> on that instead.  With <tt class="docutils literal"><span class="pre">apply_empty_slots</span></tt>, the
-value will be a <tt class="docutils literal"><span class="pre">KeyError</span></tt>.</p>
-<p>This function will recurse back into <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.map()</span></tt> if the
-type on the <em>property</em> indicates that the value contains a record</p>
-<p>args:</p>
-<blockquote>
-<div><dl class="docutils">
-<dt><tt class="docutils literal"><span class="pre">record=</span></tt><em>Record</em></dt>
-<dd>The instance being iterated over</dd>
-<dt><tt class="docutils literal"><span class="pre">fs=</span></tt><em>FieldSelector</em></dt>
-<dd>The current path in iteration.</dd>
-<dt><tt class="docutils literal"><span class="pre">record_type=</span></tt><em>RecordType</em></dt>
-<dd>The <a class="reference internal" href="record.html#normalize.record.Record" title="normalize.record.Record"><tt class="xref py py-class docutils literal"><span class="pre">normalize.record.Record</span></tt></a> sub-class which applies
-to the instance.</dd>
-</dl>
-</div></blockquote>
-</dd></dl>
-
-<dl class="method">
-<dt id="normalize.visitor.Visitor.map_collection">
-<tt class="descname">map_collection</tt><big>(</big><em>coll</em>, <em>fs</em>, <em>coll_type</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.map_collection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.map_collection" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generator method responsible for iterating over items in a
-collection, and recursively calling <tt class="xref py py-meth docutils literal"><span class="pre">Visitor.map()</span></tt> on them to
-build a result.  Yields the tuple protocol: always (K, V).</p>
-<p>The default implementation calls the <tt class="docutils literal"><span class="pre">.itertuples()</span></tt> method of the
-value, falling back to <tt class="docutils literal"><span class="pre">coll_type.coll_to_tuples(coll)</span></tt> (see
-<a class="reference internal" href="record.html#normalize.coll.Collection.coll_to_tuples" title="normalize.coll.Collection.coll_to_tuples"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.coll.Collection.coll_to_tuples()</span></tt></a>).  On each item, it
-recurses to <tt class="docutils literal"><span class="pre">self.map()</span></tt>.</p>
-</dd></dl>
-
-</dd></dl>
-
 </div>
 
 
@@ -359,12 +87,9 @@ recurses to <tt class="docutils literal"><span class="pre">self.map()</span></tt
           <a href="genindex.html" title="General Index"
              >index</a></li>
         <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.4.4 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
