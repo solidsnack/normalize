@@ -285,7 +285,7 @@ types</p>
 <dl class="attribute">
 <dt id="normalize.property.types.DateProperty">
 <tt class="descclassname">normalize.property.types.</tt><tt class="descname">DateProperty</tt><a class="headerlink" href="#normalize.property.types.DateProperty" title="Permalink to this definition">¶</a></dt>
-<dd><p>A property which must holds a python date; coercion from string is provided via <tt class="docutils literal"><span class="pre">dateutil.parse</span></tt></p>
+<dd><p>A property which must hold a python date (or datetime); coercion from string is provided via <tt class="docutils literal"><span class="pre">dateutil.parse</span></tt>.  Note that datetime is a date subclass, and supports all its methods, so a DateProperty might contain a datetime instance.</p>
 </dd></dl>
 
 <dl class="attribute">

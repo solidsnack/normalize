@@ -223,19 +223,6 @@
         <span class="kn">from</span> <span class="nn">normalize.diff</span> <span class="kn">import</span> <span class="n">diff</span>
         <span class="k">return</span> <span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
-            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
-        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
-                <span class="n">prop_fs</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">name</span><span class="p">]</span>
-                <span class="k">yield</span> <span class="p">(</span><span class="n">prop_fs</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
-                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">val</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">prop_fs</span><span class="p">):</span>
-                        <span class="k">yield</span> <span class="n">x</span>
-
 </div>
 <span class="k">class</span> <span class="nc">OhPickle</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Sentinel type for Un-Pickling.  ``pickle`` does not allow a</span>

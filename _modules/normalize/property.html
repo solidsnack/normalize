@@ -202,7 +202,24 @@
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s">&quot;</span><span class="si">%s</span><span class="s"> is required&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">):</span>
-            <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CoerceError</span><span class="p">(</span>
+                    <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                    <span class="n">exc</span><span class="o">=</span><span class="n">e</span><span class="p">,</span>
+                    <span class="n">func</span><span class="o">=</span><span class="p">(</span>
+                        <span class="s">&quot;</span><span class="si">%s</span><span class="s"> constructor&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="o">.</span><span class="n">__name__</span> <span class="k">if</span>
+                        <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">,</span> <span class="nb">type</span><span class="p">)</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span>
+                    <span class="p">),</span>
+                    <span class="n">valuetype</span><span class="o">=</span><span class="p">(</span>
+                        <span class="s">&quot;(&quot;</span> <span class="o">+</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                            <span class="n">x</span><span class="o">.</span><span class="n">__name__</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span>
+                        <span class="p">)</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="o">.</span><span class="n">__name__</span>
+                    <span class="p">),</span>
+                <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">):</span>
                 <span class="k">if</span> <span class="n">_none_ok</span> <span class="ow">and</span> <span class="n">new_value</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">required</span><span class="p">:</span>
                     <span class="c"># allow coerce functions to return &#39;None&#39; to silently</span>
@@ -370,6 +387,14 @@
         <span class="k">return</span> <span class="nb">super</span><span class="p">(</span><span class="n">LazySafeProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="p">)</span>
 
 </div></div>
+<span class="k">class</span> <span class="nc">DiffasProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>
+    <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;diffas&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compare_as</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">DiffasProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compare_as</span> <span class="o">=</span> <span class="n">compare_as</span>
+
+
 <span class="n">trait_num</span> <span class="o">=</span> <span class="mi">0</span>
 
 

@@ -146,7 +146,7 @@
 <span class="k">def</span> <span class="nf">coerce_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">,</span> <span class="n">date</span><span class="p">):</span>
         <span class="n">tt</span> <span class="o">=</span> <span class="n">not_a_datetime</span><span class="o">.</span><span class="n">timetuple</span><span class="p">()</span>
-        <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">datetime</span><span class="p">(</span><span class="o">*</span><span class="p">(</span><span class="n">tt</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">6</span><span class="p">]))</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">parse_datetime</span><span class="p">(</span><span class="n">not_a_datetime</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
@@ -168,8 +168,11 @@
     <span class="s">&quot;DateProperty&quot;</span><span class="p">,</span>
     <span class="n">trait_name</span><span class="o">=</span><span class="s">&quot;date&quot;</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="n">date</span><span class="p">,</span> <span class="nb">coerce</span><span class="o">=</span><span class="n">coerce_date</span><span class="p">,</span>
     <span class="n">attrs</span><span class="o">=</span><span class="p">{</span>
-        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must holds a python date; coercion &quot;</span>
-                   <span class="s">&quot;from string is provided via ``dateutil.parse``&quot;</span><span class="p">,</span>
+        <span class="s">&quot;__doc__&quot;</span><span class="p">:</span> <span class="s">&quot;A property which must hold a python date (or &quot;</span>
+                   <span class="s">&quot;datetime); coercion from string is provided via &quot;</span>
+                   <span class="s">&quot;``dateutil.parse``.  Note that datetime is a date &quot;</span>
+                   <span class="s">&quot;subclass, and supports all its methods, so a &quot;</span>
+                   <span class="s">&quot;DateProperty might contain a datetime instance.&quot;</span><span class="p">,</span>
     <span class="p">},</span>
 <span class="p">)</span>
 <span class="n">DatetimeProperty</span> <span class="o">=</span> <span class="n">make_property_type</span><span class="p">(</span>

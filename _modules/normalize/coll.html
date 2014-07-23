@@ -210,21 +210,8 @@
             <span class="nb">property</span><span class="o">=</span><span class="s">&#39;coll_to_tuples&#39;</span><span class="p">,</span>
             <span class="n">coll</span><span class="o">=</span><span class="s">&#39;Collection&#39;</span><span class="p">,</span>
         <span class="p">)</span>
-</div>
-    <span class="k">def</span> <span class="nf">walk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">fs</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
-            <span class="n">fs</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([])</span>
-        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">super</span><span class="p">(</span><span class="n">Collection</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
-            <span class="k">yield</span> <span class="n">x</span>
-        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
-            <span class="n">key_fs</span> <span class="o">=</span> <span class="n">fs</span> <span class="o">+</span> <span class="p">[</span><span class="n">key</span><span class="p">]</span>
-            <span class="k">yield</span> <span class="p">(</span><span class="n">key_fs</span><span class="p">,</span> <span class="bp">None</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">item</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">key_fs</span><span class="p">):</span>
-                    <span class="k">yield</span> <span class="n">x</span>
 
-</div>
+</div></div>
 <span class="k">class</span> <span class="nc">KeyedCollection</span><span class="p">(</span><span class="n">Collection</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
