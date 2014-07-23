@@ -280,9 +280,13 @@ python collection type of the same type of the input collection.</p>
 <em class="property">classmethod </em><tt class="descname">reduce</tt><big>(</big><em>mapped_props</em>, <em>aggregated</em>, <em>value_type</em>, <em>visitor</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#VisitorPattern.reduce"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.VisitorPattern.reduce" title="Permalink to this definition">¶</a></dt>
 <dd><p>This reduction is called to combine the mapped slot and collection
 item values into a single value for return.</p>
-<p>The default implementation throws <tt class="docutils literal"><span class="pre">aggregated</span></tt> into
-<tt class="docutils literal"><span class="pre">mapped_props['values']</span></tt>, and throws an exception if it was already
-present.</p>
+<p>The default implementation tries to behave naturally; you&#8217;ll almost
+always get a dict back when mapping over a record, and list or some
+other collection when mapping over collections.</p>
+<p>If the collection has additional properties which are not ignored (eg,
+not extraneous, not filtered), then the result will be a dictionary
+with the results of mapping the properties, and a &#8216;values&#8217; key will be
+added with the result of mapping the items in the collection.</p>
 <p>args:</p>
 <blockquote>
 <div><dl class="docutils">
@@ -330,6 +334,9 @@ instead of Record objects.</p>
 <p>Reverses the transform performed in
 <a class="reference internal" href="#normalize.visitor.VisitorPattern.reduce" title="normalize.visitor.VisitorPattern.reduce"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.visitor.VisitorPattern.reduce()</span></tt></a> for collections with
 properties.</p>
+<p>If you pass tuples to <tt class="docutils literal"><span class="pre">isa</span></tt> of your Properties, then you might need
+to override this function and throw <tt class="docutils literal"><span class="pre">TypeError</span></tt> if the passed
+<tt class="docutils literal"><span class="pre">value_type</span></tt> is not appropriate for <tt class="docutils literal"><span class="pre">value</span></tt>.</p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -363,6 +370,7 @@ about the types reachable from a starting type to an external system.
 For example, a front-end, a REST URL router and documentation
 framework, an avro schema definition, etc.</p>
 <p>X can be a type or an instance.</p>
+<p>This API should be considered <strong>experimental</strong></p>
 </dd></dl>
 
 <dl class="classmethod">
@@ -386,8 +394,7 @@ here.</p>
 <dt id="normalize.visitor.VisitorPattern.itemtypes">
 <em class="property">classmethod </em><tt class="descname">itemtypes</tt><big>(</big><em>mapped_types</em>, <em>coll_type</em>, <em>visitor</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#VisitorPattern.itemtypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.VisitorPattern.itemtypes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Like <a class="reference internal" href="#normalize.visitor.VisitorPattern.aggregate" title="normalize.visitor.VisitorPattern.aggregate"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.visitor.VisitorPattern.aggregate()</span></tt></a>, but
-returns just a list of the converted types.  This will normally only
-get called with a single type.</p>
+returns .  This will normally only get called with a single type.</p>
 </dd></dl>
 
 <dl class="classmethod">

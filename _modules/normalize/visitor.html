@@ -65,8 +65,6 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
-<span class="kn">import</span> <span class="nn">types</span>
-
 <span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">Collection</span>
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
 <span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
@@ -344,9 +342,14 @@
         <span class="sd">&quot;&quot;&quot;This reduction is called to combine the mapped slot and collection</span>
 <span class="sd">        item values into a single value for return.</span>
 
-<span class="sd">        The default implementation throws ``aggregated`` into</span>
-<span class="sd">        ``mapped_props[&#39;values&#39;]``, and throws an exception if it was already</span>
-<span class="sd">        present.</span>
+<span class="sd">        The default implementation tries to behave naturally; you&#39;ll almost</span>
+<span class="sd">        always get a dict back when mapping over a record, and list or some</span>
+<span class="sd">        other collection when mapping over collections.</span>
+
+<span class="sd">        If the collection has additional properties which are not ignored (eg,</span>
+<span class="sd">        not extraneous, not filtered), then the result will be a dictionary</span>
+<span class="sd">        with the results of mapping the properties, and a &#39;values&#39; key will be</span>
+<span class="sd">        added with the result of mapping the items in the collection.</span>
 
 <span class="sd">        args:</span>
 
@@ -364,22 +367,25 @@
 <span class="sd">            ``visitor=``\ *Visitor*</span>
 <span class="sd">                Contenxt/options object.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">mapped_props</span> <span class="ow">and</span> <span class="n">value_type</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+        <span class="n">reduced</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="n">mapped_props</span><span class="p">:</span>
             <span class="n">reduced</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mapped_props</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">)</span> <span class="ow">and</span> <span class="n">aggregated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">visitor</span><span class="o">.</span><span class="n">is_filtered</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span>
+                   <span class="n">value_type</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">()):</span>
+                <span class="n">reduced</span> <span class="o">=</span> <span class="n">aggregated</span>
+            <span class="k">else</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">reduced</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;values&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">):</span>
                     <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">VisitorTooSimple</span><span class="p">(</span>
                         <span class="n">fs</span><span class="o">=</span><span class="n">visitor</span><span class="o">.</span><span class="n">field_selector</span><span class="p">,</span>
                         <span class="n">value_type_name</span><span class="o">=</span><span class="n">value_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                         <span class="n">visitor</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                     <span class="p">)</span>
-                <span class="k">if</span> <span class="n">aggregated</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="k">else</span><span class="p">:</span>
                     <span class="n">reduced</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">aggregated</span>
-                    <span class="c">#import ipdb; ipdb.set_trace()</span>
-            <span class="k">return</span> <span class="n">reduced</span>
-        <span class="k">elif</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
-            <span class="k">return</span> <span class="n">aggregated</span>
-        <span class="k">return</span> <span class="bp">None</span>
+
+        <span class="k">return</span> <span class="n">reduced</span>
 
     <span class="c"># CAST versions</span></div>
     <span class="nd">@classmethod</span>
@@ -415,6 +421,10 @@
 <span class="sd">        Reverses the transform performed in</span>
 <span class="sd">        :py:meth:`normalize.visitor.VisitorPattern.reduce` for collections with</span>
 <span class="sd">        properties.</span>
+
+<span class="sd">        If you pass tuples to ``isa`` of your Properties, then you might need</span>
+<span class="sd">        to override this function and throw ``TypeError`` if the passed</span>
+<span class="sd">        ``value_type`` is not appropriate for ``value``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">is_coll</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">)</span>
@@ -467,6 +477,8 @@
 <span class="sd">        framework, an avro schema definition, etc.</span>
 
 <span class="sd">        X can be a type or an instance.</span>
+
+<span class="sd">        This API should be considered **experimental**</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">None</span>
@@ -524,10 +536,10 @@
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="VisitorPattern.itemtypes"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.VisitorPattern.itemtypes">[docs]</a>    <span class="k">def</span> <span class="nf">itemtypes</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mapped_types</span><span class="p">,</span> <span class="n">coll_type</span><span class="p">,</span> <span class="n">visitor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Like :py:meth:`normalize.visitor.VisitorPattern.aggregate`, but</span>
-<span class="sd">        returns just a list of the converted types.  This will normally only</span>
-<span class="sd">        get called with a single type.</span>
+<span class="sd">        returns .  This will normally only get called with a single type.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mapped_types</span><span class="p">)</span>
+        <span class="n">rv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">mapped_types</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">rv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">else</span> <span class="n">rv</span>
 </div>
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="VisitorPattern.typeinfo"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.VisitorPattern.typeinfo">[docs]</a>    <span class="k">def</span> <span class="nf">typeinfo</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">propinfo</span><span class="p">,</span> <span class="n">type_parameters</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="n">visitor</span><span class="p">):</span>
@@ -631,7 +643,7 @@
                 <span class="p">)</span>
 
             <span class="k">if</span> <span class="n">visitor</span><span class="o">.</span><span class="n">apply_empty_slots</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
-                <span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)</span>
+                <span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">),</span>
             <span class="p">):</span>
                 <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map_prop</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">rv</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
@@ -682,26 +694,43 @@
         <span class="c">#</span>
         <span class="c"># this code has the same problem that record_id does; that is, it</span>
         <span class="c"># doesn&#39;t know which of the type union the value is.</span>
+        <span class="c">#</span>
+        <span class="c"># the solution this function uses is to try all of them, until one of</span>
+        <span class="c"># them returns something logically true.  Handlers (ie, unpack/grok)</span>
+        <span class="c"># can also protest by raising TypeError, and the next one will be</span>
+        <span class="c"># tried.</span>
         <span class="n">record_types</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">matching_record_types</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">type_tuple</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
                 <span class="n">record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_type</span><span class="p">)</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span>
-                <span class="n">matching_record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_type</span><span class="p">)</span>
+                <span class="c"># XXX - this test here should probably be a per-visitor</span>
+                <span class="c"># hook, as it only really applies to &#39;visit&#39;, not &#39;grok&#39;</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">):</span>
+                    <span class="n">matching_record_types</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value_type</span><span class="p">)</span>
 
         <span class="n">mapped</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">matching_record_types</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">matching_record_types</span><span class="p">:</span>
-                <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
-                    <span class="k">break</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+                        <span class="k">break</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">value_type</span> <span class="ow">in</span> <span class="n">record_types</span><span class="p">:</span>
-                <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
-                    <span class="k">break</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c"># this could also be the wrong thing when mapping</span>
+                    <span class="c"># over types.</span>
+                    <span class="k">if</span> <span class="n">mapped</span><span class="p">:</span>
+                        <span class="k">break</span>
 
             <span class="k">if</span> <span class="ow">not</span> <span class="n">mapped</span><span class="p">:</span>
                 <span class="n">mapped</span> <span class="o">=</span> <span class="n">visitor</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">visitor</span><span class="p">)</span>
