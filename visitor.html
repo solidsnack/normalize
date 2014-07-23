@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.visitor reference &mdash; normalize 0.4.4 documentation</title>
+    <title>normalize.visitor reference &mdash; normalize 0.5.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4.4',
+        VERSION:     '0.5.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.4.4 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
     <link rel="prev" title="Comparing Records - normalize.diff" href="diff.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -50,17 +50,13 @@
             
   <div class="section" id="normalize-visitor-reference">
 <h1><tt class="docutils literal"><span class="pre">normalize.visitor</span></tt> reference<a class="headerlink" href="#normalize-visitor-reference" title="Permalink to this headline">¶</a></h1>
-<p>This Visitor class is an early attempt at abstracting the various
-visitor functions used through the rest of the module.</p>
-<p>It is not currently complete; notably, it should be possible to use
-this class without an instance, such as to implement marshal in.
-There is also the gaping lack of support for avoiding infinite
-recursion in the event of data structures with cycles, just like the
-rest of this module.</p>
-<div class="admonition tip">
-<p class="first admonition-title">Tip</p>
-<p class="last">Don&#8217;t pass data structures with cycles into any normalize
-visitor function.  You have been warned.</p>
+<p>This Visitor class is an attempt at unifying the various visitor
+functions used through the rest of the module, as well as providing a
+convenient API for working with normalize data structures.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Cycle detection is still TODO (but close).  Be careful if using
+data structures with cycles.</p>
 </div>
 <dl class="class">
 <dt id="normalize.visitor.Visitor">
@@ -480,7 +476,7 @@ options.</dd>
         <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.4.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
