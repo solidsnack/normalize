@@ -16,6 +16,7 @@ class TestAvroVisitor(unittest2.TestCase):
 
         self.assertEqual(
             avro.AvroVisitor.reflect(SimpleRecord),
+            # example from http://avro.apache.org/docs/1.7.6/spec.html#schema_complex
             {
                 "type": "record", 
                 "name": "test",
