@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Defining Records - normalize.record &mdash; normalize 0.5.0 documentation</title>
+    <title>Defining Records - normalize.record &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="index.html" />
     <link rel="next" title="Referring to components of Records - normalize.selector" href="selector.html" />
     <link rel="prev" title="Defining Properties - normalize.property" href="property.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="property.html" title="Defining Properties - normalize.property"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -416,7 +416,7 @@ dict or a list.</dd>
 
 <dl class="function">
 <dt id="normalize.record.json.to_json">
-<tt class="descclassname">normalize.record.json.</tt><tt class="descname">to_json</tt><big>(</big><em>record</em>, <em>extraneous=True</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.to_json" title="Permalink to this definition">¶</a></dt>
+<tt class="descclassname">normalize.record.json.</tt><tt class="descname">to_json</tt><big>(</big><em>record</em>, <em>extraneous=True</em>, <em>prop=None</em><big>)</big><a class="reference internal" href="_modules/normalize/record/json.html#to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.record.json.to_json" title="Permalink to this definition">¶</a></dt>
 <dd><p>JSON marshall out function: a &#8216;visitor&#8217; function which implements
 marshall out, honoring JSON property types/hints but does not require
 them.</p>
@@ -431,6 +431,10 @@ will call itself recursively, respecting any types which define
 <dt><tt class="docutils literal"><span class="pre">extraneous=</span></tt><em>BOOL</em></dt>
 <dd>This parameter is passed through to any <tt class="docutils literal"><span class="pre">json_data()</span></tt> methods
 which support it.</dd>
+<dt><tt class="docutils literal"><span class="pre">prop=</span></tt><em>PROPNAME</em><a href="#id1"><span class="problematic" id="id2">|</span></a><em>PROPERTY</em></dt>
+<dd>Specifies to return the given property from an object, calling any
+<tt class="docutils literal"><span class="pre">to_json</span></tt> mapping defined on the property.  Does not catch the
+<tt class="docutils literal"><span class="pre">AttributeError</span></tt> that is raised by the property not being set.</dd>
 </dl>
 </dd>
 </dl>
@@ -669,12 +673,12 @@ processing the <tt class="docutils literal"><span class="pre">primary_key</span>
         <li class="right" >
           <a href="property.html" title="Defining Properties - normalize.property"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

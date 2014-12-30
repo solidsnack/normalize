@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.visitor &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.visitor &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -65,10 +65,14 @@
 
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
+<span class="kn">import</span> <span class="nn">collections</span>
+<span class="kn">import</span> <span class="nn">types</span>
+
 <span class="kn">from</span> <span class="nn">normalize.coll</span> <span class="kn">import</span> <span class="n">Collection</span>
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
 <span class="kn">from</span> <span class="nn">normalize.record</span> <span class="kn">import</span> <span class="n">Record</span>
 <span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">FieldSelector</span>
+<span class="kn">from</span> <span class="nn">normalize.selector</span> <span class="kn">import</span> <span class="n">MultiFieldSelector</span>
 
 
 <div class="viewcode-block" id="Visitor"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor">[docs]</a><span class="k">class</span> <span class="nc">Visitor</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -79,7 +83,7 @@
 <div class="viewcode-block" id="Visitor.__init__"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.Visitor.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unpack_func</span><span class="p">,</span> <span class="n">apply_func</span><span class="p">,</span> <span class="n">collect_func</span><span class="p">,</span> <span class="n">reduce_func</span><span class="p">,</span>
                  <span class="n">apply_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">ignore_empty_string</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ignore_none</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                 <span class="n">visit_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">visit_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="nb">filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new Visitor object.  Generally called by a front-end class</span>
 <span class="sd">        method of :py:class:`VisitorPattern`</span>
 
@@ -107,7 +111,8 @@
 <span class="sd">            ``visit_filter=``\ *MultiFieldSelector*</span>
 <span class="sd">                This supplies an instance of</span>
 <span class="sd">                :py:class:`normalize.selector.MultiFieldSelector`, and</span>
-<span class="sd">                restricts the operation to the matched object fields.</span>
+<span class="sd">                restricts the operation to the matched object fields.  Can also</span>
+<span class="sd">                be specified as just ``filter=``</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unpack</span> <span class="o">=</span> <span class="n">unpack_func</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">apply</span> <span class="o">=</span> <span class="n">apply_func</span>
@@ -119,7 +124,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_string</span> <span class="o">=</span> <span class="n">ignore_empty_string</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_none</span> <span class="o">=</span> <span class="n">ignore_none</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">visit_filter</span> <span class="o">=</span> <span class="n">visit_filter</span>
+        <span class="k">if</span> <span class="n">visit_filter</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">visit_filter</span> <span class="o">=</span> <span class="nb">filter</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">visit_filter</span><span class="p">,</span> <span class="p">(</span><span class="n">MultiFieldSelector</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visit_filter</span> <span class="o">=</span> <span class="n">visit_filter</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">visit_filter</span> <span class="o">=</span> <span class="n">MultiFieldSelector</span><span class="p">(</span><span class="o">*</span><span class="n">visit_filter</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">seen</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>  <span class="c"># TODO</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cue</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -411,7 +421,16 @@
                 <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">)</span>
-</div>
+
+    <span class="c"># hooks for types which define what is considered acceptable input for</span>
+    <span class="c"># given contexts during &#39;cast&#39;</span>
+    <span class="c">#</span>
+    <span class="c"># note: Collection.coll_to_tuples will generally allow you to pass</span>
+    <span class="c"># collections as a list or a dict with the *values* being the members of</span>
+    <span class="c"># the set, so this code allows this.</span></div>
+    <span class="n">grok_mapping_types</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span>
+    <span class="n">grok_coll_types</span> <span class="o">=</span> <span class="p">(</span><span class="n">collections</span><span class="o">.</span><span class="n">Sequence</span><span class="p">,</span> <span class="n">collections</span><span class="o">.</span><span class="n">Mapping</span><span class="p">)</span>
+
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="VisitorPattern.grok"><a class="viewcode-back" href="../../visitor.html#normalize.visitor.VisitorPattern.grok">[docs]</a>    <span class="k">def</span> <span class="nf">grok</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">value_type</span><span class="p">,</span> <span class="n">visitor</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Like :py:meth:`normalize.visitor.VisitorPattern.unpack` but called</span>
@@ -426,13 +445,35 @@
 <span class="sd">        to override this function and throw ``TypeError`` if the passed</span>
 <span class="sd">        ``value_type`` is not appropriate for ``value``.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">values</span> <span class="o">=</span> <span class="n">value</span>
         <span class="n">is_coll</span> <span class="o">=</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">value_type</span><span class="p">,</span> <span class="n">Collection</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">value_type</span><span class="o">.</span><span class="n">properties</span> <span class="ow">and</span> <span class="n">is_coll</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s">&quot;values&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
-                <span class="n">values</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span>
+        <span class="n">is_record</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="ow">not</span> <span class="n">visitor</span><span class="o">.</span><span class="n">is_filtered</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span> <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span>
+                        <span class="n">value_type</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+        <span class="k">if</span> <span class="n">is_record</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">grok_mapping_types</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">VisitorGrokRecordError</span><span class="p">(</span>
+                <span class="n">val</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                <span class="n">record_type</span><span class="o">=</span><span class="n">value_type</span><span class="p">,</span>
+                <span class="n">record_type_name</span><span class="o">=</span><span class="n">value_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                <span class="n">field_selector</span><span class="o">=</span><span class="n">visitor</span><span class="o">.</span><span class="n">field_selector</span><span class="p">,</span>
+            <span class="p">)</span>
+
+        <span class="n">values</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="n">is_coll</span> <span class="ow">and</span> <span class="n">is_record</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">if</span> <span class="s">&quot;values&quot;</span> <span class="ow">in</span> <span class="n">value</span><span class="p">:</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="s">&#39;values&#39;</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
         <span class="n">generator</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="k">if</span> <span class="n">is_coll</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">values</span><span class="p">,</span> <span class="n">cls</span><span class="o">.</span><span class="n">grok_coll_types</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">VisitorGrokCollectionError</span><span class="p">(</span>
+                    <span class="n">val</span><span class="o">=</span><span class="nb">repr</span><span class="p">(</span><span class="n">values</span><span class="p">),</span>
+                    <span class="n">record_type</span><span class="o">=</span><span class="n">value_type</span><span class="p">,</span>
+                    <span class="n">record_type_name</span><span class="o">=</span><span class="n">value_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
+                    <span class="n">field_selector</span><span class="o">=</span><span class="n">visitor</span><span class="o">.</span><span class="n">field_selector</span><span class="p">,</span>
+                <span class="p">)</span>
             <span class="n">generator</span> <span class="o">=</span> <span class="n">value_type</span><span class="o">.</span><span class="n">coll_to_tuples</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="p">(</span><span class="k">lambda</span> <span class="n">prop</span><span class="p">:</span> <span class="n">value</span><span class="p">[</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">]),</span> <span class="n">generator</span>
@@ -639,6 +680,7 @@
                     <span class="n">exception</span><span class="o">=</span><span class="n">e</span><span class="p">,</span>
                     <span class="n">prop</span><span class="o">=</span><span class="n">prop</span><span class="p">,</span>
                     <span class="n">prop_name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">record_type_name</span><span class="o">=</span><span class="n">record_type</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
                     <span class="n">fs</span><span class="o">=</span><span class="n">rv</span><span class="o">.</span><span class="n">field_selector</span><span class="p">,</span>
                 <span class="p">)</span>
 
@@ -659,7 +701,7 @@
         <span class="n">rv</span> <span class="o">=</span> <span class="n">visitor</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">coll_generator</span><span class="p">:</span>
             <span class="n">rv</span><span class="o">.</span><span class="n">push</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">visitor</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span>
+            <span class="n">mapped</span> <span class="o">=</span> <span class="n">cls</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">rv</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">coll_type</span><span class="o">.</span><span class="n">itemtype</span><span class="p">)</span>
             <span class="n">rv</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">mapped</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">and</span> <span class="n">visitor</span><span class="o">.</span><span class="n">ignore_none</span><span class="p">:</span>
                 <span class="k">pass</span>
@@ -769,13 +811,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

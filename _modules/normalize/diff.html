@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.diff &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.diff &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -67,6 +67,7 @@
 
 <span class="kn">import</span> <span class="nn">collections</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">chain</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">types</span>
 <span class="kn">import</span> <span class="nn">unicodedata</span>
@@ -173,7 +174,7 @@
                  <span class="n">unicode_normal</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unchanged</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">ignore_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">duck_type</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="n">compare_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">compare_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fuzzy_match</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new ``DiffOptions`` instance.</span>
 
 <span class="sd">        args:</span>
@@ -209,6 +210,10 @@
 <span class="sd">                defined on the &#39;base&#39; type.  This can be used to check progress</span>
 <span class="sd">                when porting from other object systems to normalize.</span>
 
+<span class="sd">            ``fuzzy_match=``\ *BOOL*</span>
+<span class="sd">                Enable approximate matching of items in collections, so that</span>
+<span class="sd">                finer granularity of changes are available.</span>
+
 <span class="sd">            ``compare_filter=``\ *MULTIFIELDSELECTOR*\ \|\ *LIST_OF_LISTS*</span>
 <span class="sd">                Restrict comparison to the fields described by the passed</span>
 <span class="sd">                :py:class:`MultiFieldSelector` (or list of FieldSelector</span>
@@ -218,6 +223,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="o">=</span> <span class="n">ignore_case</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_slots</span> <span class="o">=</span> <span class="n">ignore_empty_slots</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unicode_normal</span> <span class="o">=</span> <span class="n">unicode_normal</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fuzzy_match</span> <span class="o">=</span> <span class="n">fuzzy_match</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unchanged</span> <span class="o">=</span> <span class="n">unchanged</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">duck_type</span> <span class="o">=</span> <span class="n">duck_type</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extraneous</span> <span class="o">=</span> <span class="n">extraneous</span>
@@ -303,11 +309,24 @@
 <span class="sd">                If this instance has a ``compare_as`` method, then that method</span>
 <span class="sd">                is called to perform a clean-up before the value is passed to</span>
 <span class="sd">                ``normalize_val``</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;compare_as&quot;</span><span class="p">):</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">compare_as</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_val</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 </div>
+    <span class="k">def</span> <span class="nf">normalize_object_slot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_nothing</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">obj</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;This hook wraps ``normalize_slot``, and performs clean-ups which</span>
+<span class="sd">        require access to the object the slot is in as well as the value.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;compare_as&quot;</span><span class="p">):</span>
+            <span class="n">method</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;compare_as_info&quot;</span><span class="p">,</span> <span class="p">(</span><span class="bp">False</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">if</span> <span class="n">method</span><span class="p">:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nargs</span><span class="p">:</span>
+                <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">compare_as</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_slot</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
+
 <div class="viewcode-block" id="DiffOptions.normalize_item"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.normalize_item">[docs]</a>    <span class="k">def</span> <span class="nf">normalize_item</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_nothing</span><span class="p">,</span> <span class="n">coll</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Hook which is called on every *collection item*; this is a way to</span>
 <span class="sd">        perform context-aware clean-ups.</span>
@@ -335,7 +354,7 @@
         <span class="sd">&quot;&quot;&quot;Retrieve an object identifier from the given record; if it is an</span>
 <span class="sd">        alien class, and the type is provided, then use duck typing to get the</span>
 <span class="sd">        corresponding fields of the alien class.&quot;&quot;&quot;</span>
-        <span class="n">pk</span> <span class="o">=</span> <span class="n">record_id</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_slot</span><span class="p">)</span>
+        <span class="n">pk</span> <span class="o">=</span> <span class="n">record_id</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">selector</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">normalize_object_slot</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">pk</span>
 </div>
     <span class="k">def</span> <span class="nf">id_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
@@ -343,7 +362,10 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">duck_type</span><span class="p">:</span>
             <span class="n">options</span><span class="p">[</span><span class="s">&#39;type_&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">type_</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span><span class="p">:</span>
-            <span class="n">options</span><span class="p">[</span><span class="s">&#39;selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span><span class="p">[</span><span class="n">fs</span><span class="p">][</span><span class="nb">any</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+                <span class="n">options</span><span class="p">[</span><span class="s">&#39;selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span><span class="p">[</span><span class="n">fs</span><span class="p">][</span><span class="nb">any</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">options</span><span class="p">[</span><span class="s">&#39;selector&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compare_filter</span><span class="p">[</span><span class="nb">any</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">options</span>
 
     <span class="k">def</span> <span class="nf">is_filtered</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">fs</span><span class="p">):</span>
@@ -403,11 +425,11 @@
         <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">is_filtered</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="n">propname</span><span class="p">):</span>
             <span class="k">continue</span>
 
-        <span class="n">propval_a</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_slot</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">),</span> <span class="n">prop</span><span class="p">,</span>
+        <span class="n">propval_a</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_object_slot</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">),</span> <span class="n">prop</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">propval_b</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_slot</span><span class="p">(</span>
-            <span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">),</span> <span class="n">prop</span><span class="p">,</span>
+        <span class="n">propval_b</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">normalize_object_slot</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="n">propname</span><span class="p">,</span> <span class="n">_nothing</span><span class="p">),</span> <span class="n">prop</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">propval_a</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">and</span> <span class="n">propval_b</span> <span class="ow">is</span> <span class="n">_nothing</span><span class="p">:</span>
@@ -521,10 +543,61 @@
 
     <span class="k">return</span> <span class="n">generator</span><span class="p">()</span>
 
+</div>
+<span class="k">def</span> <span class="nf">_nested_falsy</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="ow">not</span> <span class="n">_nested_falsy</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">x</span>
+
+
+<span class="k">def</span> <span class="nf">_fuzzy_match</span><span class="p">(</span><span class="n">set_a</span><span class="p">,</span> <span class="n">set_b</span><span class="p">):</span>
+    <span class="n">seen</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+    <span class="n">scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+    <span class="c"># Yes, this is O(n.m), but python&#39;s equality operator is</span>
+    <span class="c"># fast for hashable types.</span>
+    <span class="k">for</span> <span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="n">set_a</span><span class="p">,</span> <span class="n">set_b</span><span class="p">):</span>
+        <span class="n">a_pk</span><span class="p">,</span> <span class="n">a_seq</span> <span class="o">=</span> <span class="n">a_pk_seq</span>
+        <span class="n">b_pk</span><span class="p">,</span> <span class="n">b_seq</span> <span class="o">=</span> <span class="n">b_pk_seq</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a_pk</span><span class="p">,</span> <span class="n">b_pk</span><span class="p">)</span> <span class="ow">in</span> <span class="n">seen</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">seen</span><span class="p">[</span><span class="n">a_pk</span><span class="p">,</span> <span class="n">b_pk</span><span class="p">][</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">score</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">seen</span><span class="p">[</span><span class="n">a_pk</span><span class="p">,</span> <span class="n">b_pk</span><span class="p">])</span>
+                <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">score</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">match</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">common</span> <span class="o">=</span> <span class="nb">min</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">a_pk</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">b_pk</span><span class="p">)))</span>
+            <span class="n">no_match</span> <span class="o">=</span> <span class="nb">max</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">a_pk</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">b_pk</span><span class="p">)))</span> <span class="o">-</span> <span class="n">common</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">common</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">a_pk</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">b_pk</span><span class="p">[</span><span class="n">i</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">_nested_falsy</span><span class="p">(</span><span class="n">a_pk</span><span class="p">[</span><span class="n">i</span><span class="p">]):</span>
+                        <span class="n">match</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">no_match</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">seen</span><span class="p">[</span><span class="n">a_pk</span><span class="p">,</span> <span class="n">b_pk</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">match</span><span class="p">,</span> <span class="n">no_match</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+                <span class="n">scores</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">match</span><span class="p">,</span> <span class="n">no_match</span><span class="p">,</span> <span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span><span class="p">])</span>
+
+    <span class="n">remaining_a</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">set_a</span><span class="p">)</span>
+    <span class="n">remaining_b</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">set_b</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">match</span><span class="p">,</span> <span class="n">no_match</span><span class="p">,</span> <span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span>
+        <span class="n">scores</span><span class="p">,</span>
+        <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="n">reverse</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="k">if</span> <span class="n">a_pk_seq</span> <span class="ow">in</span> <span class="n">remaining_a</span> <span class="ow">and</span> <span class="n">b_pk_seq</span> <span class="ow">in</span> <span class="n">remaining_b</span><span class="p">:</span>
+            <span class="n">remaining_a</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">a_pk_seq</span><span class="p">)</span>
+            <span class="n">remaining_b</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">b_pk_seq</span><span class="p">)</span>
+            <span class="k">yield</span> <span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">remaining_a</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">remaining_b</span><span class="p">:</span>
+            <span class="k">break</span>
+
 
 <span class="c"># There&#39;s a lot of repetition in the following code.  It could be served by one</span>
 <span class="c"># function instead of 3, which would be 3 times fewer places to have bugs, but</span>
-<span class="c"># it would probably also be more than 3 times as difficult to debug.</span></div>
+<span class="c"># it would probably also be more than 3 times as difficult to debug.</span>
 <div class="viewcode-block" id="compare_collection_iter"><a class="viewcode-back" href="../../diff.html#normalize.diff.compare_collection_iter">[docs]</a><span class="k">def</span> <span class="nf">compare_collection_iter</span><span class="p">(</span><span class="n">propval_a</span><span class="p">,</span> <span class="n">propval_b</span><span class="p">,</span> <span class="n">fs_a</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fs_b</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                             <span class="n">options</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generator function to compare two collections, and yield differences.</span>
@@ -554,6 +627,9 @@
     <span class="p">)</span>
     <span class="n">force_descent</span> <span class="o">=</span> <span class="p">(</span><span class="n">propval_a</span> <span class="ow">is</span> <span class="n">_nothing</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">propval_b</span> <span class="ow">is</span> <span class="n">_nothing</span><span class="p">)</span>
     <span class="n">id_args</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">id_args</span><span class="p">(</span><span class="n">coll_type</span><span class="o">.</span><span class="n">itemtype</span><span class="p">,</span> <span class="n">fs_a</span><span class="p">)</span>
+    <span class="k">if</span> <span class="s">&#39;selector&#39;</span> <span class="ow">in</span> <span class="n">id_args</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">id_args</span><span class="p">[</span><span class="s">&#39;selector&#39;</span><span class="p">]:</span>
+        <span class="c"># early exit shortcut</span>
+        <span class="k">return</span>
 
     <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">:</span>
         <span class="n">propval_x</span> <span class="o">=</span> <span class="n">propvals</span><span class="p">[</span><span class="n">x</span><span class="p">]</span>
@@ -575,11 +651,11 @@
 
     <span class="n">removed</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
     <span class="n">added</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span>
+    <span class="n">common</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">])</span>
 
     <span class="k">if</span> <span class="n">compare_values</span> <span class="ow">or</span> <span class="n">force_descent</span><span class="p">:</span>
-        <span class="n">descendable</span> <span class="o">=</span> <span class="p">(</span><span class="n">removed</span> <span class="o">|</span> <span class="n">added</span><span class="p">)</span> <span class="k">if</span> <span class="n">force_descent</span> <span class="k">else</span> <span class="p">(</span>
-            <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">])</span>
-        <span class="p">)</span>
+        <span class="n">descendable</span> <span class="o">=</span> <span class="p">(</span><span class="n">removed</span> <span class="o">|</span> <span class="n">added</span><span class="p">)</span> <span class="k">if</span> <span class="n">force_descent</span> <span class="k">else</span> <span class="n">common</span>
+
         <span class="k">for</span> <span class="n">pk</span><span class="p">,</span> <span class="n">seq</span> <span class="ow">in</span> <span class="n">descendable</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">force_descent</span> <span class="ow">or</span> <span class="n">propval_a</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">_nothing</span><span class="p">:</span>
                 <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">pk</span><span class="p">,</span> <span class="n">seq</span><span class="p">]</span>
@@ -596,10 +672,36 @@
                     <span class="n">b_val</span> <span class="o">=</span> <span class="n">_nothing</span>
             <span class="n">selector_a</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="n">a_key</span>
             <span class="n">selector_b</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="n">b_key</span>
+            <span class="c"># FIXME: collections of collections!</span>
             <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">compare_record_iter</span><span class="p">(</span>
                 <span class="n">a_val</span><span class="p">,</span> <span class="n">b_val</span><span class="p">,</span> <span class="n">selector_a</span><span class="p">,</span> <span class="n">selector_b</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
             <span class="p">):</span>
                 <span class="k">yield</span> <span class="n">diff</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force_descent</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">fuzzy_match</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">a_pk_seq</span><span class="p">,</span> <span class="n">b_pk_seq</span> <span class="ow">in</span> <span class="n">_fuzzy_match</span><span class="p">(</span><span class="n">removed</span><span class="p">,</span> <span class="n">added</span><span class="p">):</span>
+                <span class="n">removed</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">a_pk_seq</span><span class="p">)</span>
+                <span class="n">added</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">b_pk_seq</span><span class="p">)</span>
+                <span class="n">a_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">][</span><span class="n">a_pk_seq</span><span class="p">]</span>
+                <span class="n">a_val</span> <span class="o">=</span> <span class="n">propval_a</span><span class="p">[</span><span class="n">a_key</span><span class="p">]</span>
+                <span class="n">b_key</span> <span class="o">=</span> <span class="n">rev_keys</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">][</span><span class="n">b_pk_seq</span><span class="p">]</span>
+                <span class="n">b_val</span> <span class="o">=</span> <span class="n">propval_b</span><span class="p">[</span><span class="n">b_key</span><span class="p">]</span>
+                <span class="n">selector_a</span> <span class="o">=</span> <span class="n">fs_a</span> <span class="o">+</span> <span class="n">a_key</span>
+                <span class="n">selector_b</span> <span class="o">=</span> <span class="n">fs_b</span> <span class="o">+</span> <span class="n">b_key</span>
+                <span class="n">any_diffs</span> <span class="o">=</span> <span class="bp">False</span>
+                <span class="k">for</span> <span class="n">diff</span> <span class="ow">in</span> <span class="n">compare_record_iter</span><span class="p">(</span>
+                    <span class="n">a_val</span><span class="p">,</span> <span class="n">b_val</span><span class="p">,</span> <span class="n">selector_a</span><span class="p">,</span> <span class="n">selector_b</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span>
+                <span class="p">):</span>
+                    <span class="k">if</span> <span class="n">diff</span><span class="o">.</span><span class="n">diff_type</span> <span class="o">!=</span> <span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">:</span>
+                        <span class="n">any_diffs</span> <span class="o">=</span> <span class="bp">True</span>
+                    <span class="k">yield</span> <span class="n">diff</span>
+
+                <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">any_diffs</span><span class="p">:</span>
+                    <span class="k">yield</span> <span class="n">DiffInfo</span><span class="p">(</span>
+                        <span class="n">diff_type</span><span class="o">=</span><span class="n">DiffTypes</span><span class="o">.</span><span class="n">NO_CHANGE</span><span class="p">,</span>
+                        <span class="n">base</span><span class="o">=</span><span class="n">fs_a</span> <span class="o">+</span> <span class="p">[</span><span class="n">a_key</span><span class="p">],</span>
+                        <span class="n">other</span><span class="o">=</span><span class="n">fs_b</span> <span class="o">+</span> <span class="p">[</span><span class="n">b_key</span><span class="p">],</span>
+                    <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">unchanged</span><span class="p">:</span>
         <span class="n">unchanged</span> <span class="o">=</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;a&#39;</span><span class="p">]</span> <span class="o">&amp;</span> <span class="n">values</span><span class="p">[</span><span class="s">&#39;b&#39;</span><span class="p">]</span>
@@ -902,13 +1004,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.json &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.record.json &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.record" href="../record.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
       </ul>
@@ -201,7 +201,7 @@
             <span class="k">return</span> <span class="n">to_json</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;JSON marshall out function: a &#39;visitor&#39; function which implements</span>
 <span class="sd">    marshall out, honoring JSON property types/hints but does not require</span>
 <span class="sd">    them.</span>
@@ -216,8 +216,21 @@
 <span class="sd">        ``extraneous=``\ *BOOL*</span>
 <span class="sd">            This parameter is passed through to any ``json_data()`` methods</span>
 <span class="sd">            which support it.</span>
+
+<span class="sd">        ``prop=``\ *PROPNAME*\ |\ *PROPERTY*</span>
+<span class="sd">            Specifies to return the given property from an object, calling any</span>
+<span class="sd">            ``to_json`` mapping defined on the property.  Does not catch the</span>
+<span class="sd">            ``AttributeError`` that is raised by the property not being set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">prop</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">):</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">record</span><span class="p">)</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span>
+        <span class="n">val</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;to_json&quot;</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">_json_data</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">Collection</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_json_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">record</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">Record</span><span class="p">):</span>
@@ -228,14 +241,9 @@
             <span class="k">elif</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;json_name&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">prop</span><span class="o">.</span><span class="n">json_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">json_name</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;json_name&quot;</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
                 <span class="k">try</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+                    <span class="n">rv_dict</span><span class="p">[</span><span class="n">json_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">,</span> <span class="n">prop</span><span class="p">)</span>
                 <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
                     <span class="k">pass</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="s">&quot;to_json&quot;</span><span class="p">):</span>
-                        <span class="n">val</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">to_json</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
-                    <span class="n">rv_dict</span><span class="p">[</span><span class="n">json_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_json_data</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span>
-
         <span class="k">return</span> <span class="n">rv_dict</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="nb">long</span><span class="p">):</span>
@@ -246,7 +254,7 @@
             <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">_json_data</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">record</span><span class="o">.</span><span class="n">iteritems</span><span class="p">()</span>
         <span class="p">)</span>
 
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">set</span><span class="p">,</span> <span class="nb">frozenset</span><span class="p">)):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">_json_data</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">extraneous</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">record</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)):</span>
@@ -451,14 +459,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

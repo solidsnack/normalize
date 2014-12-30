@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Comparing Records - normalize.diff &mdash; normalize 0.5.0 documentation</title>
+    <title>Comparing Records - normalize.diff &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="index.html" />
     <link rel="next" title="normalize.visitor reference" href="visitor.html" />
     <link rel="prev" title="Referring to components of Records - normalize.selector" href="selector.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -183,13 +183,13 @@ individual difference.</p>
 
 <dl class="class">
 <dt id="normalize.diff.DiffOptions">
-<em class="property">class </em><tt class="descclassname">normalize.diff.</tt><tt class="descname">DiffOptions</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.diff.</tt><tt class="descname">DiffOptions</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional data structure to pass diff options down.  Some functions are
 delegated to this object, allowing for further customization of operation,
 forming the <em>DiffOptions sub-class API</em>.</p>
 <dl class="method">
 <dt id="normalize.diff.DiffOptions.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new <tt class="docutils literal"><span class="pre">DiffOptions</span></tt> instance.</p>
 <p>args:</p>
 <blockquote>
@@ -219,6 +219,9 @@ checks that the &#8216;other&#8217; object has all of the properties
 defined on the &#8216;base&#8217; type.  This can be used to check progress
 when porting from other object systems to normalize.</p>
 </dd>
+<dt><tt class="docutils literal"><span class="pre">fuzzy_match=</span></tt><em>BOOL</em></dt>
+<dd>Enable approximate matching of items in collections, so that
+finer granularity of changes are available.</dd>
 <dt><tt class="docutils literal"><span class="pre">compare_filter=</span></tt><em>MULTIFIELDSELECTOR</em>|<em>LIST_OF_LISTS</em></dt>
 <dd>Restrict comparison to the fields described by the passed
 <tt class="xref py py-class docutils literal"><span class="pre">MultiFieldSelector</span></tt> (or list of FieldSelector
@@ -469,12 +472,12 @@ typically provides the generator.</p>
         <li class="right" >
           <a href="selector.html" title="Referring to components of Records - normalize.selector"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

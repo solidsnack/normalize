@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.visitor reference &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.visitor reference &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="index.html" />
     <link rel="prev" title="Comparing Records - normalize.diff" href="diff.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -60,13 +60,13 @@ data structures with cycles.</p>
 </div>
 <dl class="class">
 <dt id="normalize.visitor.Visitor">
-<em class="property">class </em><tt class="descclassname">normalize.visitor.</tt><tt class="descname">Visitor</tt><big>(</big><em>unpack_func</em>, <em>apply_func</em>, <em>collect_func</em>, <em>reduce_func</em>, <em>apply_empty_slots=False</em>, <em>extraneous=False</em>, <em>ignore_empty_string=False</em>, <em>ignore_none=True</em>, <em>visit_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.visitor.</tt><tt class="descname">Visitor</tt><big>(</big><em>unpack_func</em>, <em>apply_func</em>, <em>collect_func</em>, <em>reduce_func</em>, <em>apply_empty_slots=False</em>, <em>extraneous=False</em>, <em>ignore_empty_string=False</em>, <em>ignore_none=True</em>, <em>visit_filter=None</em>, <em>filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor" title="Permalink to this definition">¶</a></dt>
 <dd><p>The Visitor object represents a single recursive visit in progress.  You
 hopefully shouldn&#8217;t have to sub-class this class for most use cases; just
 VisitorPattern.</p>
 <dl class="method">
 <dt id="normalize.visitor.Visitor.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>unpack_func</em>, <em>apply_func</em>, <em>collect_func</em>, <em>reduce_func</em>, <em>apply_empty_slots=False</em>, <em>extraneous=False</em>, <em>ignore_empty_string=False</em>, <em>ignore_none=True</em>, <em>visit_filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>unpack_func</em>, <em>apply_func</em>, <em>collect_func</em>, <em>reduce_func</em>, <em>apply_empty_slots=False</em>, <em>extraneous=False</em>, <em>ignore_empty_string=False</em>, <em>ignore_none=True</em>, <em>visit_filter=None</em>, <em>filter=None</em><big>)</big><a class="reference internal" href="_modules/normalize/visitor.html#Visitor.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.visitor.Visitor.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new Visitor object.  Generally called by a front-end class
 method of <tt class="xref py py-class docutils literal"><span class="pre">VisitorPattern</span></tt></p>
 <p>There are four positional arguments, which specify the particular
@@ -90,7 +90,8 @@ slot or object did not exist.  <tt class="docutils literal"><span class="pre">Tr
 <dt><tt class="docutils literal"><span class="pre">visit_filter=</span></tt><em>MultiFieldSelector</em></dt>
 <dd>This supplies an instance of
 <a class="reference internal" href="selector.html#normalize.selector.MultiFieldSelector" title="normalize.selector.MultiFieldSelector"><tt class="xref py py-class docutils literal"><span class="pre">normalize.selector.MultiFieldSelector</span></tt></a>, and
-restricts the operation to the matched object fields.</dd>
+restricts the operation to the matched object fields.  Can also
+be specified as just <tt class="docutils literal"><span class="pre">filter=</span></tt></dd>
 </dl>
 </div></blockquote>
 </dd></dl>
@@ -483,12 +484,12 @@ options.</dd>
         <li class="right" >
           <a href="diff.html" title="Comparing Records - normalize.diff"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

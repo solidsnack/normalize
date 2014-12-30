@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>the normalize library &mdash; normalize 0.5.0 documentation</title>
+    <title>the normalize library &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="#" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="#" />
     <link rel="next" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
   <body>
@@ -39,7 +39,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="N">next</a> |</li>
-        <li><a href="#">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -152,7 +152,7 @@ be a bug!</p>
 <td>An implementation of keyed collections which obey the <cite>Record</cite> property protocol and the tuple collection protocol.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.exc</span></tt></td>
-<td>Structured exception module.</td>
+<td></td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.FieldSelector</span></tt></td>
 <td>A way to refer to fields/record/properties within a data structure.</td>
@@ -164,10 +164,10 @@ be a bug!</p>
 <td>JSON marshall in function: a &#8216;visitor&#8217; function which looks for JSON types/hints on types being converted to, but does not require them.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonListProperty</span></tt></td>
-<td></td>
+<td>A property which map to a list of records in JSON.</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonProperty</span></tt></td>
-<td></td>
+<td>Object property wrapper for record json data</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.JsonRecord</span></tt></td>
 <td>Version of a Record which deals primarily in JSON form.</td>
@@ -176,7 +176,7 @@ be a bug!</p>
 <td>Version of a RecordList which deals primarily in JSON</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.LazyProperty</span></tt></td>
-<td></td>
+<td>This declares a property which has late evaluation using its &#8216;default&#8217; method.</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ListCollection</span></tt></td>
 <td>An implementation of sequences which obey the <cite>Record</cite> property protocol and the tuple collection protocol.</td>
@@ -191,22 +191,22 @@ be a bug!</p>
 <td>Version of a FieldSelector which stores multiple FieldSelectors combined into a single tree structure.</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.Property</span></tt></td>
-<td></td>
+<td>This is the base class for all property types.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.ROProperty</span></tt></td>
-<td></td>
+<td>A read-only property throws an exception when the attribute slot is</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.Record</span></tt></td>
 <td>Base class for normalize instances and collections.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.RecordList</span></tt></td>
-<td>An implementation of sequences which obey the <cite>Record</cite> property protocol and the tuple collection protocol.</td>
+<td>alias of <tt class="xref py py-class docutils literal"><span class="pre">ListCollection</span></tt></td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.RecordMeta</span></tt></td>
 <td>Metaclass for <tt class="docutils literal"><span class="pre">Record</span></tt> types.</td>
 </tr>
 <tr class="row-even"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.SafeProperty</span></tt></td>
-<td></td>
+<td>A version of Property which always checks all assignments to properties.</td>
 </tr>
 <tr class="row-odd"><td><tt class="xref py py-obj docutils literal"><span class="pre">normalize.to_json</span></tt></td>
 <td>JSON marshall out function: a &#8216;visitor&#8217; function which implements marshall out, honoring JSON property types/hints but does not require them.</td>
@@ -276,12 +276,12 @@ be a bug!</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >next</a> |</li>
-        <li><a href="#">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="#">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

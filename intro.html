@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>An introduction to using normalize &mdash; normalize 0.5.0 documentation</title>
+    <title>An introduction to using normalize &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="index.html" />
     <link rel="next" title="Defining Properties - normalize.property" href="property.html" />
     <link rel="prev" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -773,6 +773,15 @@ useful exception:</p>
     <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
 <span class="gr">TypeError</span>: <span class="n">an integer is required</span>
 <span class="go">&gt;&gt;&gt;</span>
+<span class="gt">Traceback (most recent call last):</span>
+  File <span class="nb">&quot;&lt;stdin&gt;&quot;</span>, line <span class="m">1</span>, in <span class="n">&lt;module&gt;</span>
+  File <span class="nb">&quot;normalize/record/__init__.py&quot;</span>, line <span class="m">28</span>, in <span class="n">__init__</span>
+    <span class="n">meta_prop</span><span class="o">.</span><span class="n">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">val</span><span class="p">)</span>
+  File <span class="nb">&quot;normalize/property/__init__.py&quot;</span>, line <span class="m">101</span>, in <span class="n">init_prop</span>
+    <span class="n">obj</span><span class="o">.</span><span class="n">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_safe_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+  File <span class="nb">&quot;normalize/property/__init__.py&quot;</span>, line <span class="m">76</span>, in <span class="n">type_safe_value</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+<span class="gr">TypeError</span>: <span class="n">an integer is required</span>
 </pre></div>
 </div>
 </div></blockquote>
@@ -882,12 +891,12 @@ WARRANTY?  :-)  Patches and bug reports welcome.</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.5.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.6.3 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>

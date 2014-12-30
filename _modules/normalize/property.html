@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.property &mdash; normalize 0.5.0 documentation</title>
+    <title>normalize.property &mdash; normalize 0.6.3 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.5.0',
+        VERSION:     '0.6.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.5.0 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.6.3 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -76,6 +76,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">inspect</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
@@ -96,6 +97,7 @@
 <span class="sd">    change the way it behaves.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">MetaProperty</span>
+    <span class="n">__safe_unless_ro__</span> <span class="o">=</span> <span class="bp">False</span>
 
 <div class="viewcode-block" id="Property.__init__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="nb">coerce</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
@@ -156,20 +158,33 @@
         <span class="nb">super</span><span class="p">(</span><span class="n">Property</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="n">default</span><span class="p">):</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
-                <span class="n">required_args</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">required_args</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">:</span>
-                    <span class="n">required_args</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">required_args</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">is_method</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_info</span><span class="p">(</span><span class="n">default</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">nargs</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">is_method</span> <span class="ow">and</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="c"># backwards compatibility; default=lambda x: x.foo was</span>
+                    <span class="c"># permitted previously.</span>
+                    <span class="n">stacklevel</span> <span class="o">=</span> <span class="mi">1</span>
+
+                    <span class="c"># walk stack back to the actual caller of the original</span>
+                    <span class="c"># constructor</span>
+                    <span class="n">stack</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">stack</span><span class="p">()</span>
+                    <span class="k">while</span> <span class="n">stacklevel</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">):</span>
+                        <span class="n">loc</span> <span class="o">=</span> <span class="n">stack</span><span class="p">[</span><span class="n">stacklevel</span> <span class="o">-</span> <span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">f_locals</span>
+                        <span class="k">if</span> <span class="s">&#39;self&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">loc</span> <span class="ow">or</span> <span class="n">loc</span><span class="p">[</span><span class="s">&#39;self&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="bp">self</span><span class="p">:</span>
+                            <span class="k">break</span>
+                        <span class="n">stacklevel</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="s">&quot;&#39;default&#39; first argument should be called &#39;self&#39;&quot;</span><span class="p">,</span>
+                        <span class="n">stacklevel</span><span class="o">=</span><span class="n">stacklevel</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">is_method</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">DefaultSignatureError</span><span class="p">(</span>
                         <span class="n">func</span><span class="o">=</span><span class="n">default</span><span class="p">,</span>
                         <span class="n">module</span><span class="o">=</span><span class="n">default</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span>
-                        <span class="n">nargs</span><span class="o">=</span><span class="n">required_args</span><span class="p">,</span>
+                        <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">,</span>
                     <span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">default_wants_arg</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">required_args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default_is_method</span> <span class="o">=</span> <span class="n">is_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">required</span> <span class="o">=</span> <span class="n">required</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">check</span> <span class="o">=</span> <span class="n">check</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span> <span class="o">=</span> <span class="n">isa</span>
@@ -178,6 +193,20 @@
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CoerceWithoutType</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extraneous</span> <span class="o">=</span> <span class="n">extraneous</span>
 </div>
+    <span class="k">def</span> <span class="nf">func_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getargspec</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="n">is_method</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
+            <span class="n">required_args</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">required_args</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">:</span>
+                <span class="n">required_args</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">defaults</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">required_args</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s">&quot;self&quot;</span><span class="p">:</span>
+                <span class="n">is_method</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">required_args</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">is_method</span><span class="p">,</span> <span class="n">required_args</span>
+
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">bound</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">class_</span><span class="p">)</span>
@@ -241,7 +270,7 @@
 
     <span class="k">def</span> <span class="nf">get_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
         <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">):</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_wants_arg</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_is_method</span><span class="p">:</span>
                 <span class="c"># XXX - only &#39;lazy&#39; properties should be allowed to do this.</span>
                 <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -391,8 +420,21 @@
     <span class="n">__trait__</span> <span class="o">=</span> <span class="s">&quot;diffas&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">compare_as</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Specify ``compare_as=`` to pass a clean-up function which is applied</span>
+<span class="sd">        to the value in the slot, but only during comparison.</span>
+<span class="sd">        The function can be a method, and can choose to either accept or not</span>
+<span class="sd">        accept an argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">DiffasProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compare_as</span> <span class="o">=</span> <span class="n">compare_as</span>
+        <span class="n">is_method</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_info</span><span class="p">(</span><span class="n">compare_as</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compare_as_info</span> <span class="o">=</span> <span class="n">is_method</span><span class="p">,</span> <span class="n">nargs</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CompareAsSignatureError</span><span class="p">(</span>
+                <span class="n">func</span><span class="o">=</span><span class="n">compare_as</span><span class="p">,</span>
+                <span class="n">module</span><span class="o">=</span><span class="n">compare_as</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span>
+                <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">,</span>
+            <span class="p">)</span>
 
 
 <span class="n">trait_num</span> <span class="o">=</span> <span class="mi">0</span>
@@ -500,13 +542,13 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.5.0 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.6.3 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Sam Vilain, Hearsay Social.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
 </html>
