@@ -75,6 +75,7 @@
 <span class="kn">from</span> <span class="nn">normalize.exc</span> <span class="kn">import</span> <span class="n">FieldSelectorAttributeError</span>
 <span class="kn">from</span> <span class="nn">normalize.exc</span> <span class="kn">import</span> <span class="n">FieldSelectorException</span>
 <span class="kn">from</span> <span class="nn">normalize.exc</span> <span class="kn">import</span> <span class="n">FieldSelectorKeyError</span>
+<span class="kn">from</span> <span class="nn">normalize.exc</span> <span class="kn">import</span> <span class="n">FieldSelectorOperationUnsupported</span>
 
 
 <span class="nd">@functools.total_ordering</span>
@@ -286,6 +287,47 @@
             <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)([</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]])</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="k">return</span> <span class="mi">1</span>
+</div>
+<div class="viewcode-block" id="FieldSelector.delete"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">record</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Like &#39;put&#39;, but deletes the item from the specified location.</span>
+
+<span class="sd">        If there is a problem, this method will typically raise</span>
+<span class="sd">        :py:class:`FieldSelectorException`.</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">           record.foo = &quot;bar&quot;</span>
+<span class="sd">           field_selector = FieldSelector([&quot;foo&quot;])</span>
+<span class="sd">           field_selector.delete(record)</span>
+<span class="sd">           print field_selector.foo  # AttributeError</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">sub_field_selector</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:])</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">record</span><span class="p">:</span>
+                    <span class="n">sub_field_selector</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">selector</span><span class="p">]</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">FieldSelectorKeyError</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="n">selector</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">selector</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="n">FieldSelectorAttributeError</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">selector</span><span class="p">)</span>
+                <span class="n">record</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">selector</span><span class="p">)</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">to_delete</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">to_delete</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)):</span>
+            <span class="c"># can&#39;t do this until the coll types support mutation operations</span>
+            <span class="k">raise</span> <span class="n">FieldSelectorOperationUnsupported</span><span class="p">(</span>
+                <span class="n">operation</span><span class="o">=</span><span class="s">&quot;delete&quot;</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">=</span><span class="s">&quot;collection&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">to_delete</span><span class="p">):</span>
+                <span class="nb">delattr</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">to_delete</span><span class="p">)</span>
 </div>
 <div class="viewcode-block" id="FieldSelector.__eq__"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.__eq__">[docs]</a>    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Implemented; field selectors must have identical paths to compare</span>

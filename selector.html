@@ -174,6 +174,20 @@ selector and there were no existing items in that collection.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="normalize.selector.FieldSelector.delete">
+<tt class="descname">delete</tt><big>(</big><em>record</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Like &#8216;put&#8217;, but deletes the item from the specified location.</p>
+<p>If there is a problem, this method will typically raise
+<tt class="xref py py-class docutils literal"><span class="pre">FieldSelectorException</span></tt>.</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">record</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
+<span class="n">field_selector</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">])</span>
+<span class="n">field_selector</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+<span class="k">print</span> <span class="n">field_selector</span><span class="o">.</span><span class="n">foo</span>  <span class="c"># AttributeError</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
 <dt id="normalize.selector.FieldSelector.__eq__">
 <tt class="descname">__eq__</tt><big>(</big><em>other</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#FieldSelector.__eq__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.FieldSelector.__eq__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Implemented; field selectors must have identical paths to compare
