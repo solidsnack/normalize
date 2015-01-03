@@ -66,7 +66,7 @@
 <span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
 
 <span class="kn">import</span> <span class="nn">collections</span>
-<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">copy</span> <span class="kn">import</span> <span class="n">deepcopy</span>
 <span class="kn">import</span> <span class="nn">functools</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">types</span>
@@ -461,10 +461,12 @@
         <span class="k">return</span> <span class="s">u&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_fmt_selector_path</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">)</span>
 </div>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+<div class="viewcode-block" id="FieldSelector.from_path"><a class="viewcode-back" href="../../selector.html#normalize.selector.FieldSelector.from_path">[docs]</a>    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alternate constructor.  Constructs a FieldSelector from the</span>
+<span class="sd">        abbreviated text representation (.path attribute)&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="n">_scan_selector_path</span><span class="p">(</span><span class="n">path</span><span class="p">))</span>
 
-</div>
+</div></div>
 <span class="k">def</span> <span class="nf">_fmt_selector_path</span><span class="p">(</span><span class="n">selector</span><span class="p">):</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
         <span class="k">return</span> <span class="s">&quot;[</span><span class="si">%d</span><span class="s">]&quot;</span> <span class="o">%</span> <span class="n">selector</span>
@@ -515,6 +517,10 @@
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">tail</span><span class="p">,</span> <span class="n">MultiFieldSelector</span><span class="p">)</span> <span class="k">else</span>
         <span class="n">_fmt_selector_path</span><span class="p">(</span><span class="n">head</span><span class="p">)</span>
     <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">_None</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
 
 
 <div class="viewcode-block" id="MultiFieldSelector"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector">[docs]</a><span class="k">class</span> <span class="nc">MultiFieldSelector</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -701,7 +707,7 @@
 </div>
     <span class="k">def</span> <span class="nf">_get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">tail</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">tail</span> <span class="ow">is</span> <span class="nb">all</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">tail</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
 
@@ -755,7 +761,130 @@
                     <span class="n">val</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">head</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
                     <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                         <span class="n">kwargs</span><span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">ctor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div></div>
+                <span class="k">return</span> <span class="n">ctor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+</div>
+    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Deletes all of the fields at the specified locations.</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``obj=``\ *OBJECT*</span>
+<span class="sd">                the object to remove the fields from</span>
+
+<span class="sd">            ``force=``\ *BOOL*</span>
+<span class="sd">                if True, missing attributes do not raise errors.  Otherwise,</span>
+<span class="sd">                the first failure raises an exception without making any</span>
+<span class="sd">                changes to ``obj``.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO: this could be a whole lot more efficient!</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">fs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">FieldSelectorException</span><span class="p">:</span>
+                    <span class="k">raise</span>
+
+        <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">except</span> <span class="n">FieldSelectorException</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Copies fields from ``obj`` to ``target``.  If a matched field does</span>
+<span class="sd">        not exist in ``obj``, it will be deleted from ``target``, otherwise it</span>
+<span class="sd">        will be assigned (or copied).</span>
+
+<span class="sd">        args:</span>
+
+<span class="sd">            ``target=``\ *OBJECT*</span>
+<span class="sd">                the object to set the fields in</span>
+
+<span class="sd">            ``source=``\ *OBJECT*</span>
+<span class="sd">                the object to lift the fields from</span>
+
+<span class="sd">            ``copy=``\ *BOOL*\ |\ *FUNCTION*</span>
+<span class="sd">                deep copy the values set, using copy.deepcopy (or the passed</span>
+<span class="sd">                function).  False by default.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c"># TODO: this could also be a whole lot more efficient!</span>
+        <span class="n">fs_val</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">fs</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">fs_val</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fs</span><span class="p">,</span> <span class="n">fs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">source</span><span class="p">)))</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">fs_val</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fs</span><span class="p">,</span> <span class="n">_None</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">FieldSelectorException</span><span class="p">:</span>
+                <span class="k">raise</span>
+
+        <span class="k">if</span> <span class="n">copy</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">copy</span><span class="p">):</span>
+            <span class="n">copy</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">deepcopy</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">fs</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="n">fs_val</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">val</span> <span class="ow">is</span> <span class="n">_None</span><span class="p">:</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">val</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">copy</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mfs_path</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alternate constructor.  Constructs a MultiFieldSelector from the</span>
+<span class="sd">        abbreviated text representation (.path attribute)&quot;&quot;&quot;</span>
+        <span class="n">mfs</span> <span class="o">=</span> <span class="n">_scan_mfs_path</span><span class="p">(</span><span class="n">mfs_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="n">mfs</span><span class="p">)</span>
+
+</div>
+<span class="n">_MFS_PATH_TOK</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="sd">r&#39;&#39;&#39;\.(?P&lt;attr&gt;\w+)|</span>
+<span class="sd">        \[(?:</span>
+<span class="sd">            (?P&lt;idx&gt;\d+)|</span>
+<span class="sd">            (?P&lt;wild&gt;\*)|</span>
+<span class="sd">            &#39;(?P&lt;key&gt;(?:[^&#39;]+|\\&#39;)*)&#39;</span>
+<span class="sd">        )\]|</span>
+<span class="sd">        (?P&lt;branch&gt;[()|])</span>
+<span class="sd">        &#39;&#39;&#39;</span><span class="p">,</span>
+    <span class="n">re</span><span class="o">.</span><span class="n">X</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_scan_mfs_path</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="n">mfs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+    <span class="n">popping</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="n">_MFS_PATH_TOK</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;branch&quot;</span><span class="p">):</span>
+            <span class="n">branch</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&quot;branch&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">branch</span> <span class="o">==</span> <span class="s">&quot;(&quot;</span><span class="p">:</span>
+                <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">fs</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">branch</span> <span class="o">==</span> <span class="s">&quot;|&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">popping</span><span class="p">:</span>
+                    <span class="n">mfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+                <span class="n">fs</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">stack</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">popping</span><span class="p">:</span>
+                    <span class="n">mfs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fs</span><span class="p">)</span>
+                    <span class="n">popping</span> <span class="o">=</span> <span class="bp">True</span>
+                <span class="n">fs</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">popping</span> <span class="o">=</span> <span class="bp">False</span>
+
+        <span class="n">text_item</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;key&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">text_item</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">text_item</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&#39;</span><span class="se">\\</span><span class="s">(.)&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">m</span><span class="p">:</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="n">text_item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">text_item</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;attr&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">text_item</span><span class="p">:</span>
+            <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text_item</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx_item</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;idx&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">idx_item</span><span class="p">:</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">idx_item</span><span class="p">))</span>
+            <span class="k">elif</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="s">&#39;wild&#39;</span><span class="p">):</span>
+                <span class="n">fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">mfs</span>
 </pre></div>
 
           </div>
