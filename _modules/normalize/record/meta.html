@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.meta &mdash; normalize 0.6.4 documentation</title>
+    <title>normalize.record.meta &mdash; normalize 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.6.4 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.7.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.record" href="../record.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
       </ul>
@@ -96,6 +96,7 @@
                         <span class="n">properties</span><span class="p">[</span><span class="n">propname</span><span class="p">]</span> <span class="o">=</span> <span class="n">prop</span>
 
         <span class="n">local_props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">aux_props</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">attrname</span><span class="p">,</span> <span class="n">attrval</span> <span class="ow">in</span> <span class="n">attrs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="c"># don&#39;t allow clobbering of these meta-properties in class</span>
@@ -105,7 +106,10 @@
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attrval</span><span class="p">,</span> <span class="n">Property</span><span class="p">):</span>
                 <span class="n">properties</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrval</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">attrval</span><span class="o">.</span><span class="n">bound</span><span class="p">:</span>
+                    <span class="n">attrval</span><span class="o">.</span><span class="n">set_name</span><span class="p">(</span><span class="n">attrname</span><span class="p">)</span>
                     <span class="n">local_props</span><span class="p">[</span><span class="n">attrname</span><span class="p">]</span> <span class="o">=</span> <span class="n">attrval</span>
+                    <span class="k">for</span> <span class="n">aux_name</span><span class="p">,</span> <span class="n">aux_prop</span> <span class="ow">in</span> <span class="n">attrval</span><span class="o">.</span><span class="n">aux_props</span><span class="p">():</span>
+                        <span class="n">aux_props</span><span class="p">[</span><span class="n">aux_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">aux_prop</span>
 
         <span class="n">all_properties</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">properties</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
 
@@ -126,6 +130,7 @@
                     <span class="n">good_props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
             <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">good_props</span><span class="p">)</span>
 
+        <span class="n">attrs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">aux_props</span><span class="p">)</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;primary_key&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">coerce_prop_list</span><span class="p">(</span><span class="s">&#39;primary_key&#39;</span><span class="p">)</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;properties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">properties</span>
         <span class="n">attrs</span><span class="p">[</span><span class="s">&#39;_sorted_properties&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
@@ -139,7 +144,7 @@
         <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">RecordMeta</span><span class="p">,</span> <span class="n">mcs</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">mcs</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">propname</span><span class="p">,</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">local_props</span><span class="o">.</span><span class="n">iteritems</span><span class="p">():</span>
-            <span class="n">prop</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">propname</span><span class="p">)</span>
+            <span class="n">prop</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="bp">self</span></div></div>
 </pre></div>
@@ -175,7 +180,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
       </ul>

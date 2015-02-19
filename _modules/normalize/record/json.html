@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.record.json &mdash; normalize 0.6.4 documentation</title>
+    <title>normalize.record.json &mdash; normalize 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.6.4 documentation" href="../../../index.html" />
+    <link rel="top" title="normalize 0.7.0 documentation" href="../../../index.html" />
     <link rel="up" title="normalize.record" href="../record.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" accesskey="U">normalize.record</a> &raquo;</li> 
       </ul>
@@ -202,9 +202,10 @@
 
 
 <div class="viewcode-block" id="to_json"><a class="viewcode-back" href="../../../record.html#normalize.record.json.to_json">[docs]</a><span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="n">record</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">prop</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;JSON marshall out function: a &#39;visitor&#39; function which implements</span>
-<span class="sd">    marshall out, honoring JSON property types/hints but does not require</span>
-<span class="sd">    them.</span>
+    <span class="sd">&quot;&quot;&quot;JSON conversion function: a &#39;visitor&#39; function which implements marshall</span>
+<span class="sd">    out (to JSON data form), honoring JSON property types/hints but does not</span>
+<span class="sd">    require them.  To convert to an actual JSON document, pass the return value</span>
+<span class="sd">    to ``json.dumps`` or a similar function.</span>
 
 <span class="sd">    args:</span>
 <span class="sd">        ``record=``\ *anything*</span>
@@ -459,7 +460,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../../index.html" >Module code</a> &raquo;</li>
           <li><a href="../record.html" >normalize.record</a> &raquo;</li> 
       </ul>

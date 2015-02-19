@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>An introduction to using normalize &mdash; normalize 0.6.4 documentation</title>
+    <title>An introduction to using normalize &mdash; normalize 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.6.4 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.7.0 documentation" href="index.html" />
     <link rel="next" title="Defining Properties - normalize.property" href="property.html" />
     <link rel="prev" title="the scope and purpose of normalize" href="scope.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.6.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -259,13 +259,37 @@ value in the exception is the coerced value, not the original value.
 The third and fourth examples threw exceptions inside the <tt class="docutils literal"><span class="pre">coerce</span></tt>
 function.</p>
 </div>
-<div class="section" id="property-defaults">
-<span id="defaults"></span><h2>Property Defaults<a class="headerlink" href="#property-defaults" title="Permalink to this headline">¶</a></h2>
-<p>It&#8217;s possible to pass a value or function to the <tt class="docutils literal"><span class="pre">default=</span></tt>
+<div class="section" id="property-defaults-and-empty-psuedo-attributes">
+<span id="defaults"></span><h2>Property Defaults and Empty psuedo-attributes<a class="headerlink" href="#property-defaults-and-empty-psuedo-attributes" title="Permalink to this headline">¶</a></h2>
+<p>Normally, when you access an attribute which is not set, you will get
+an <tt class="docutils literal"><span class="pre">AttributeError</span></tt>.  This is largely an artefact of Python&#8217;s core
+design.  Typically you would guard against attributes not being set
+like this:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>if hasattr(record, &quot;some_property&quot;, False) and \
+        record.some_property == &quot;foo&quot;:
+    # ...
+</pre></div>
+</div>
+</div></blockquote>
+<p>However, this gets repetitive quickly.  Instead, you can access the
+<tt class="docutils literal"><span class="pre">empty_attr</span></tt> attribute, a read-only attribute which is implicitly
+created, and named the same as your own attribute but with &#8216;0&#8217;
+appended.  This reduces the above to:</p>
+<blockquote>
+<div><div class="highlight-python"><div class="highlight"><pre>if record.some_property0 == &quot;foo&quot;:
+    # ...
+</pre></div>
+</div>
+</div></blockquote>
+<p>If you don&#8217;t like the name, you can override it on a per-attribute
+basis using <tt class="docutils literal"><span class="pre">empty_attr</span></tt>, or define a Property type that overrides
+<tt class="docutils literal"><span class="pre">aux_props</span></tt> and use that property type.</p>
+<p>One alternative way to do to this is to set defaults on attributes.
+It&#8217;s possible to pass a value or function to the <tt class="docutils literal"><span class="pre">default=</span></tt>
 parameter, to set a default value for a property in case one is not
-provided.</p>
-<p>You can even use this to make properties that do not raise
-<tt class="docutils literal"><span class="pre">AttributeError</span></tt> if they were not set:</p>
+provided.  That way, because there is always a value in the slot,
+there is no chance that <tt class="docutils literal"><span class="pre">AttributeError</span></tt> will be raised.</p>
 <blockquote>
 <div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">types</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Sloppy</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
@@ -280,12 +304,17 @@ provided.</p>
 </pre></div>
 </div>
 </div></blockquote>
-<p>Beware that the value is assigned without consideration about whether
-it needs to be copied or not.  For immutable value types like strings,
-integers, etc this is fine.  For mutable lists, dictionaries, etc, it
-is likely to be a problem if you want to change the value after
-construction.  An easy way around this is to supply a function that
-returns a new instance of the value:</p>
+<p>However, you should be careful with this approach.  Does it really
+make sense for the information about whether a value is present to be
+&#8220;in-band&#8221; with the value?  In general, <tt class="docutils literal"><span class="pre">default=</span></tt> should be reserved
+for true default values, and not simply to avoid the
+<tt class="docutils literal"><span class="pre">AttributeError</span></tt>.</p>
+<p>Also beware that the value is assigned without consideration about
+whether it needs to be copied or not.  For immutable value types like
+strings, integers, etc this is fine.  For mutable lists, dictionaries,
+etc, it is likely to be a problem if you want to change the value
+after construction.  An easy way around this is to supply a function
+that returns a new instance of the value:</p>
 <blockquote>
 <div><div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">Foo</span><span class="p">(</span><span class="n">Record</span><span class="p">):</span>
 <span class="gp">... </span>  <span class="n">bar</span> <span class="o">=</span> <span class="n">Property</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="k">lambda</span><span class="p">:</span> <span class="p">[])</span>
@@ -743,7 +772,7 @@ types, after all, quite happily coerce from <tt class="docutils literal"><span c
 <span class="go">&gt;&gt;&gt;</span>
 </pre></div>
 </div>
-<p>See <a class="reference internal" href="#defaults"><em>Property Defaults</em></a> above for a version which allows <tt class="docutils literal"><span class="pre">None</span></tt>,
+<p>See <a class="reference internal" href="#defaults"><em>Property Defaults and Empty psuedo-attributes</em></a> above for a version which allows <tt class="docutils literal"><span class="pre">None</span></tt>,
 change your program to trap <tt class="docutils literal"><span class="pre">AttributeError</span></tt> for an unset
 attribute or mark it as <tt class="docutils literal"><span class="pre">required=True</span></tt> if that suits the problem
 better.</p>
@@ -831,7 +860,7 @@ WARRANTY?  :-)  Patches and bug reports welcome.</p>
 <li><a class="reference internal" href="#">An introduction to using <tt class="docutils literal"><span class="pre">normalize</span></tt></a><ul>
 <li><a class="reference internal" href="#basic-records-and-properties">Basic Records and Properties</a></li>
 <li><a class="reference internal" href="#property-type-coercion">Property Type Coercion</a></li>
-<li><a class="reference internal" href="#property-defaults">Property Defaults</a></li>
+<li><a class="reference internal" href="#property-defaults-and-empty-psuedo-attributes">Property Defaults and Empty psuedo-attributes</a></li>
 <li><a class="reference internal" href="#lazy-evaluation">Lazy Evaluation</a></li>
 <li><a class="reference internal" href="#properties-which-are-records">Properties which are Records</a></li>
 <li><a class="reference internal" href="#properties-which-are-lists-of-records">Properties which are Lists of Records</a></li>
@@ -891,7 +920,7 @@ WARRANTY?  :-)  Patches and bug reports welcome.</p>
         <li class="right" >
           <a href="scope.html" title="the scope and purpose of normalize"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.6.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

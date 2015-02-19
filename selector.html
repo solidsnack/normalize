@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Referring to components of Records - normalize.selector &mdash; normalize 0.6.4 documentation</title>
+    <title>Referring to components of Records - normalize.selector &mdash; normalize 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.6.4 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.7.0 documentation" href="index.html" />
     <link rel="next" title="Comparing Records - normalize.diff" href="diff.html" />
     <link rel="prev" title="Defining Records - normalize.record" href="record.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="record.html" title="Defining Records - normalize.record"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.6.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -59,17 +59,27 @@
 <li>to abstract <em>expressions</em> to individual fields within objects, so
 that the result from a <a class="reference internal" href="diff.html#normalize.diff.diff" title="normalize.diff.diff"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.diff.diff()</span></tt></a> operation can
 specify the field where the difference(s) were discovered.</li>
-<li>to <em>aggregate</em> collections of these expressions, so that <em>filters</em>
-can be created.</li>
+<li>to <em>aggregate</em> collections of these expressions, so that <em>sets</em> of
+attributes can be manipulated</li>
 </ul>
-<p>Other functions exist, such as the ability for the fields referred to
-by selectors to be updated (see <tt class="xref py py-meth docutils literal"><span class="pre">FieldSelector.put()</span></tt>), perhaps
-even with auto-vivification of intermediate records and collection
-items (<tt class="xref py py-meth docutils literal"><span class="pre">FieldSelector.post()</span></tt>).</p>
+<p>The feature set builds on these basic purposes, starting with
+retrieval (see <a class="reference internal" href="#normalize.selector.FieldSelector.get" title="normalize.selector.FieldSelector.get"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.FieldSelector.get()</span></tt></a>),
+assignment (see <a class="reference internal" href="#normalize.selector.FieldSelector.put" title="normalize.selector.FieldSelector.put"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.FieldSelector.put()</span></tt></a>),
+assignment with auto-vivification of intermediate records and
+collection items (<a class="reference internal" href="#normalize.selector.FieldSelector.post" title="normalize.selector.FieldSelector.post"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.FieldSelector.post()</span></tt></a>),
+and finally deletion
+(<a class="reference internal" href="#normalize.selector.FieldSelector.delete" title="normalize.selector.FieldSelector.delete"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.FieldSelector.delete()</span></tt></a>).</p>
 <p>Multple <tt class="docutils literal"><span class="pre">FieldSelector</span></tt> objects can be combined, to make a
-<tt class="docutils literal"><span class="pre">MultiFieldSelector</span></tt>.  This can be used to create a &#8220;filtered&#8221;
-object, and also can be passed to <a class="reference internal" href="diff.html#normalize.diff.diff" title="normalize.diff.diff"><tt class="xref py py-func docutils literal"><span class="pre">normalize.diff.diff()</span></tt></a> to
-compare only a selection of fields in a data structure.</p>
+<tt class="docutils literal"><span class="pre">MultiFieldSelector</span></tt>.  It also supports
+<a class="reference internal" href="#normalize.selector.MultiFieldSelector.get" title="normalize.selector.MultiFieldSelector.get"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.MultiFieldSelector.get()</span></tt></a> which returns a
+&#8220;filtered&#8221; object,
+<a class="reference internal" href="#normalize.selector.MultiFieldSelector.patch" title="normalize.selector.MultiFieldSelector.patch"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.MultiFieldSelector.patch()</span></tt></a> which can be
+used to selectively assign values from one object to another, and
+<a class="reference internal" href="#normalize.selector.MultiFieldSelector.delete" title="normalize.selector.MultiFieldSelector.delete"><tt class="xref py py-meth docutils literal"><span class="pre">normalize.selector.MultiFieldSelector.delete()</span></tt></a>.</p>
+<p>The <tt class="docutils literal"><span class="pre">MultiFieldSelector</span></tt> can be used to restrict the action of
+visitor functions (such as <a class="reference internal" href="diff.html#normalize.diff.diff" title="normalize.diff.diff"><tt class="xref py py-func docutils literal"><span class="pre">normalize.diff.diff()</span></tt></a> and
+<a class="reference internal" href="visitor.html#normalize.visitor.VisitorPattern" title="normalize.visitor.VisitorPattern"><tt class="xref py py-class docutils literal"><span class="pre">normalize.visitor.VisitorPattern</span></tt></a>) to compare or visit only
+a selection of fields in a data structure.</p>
 <div class="section" id="class-reference">
 <h2>Class reference<a class="headerlink" href="#class-reference" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -140,6 +150,11 @@ collection of attributes, if there is a <tt class="docutils literal"><span class
 expression) from the passed record.</p>
 <p>If there is a problem, this method will typically raise
 <tt class="xref py py-class docutils literal"><span class="pre">FieldSelectorException</span></tt>.</p>
+<p>If the FieldSelector contains <tt class="docutils literal"><span class="pre">None</span></tt>, then exceptions from iterating
+over all of the sub-fields are suppressed, so long as one of the items
+succeed.  The return value will have <tt class="docutils literal"><span class="pre">None</span></tt> for the values which did
+not have the attribute.  If all the items fail, then one of the
+exceptions will be bubbled up to the caller.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">record</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
 <span class="n">field_selector</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">])</span>
 <span class="k">print</span> <span class="n">field_selector</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>  <span class="c"># &quot;bar&quot;</span>
@@ -179,6 +194,9 @@ selector and there were no existing items in that collection.</p>
 <dd><p>Like &#8216;put&#8217;, but deletes the item from the specified location.</p>
 <p>If there is a problem, this method will typically raise
 <tt class="xref py py-class docutils literal"><span class="pre">FieldSelectorException</span></tt>.</p>
+<p>This function has the same behavior with respect to collections as
+<tt class="docutils literal"><span class="pre">get()</span></tt>: it will only raise an exception if all of the items in the
+set did not have the property to delete.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">record</span><span class="o">.</span><span class="n">foo</span> <span class="o">=</span> <span class="s">&quot;bar&quot;</span>
 <span class="n">field_selector</span> <span class="o">=</span> <span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;foo&quot;</span><span class="p">])</span>
 <span class="n">field_selector</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
@@ -326,6 +344,14 @@ top level, and an indication of whether a sub-key is filtered.</p>
 </div>
 </dd></dl>
 
+<dl class="attribute">
+<dt id="normalize.selector.MultiFieldSelector.path">
+<tt class="descname">path</tt><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>The path attribute returns a stringified, concise representation of
+the MultiFieldSelector.  It can be reversed by the <tt class="docutils literal"><span class="pre">from_path</span></tt>
+constructor.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="normalize.selector.MultiFieldSelector.__iter__">
 <tt class="descname">__iter__</tt><big>(</big><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__iter__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__iter__" title="Permalink to this definition">¶</a></dt>
@@ -346,12 +372,18 @@ implicitly contains.</p>
 <dl class="method">
 <dt id="normalize.selector.MultiFieldSelector.__getitem__">
 <tt class="descname">__getitem__</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__getitem__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__getitem__" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns the MultiFieldSelector that applies to the specified
-field/key/index.</p>
+<dd><p>Returns the sub-MultiFieldSelector that applies to the specified
+field/key/index.  If the MultiFieldSelector does not match any fields
+at this path, it returns <tt class="docutils literal"><span class="pre">None</span></tt>.  If it matches all fields at the
+path, then it returns a &#8216;complete&#8217; MultiFieldSelector (ie, a field
+selector which matches everything).  If it matches a subset of fields
+at that location, it will return a MultiFieldSelector which contains
+those fields.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mfs</span> <span class="o">=</span> <span class="n">MultiFieldSelector</span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">mfs</span><span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">]</span>
 <span class="go">MultiFieldSelector([&#39;b&#39;], [&#39;d&#39;])</span>
-<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mfs</span><span class="p">[(</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;c&quot;</span><span class="p">)]</span>
+<span class="go">None</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -360,13 +392,25 @@ field/key/index.</p>
 <dt id="normalize.selector.MultiFieldSelector.__contains__">
 <tt class="descname">__contains__</tt><big>(</big><em>index</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.__contains__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.__contains__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks to see whether the given item matches the MultiFieldSelector.</p>
+<p>For item index (string, number, <tt class="docutils literal"><span class="pre">None</span></tt>) lookups, the result is True
+if the result of applying the MultiFieldSelector (with <tt class="docutils literal"><span class="pre">.get</span></tt>) would
+return an item in that location (if it existed in the input).</p>
+<p>For a FieldSelector (or sequence) lookups, the result is True if the
+result of applying the MultiFieldSelector and then the FieldSelector on
+an input is the same as applying the FieldSelector on the input.  ie,
+that the MultiFieldSelector is a superset of the FieldSelector.</p>
+<p>Unlike plain collections, use of <tt class="docutils literal"><span class="pre">in</span></tt> does not mean that subscripting
+will return <tt class="docutils literal"><span class="pre">KeyError</span></tt>.  When used with a FieldSelector, it returns
+<tt class="docutils literal"><span class="pre">False</span></tt> when <tt class="docutils literal"><span class="pre">__getitem__</span></tt> with the index would not return a
+complete FieldSelector, whereas the <tt class="docutils literal"><span class="pre">__getitem__</span></tt> call would return a
+partial (non-complete) MultiFieldSelector.</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="n">mfs</span> <span class="o">=</span> <span class="n">MultiFieldSelector</span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;b&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">],</span> <span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;a&quot;</span> <span class="ow">in</span> <span class="n">mfs</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="s">&quot;b&quot;</span> <span class="ow">in</span> <span class="n">mfs</span>
 <span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">mfs</span>
-<span class="go">True</span>
+<span class="go">False</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;d&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">mfs</span>
 <span class="go">True</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">FieldSelector</span><span class="p">([</span><span class="s">&quot;a&quot;</span><span class="p">,</span> <span class="s">&quot;e&quot;</span><span class="p">])</span> <span class="ow">in</span> <span class="n">mfs</span>
@@ -396,6 +440,50 @@ python source to reconstruct:</p>
 which are pointed to by one of the FieldSelectors that were used to
 construct the MultiFieldSelector.  Can be used to produce &#8216;filtered&#8217;
 versions of objects.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.selector.MultiFieldSelector.delete">
+<tt class="descname">delete</tt><big>(</big><em>obj</em>, <em>force=False</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.delete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.delete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes all of the fields at the specified locations.</p>
+<p>args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">obj=</span></tt><em>OBJECT</em></dt>
+<dd>the object to remove the fields from</dd>
+<dt><tt class="docutils literal"><span class="pre">force=</span></tt><em>BOOL</em></dt>
+<dd>if True, missing attributes do not raise errors.  Otherwise,
+the first failure raises an exception without making any
+changes to <tt class="docutils literal"><span class="pre">obj</span></tt>.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="normalize.selector.MultiFieldSelector.patch">
+<tt class="descname">patch</tt><big>(</big><em>target</em>, <em>source</em>, <em>copy=False</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.patch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.patch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Copies fields from <tt class="docutils literal"><span class="pre">obj</span></tt> to <tt class="docutils literal"><span class="pre">target</span></tt>.  If a matched field does
+not exist in <tt class="docutils literal"><span class="pre">obj</span></tt>, it will be deleted from <tt class="docutils literal"><span class="pre">target</span></tt>, otherwise it
+will be assigned (or copied).</p>
+<p>args:</p>
+<blockquote>
+<div><dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">target=</span></tt><em>OBJECT</em></dt>
+<dd>the object to set the fields in</dd>
+<dt><tt class="docutils literal"><span class="pre">source=</span></tt><em>OBJECT</em></dt>
+<dd>the object to lift the fields from</dd>
+<dt><tt class="docutils literal"><span class="pre">copy=</span></tt><em>BOOL</em>|<em>FUNCTION</em></dt>
+<dd>deep copy the values set, using copy.deepcopy (or the passed
+function).  False by default.</dd>
+</dl>
+</div></blockquote>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="normalize.selector.MultiFieldSelector.from_path">
+<em class="property">classmethod </em><tt class="descname">from_path</tt><big>(</big><em>mfs_path</em><big>)</big><a class="reference internal" href="_modules/normalize/selector.html#MultiFieldSelector.from_path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.selector.MultiFieldSelector.from_path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Alternate constructor.  Constructs a MultiFieldSelector from the
+abbreviated text representation (.path attribute)</p>
 </dd></dl>
 
 </dd></dl>
@@ -460,7 +548,7 @@ versions of objects.</p>
         <li class="right" >
           <a href="record.html" title="Defining Records - normalize.record"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.6.4 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">

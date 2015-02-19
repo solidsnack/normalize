@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>normalize.selector &mdash; normalize 0.6.4 documentation</title>
+    <title>normalize.selector &mdash; normalize 0.7.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.6.4',
+        VERSION:     '0.7.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.6.4 documentation" href="../../index.html" />
+    <link rel="top" title="normalize 0.7.0 documentation" href="../../index.html" />
     <link rel="up" title="Module code" href="../index.html" /> 
   </head>
   <body>
@@ -36,7 +36,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" accesskey="U">Module code</a> &raquo;</li> 
       </ul>
     </div>  
@@ -166,6 +166,12 @@
 <span class="sd">        If there is a problem, this method will typically raise</span>
 <span class="sd">        :py:class:`FieldSelectorException`.</span>
 
+<span class="sd">        If the FieldSelector contains ``None``, then exceptions from iterating</span>
+<span class="sd">        over all of the sub-fields are suppressed, so long as one of the items</span>
+<span class="sd">        succeed.  The return value will have ``None`` for the values which did</span>
+<span class="sd">        not have the attribute.  If all the items fail, then one of the</span>
+<span class="sd">        exceptions will be bubbled up to the caller.</span>
+
 <span class="sd">        ::</span>
 
 <span class="sd">           record.foo = &quot;bar&quot;</span>
@@ -176,7 +182,21 @@
         <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">sub_field_selector</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:])</span>
-                <span class="k">return</span> <span class="p">[</span><span class="n">sub_field_selector</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r</span><span class="p">)</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">record</span><span class="p">]</span>
+                <span class="n">rv</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">all_exc</span> <span class="o">=</span> <span class="bp">None</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">record</span><span class="p">:</span>
+                    <span class="n">val</span> <span class="o">=</span> <span class="bp">None</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">val</span> <span class="o">=</span> <span class="n">sub_field_selector</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                        <span class="n">all_exc</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">except</span> <span class="n">FieldSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">all_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                            <span class="n">all_exc</span> <span class="o">=</span> <span class="n">e</span>
+                    <span class="n">rv</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">all_exc</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">all_exc</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">rv</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">selector</span><span class="p">]</span>
@@ -295,6 +315,10 @@
 <span class="sd">        If there is a problem, this method will typically raise</span>
 <span class="sd">        :py:class:`FieldSelectorException`.</span>
 
+<span class="sd">        This function has the same behavior with respect to collections as</span>
+<span class="sd">        ``get()``: it will only raise an exception if all of the items in the</span>
+<span class="sd">        set did not have the property to delete.</span>
+
 <span class="sd">        ::</span>
 
 <span class="sd">           record.foo = &quot;bar&quot;</span>
@@ -306,8 +330,18 @@
         <span class="k">for</span> <span class="n">selector</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
             <span class="k">if</span> <span class="n">selector</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">sub_field_selector</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span><span class="bp">self</span><span class="o">.</span><span class="n">selectors</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:])</span>
+                <span class="n">all_exc</span> <span class="o">=</span> <span class="bp">None</span>
                 <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">record</span><span class="p">:</span>
-                    <span class="n">sub_field_selector</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">sub_field_selector</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+                        <span class="n">all_exc</span> <span class="o">=</span> <span class="bp">False</span>
+                    <span class="k">except</span> <span class="n">FieldSelectorException</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">all_exc</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+                            <span class="n">all_exc</span> <span class="o">=</span> <span class="n">e</span>
+                <span class="k">if</span> <span class="n">all_exc</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">all_exc</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">return</span>
             <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">selector</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">long</span><span class="p">)):</span>
                 <span class="k">try</span><span class="p">:</span>
                     <span class="n">record</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="n">selector</span><span class="p">]</span>
@@ -570,6 +604,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">has_int</span> <span class="o">=</span> <span class="nb">int</span> <span class="ow">in</span> <span class="n">head_types</span> <span class="ow">or</span> <span class="nb">long</span> <span class="ow">in</span> <span class="n">head_types</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_string</span> <span class="o">=</span> <span class="nb">any</span><span class="p">(</span><span class="nb">issubclass</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">basestring</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">head_types</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="o">=</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span> <span class="ow">in</span> <span class="n">head_types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="ow">is</span> <span class="nb">all</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">has_int</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_string</span><span class="p">):</span>
             <span class="c"># this should be possible, but I&#39;m punting on it for now</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -591,14 +626,18 @@
         <span class="k">return</span> <span class="s">&quot;&lt;MultiFieldSelector: </span><span class="si">%s</span><span class="s">&gt;&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span>
 </div>
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiFieldSelector.path"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.path">[docs]</a>    <span class="k">def</span> <span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;The path attribute returns a stringified, concise representation of</span>
+<span class="sd">        the MultiFieldSelector.  It can be reversed by the ``from_path``</span>
+<span class="sd">        constructor.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">_fmt_mfs_path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">keys</span><span class="p">()[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">values</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="s">&quot;(&quot;</span> <span class="o">+</span> <span class="s">&quot;|&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="n">_fmt_mfs_path</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
             <span class="p">)</span> <span class="o">+</span> <span class="s">&quot;)&quot;</span>
-
+</div>
     <span class="k">def</span> <span class="nf">__nonzero__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">))</span>
 
@@ -628,25 +667,34 @@
                     <span class="k">yield</span> <span class="n">head_selector</span> <span class="o">+</span> <span class="n">x</span>
 </div>
 <div class="viewcode-block" id="MultiFieldSelector.__getitem__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__getitem__">[docs]</a>    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns the MultiFieldSelector that applies to the specified</span>
-<span class="sd">        field/key/index.</span>
+        <span class="sd">&quot;&quot;&quot;Returns the sub-MultiFieldSelector that applies to the specified</span>
+<span class="sd">        field/key/index.  If the MultiFieldSelector does not match any fields</span>
+<span class="sd">        at this path, it returns ``None``.  If it matches all fields at the</span>
+<span class="sd">        path, then it returns a &#39;complete&#39; MultiFieldSelector (ie, a field</span>
+<span class="sd">        selector which matches everything).  If it matches a subset of fields</span>
+<span class="sd">        at that location, it will return a MultiFieldSelector which contains</span>
+<span class="sd">        those fields.</span>
 
 <span class="sd">        ::</span>
 
 <span class="sd">            &gt;&gt;&gt; mfs = MultiFieldSelector([&quot;a&quot;, &quot;b&quot;], [&quot;a&quot;, &quot;d&quot;], [&quot;c&quot;])</span>
 <span class="sd">            &gt;&gt;&gt; mfs[&quot;a&quot;]</span>
 <span class="sd">            MultiFieldSelector([&#39;b&#39;], [&#39;d&#39;])</span>
-<span class="sd">            &gt;&gt;&gt;</span>
+<span class="sd">            &gt;&gt;&gt; mfs[(&quot;a&quot;, &quot;c&quot;)]</span>
+<span class="sd">            None</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span><span class="p">:</span>
+            <span class="n">head_index</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete</span><span class="p">:</span>
                 <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">head_index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">None</span>
             <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-                <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">head_index</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]][</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">head_index</span><span class="p">][</span><span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">:]]</span>
         <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="nb">any</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">,</span> <span class="s">&quot;ambigious fetch of &#39;any&#39;&quot;</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
@@ -654,12 +702,29 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">return</span> <span class="bp">self</span>
 
-        <span class="n">tail</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+        <span class="n">tail</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">[</span><span class="bp">None</span><span class="p">]</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete</span> <span class="k">else</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">None</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)([</span><span class="bp">None</span><span class="p">])</span> <span class="k">if</span> <span class="n">tail</span> <span class="o">==</span> <span class="nb">all</span> <span class="k">else</span> <span class="n">tail</span>
 </div>
 <div class="viewcode-block" id="MultiFieldSelector.__contains__"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.__contains__">[docs]</a>    <span class="k">def</span> <span class="nf">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Checks to see whether the given item matches the MultiFieldSelector.</span>
 
+<span class="sd">        For item index (string, number, ``None``) lookups, the result is True</span>
+<span class="sd">        if the result of applying the MultiFieldSelector (with ``.get``) would</span>
+<span class="sd">        return an item in that location (if it existed in the input).</span>
+
+<span class="sd">        For a FieldSelector (or sequence) lookups, the result is True if the</span>
+<span class="sd">        result of applying the MultiFieldSelector and then the FieldSelector on</span>
+<span class="sd">        an input is the same as applying the FieldSelector on the input.  ie,</span>
+<span class="sd">        that the MultiFieldSelector is a superset of the FieldSelector.</span>
+
+<span class="sd">        Unlike plain collections, use of ``in`` does not mean that subscripting</span>
+<span class="sd">        will return ``KeyError``.  When used with a FieldSelector, it returns</span>
+<span class="sd">        ``False`` when ``__getitem__`` with the index would not return a</span>
+<span class="sd">        complete FieldSelector, whereas the ``__getitem__`` call would return a</span>
+<span class="sd">        partial (non-complete) MultiFieldSelector.</span>
 <span class="sd">        ::</span>
 
 <span class="sd">            &gt;&gt;&gt; mfs = MultiFieldSelector([&quot;a&quot;, &quot;b&quot;], [&quot;a&quot;, &quot;d&quot;], [&quot;c&quot;])</span>
@@ -668,23 +733,19 @@
 <span class="sd">            &gt;&gt;&gt; &quot;b&quot; in mfs</span>
 <span class="sd">            False</span>
 <span class="sd">            &gt;&gt;&gt; FieldSelector([&quot;a&quot;]) in mfs</span>
-<span class="sd">            True</span>
+<span class="sd">            False</span>
 <span class="sd">            &gt;&gt;&gt; FieldSelector([&quot;a&quot;, &quot;d&quot;]) in mfs</span>
 <span class="sd">            True</span>
 <span class="sd">            &gt;&gt;&gt; FieldSelector([&quot;a&quot;, &quot;e&quot;]) in mfs</span>
 <span class="sd">            False</span>
 <span class="sd">            &gt;&gt;&gt;</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="n">FieldSelector</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> \
-                <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">(</span><span class="nb">basestring</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">IntType</span><span class="p">,</span> <span class="n">types</span><span class="o">.</span><span class="n">NoneType</span><span class="p">)):</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="ow">or</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">heads</span>
         <span class="k">elif</span> <span class="n">index</span> <span class="ow">is</span> <span class="nb">any</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">True</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">heads</span><span class="p">)</span> <span class="k">else</span> <span class="bp">False</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">True</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">complete</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">head_key</span> <span class="o">=</span> <span class="bp">None</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_none</span> <span class="k">else</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">return</span> <span class="p">(</span>
@@ -763,7 +824,7 @@
                         <span class="n">kwargs</span><span class="p">[</span><span class="n">head</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">tail</span><span class="p">)</span>
                 <span class="k">return</span> <span class="n">ctor</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </div>
-    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiFieldSelector.delete"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.delete">[docs]</a>    <span class="k">def</span> <span class="nf">delete</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Deletes all of the fields at the specified locations.</span>
 
 <span class="sd">        args:</span>
@@ -789,8 +850,8 @@
                 <span class="n">fs</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
             <span class="k">except</span> <span class="n">FieldSelectorException</span><span class="p">:</span>
                 <span class="k">pass</span>
-
-    <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+</div>
+<div class="viewcode-block" id="MultiFieldSelector.patch"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.patch">[docs]</a>    <span class="k">def</span> <span class="nf">patch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">target</span><span class="p">,</span> <span class="n">source</span><span class="p">,</span> <span class="n">copy</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Copies fields from ``obj`` to ``target``.  If a matched field does</span>
 <span class="sd">        not exist in ``obj``, it will be deleted from ``target``, otherwise it</span>
 <span class="sd">        will be assigned (or copied).</span>
@@ -803,7 +864,7 @@
 <span class="sd">            ``source=``\ *OBJECT*</span>
 <span class="sd">                the object to lift the fields from</span>
 
-<span class="sd">            ``copy=``\ *BOOL*\ |\ *FUNCTION*</span>
+<span class="sd">            ``copy=``\ *BOOL*\ \|\ *FUNCTION*</span>
 <span class="sd">                deep copy the values set, using copy.deepcopy (or the passed</span>
 <span class="sd">                function).  False by default.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -825,15 +886,15 @@
                 <span class="n">fs</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">fs</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">val</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">copy</span> <span class="k">else</span> <span class="n">copy</span><span class="p">(</span><span class="n">val</span><span class="p">))</span>
-
+</div>
     <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mfs_path</span><span class="p">):</span>
+<div class="viewcode-block" id="MultiFieldSelector.from_path"><a class="viewcode-back" href="../../selector.html#normalize.selector.MultiFieldSelector.from_path">[docs]</a>    <span class="k">def</span> <span class="nf">from_path</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">mfs_path</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Alternate constructor.  Constructs a MultiFieldSelector from the</span>
 <span class="sd">        abbreviated text representation (.path attribute)&quot;&quot;&quot;</span>
         <span class="n">mfs</span> <span class="o">=</span> <span class="n">_scan_mfs_path</span><span class="p">(</span><span class="n">mfs_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">cls</span><span class="p">(</span><span class="o">*</span><span class="n">mfs</span><span class="p">)</span>
 
-</div>
+</div></div>
 <span class="n">_MFS_PATH_TOK</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
     <span class="sd">r&#39;&#39;&#39;\.(?P&lt;attr&gt;\w+)|</span>
 <span class="sd">        \[(?:</span>
@@ -918,7 +979,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="../../index.html">normalize 0.6.4 documentation</a> &raquo;</li>
+        <li><a href="../../index.html">normalize 0.7.0 documentation</a> &raquo;</li>
           <li><a href="../index.html" >Module code</a> &raquo;</li> 
       </ul>
     </div>
