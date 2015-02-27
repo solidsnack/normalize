@@ -109,6 +109,9 @@
 <span class="sd">                You&#39;ll probably want to convert native python objects to</span>
 <span class="sd">                strings, in a form which can be reversed by the</span>
 <span class="sd">                ``json_in`` function.</span>
+
+<span class="sd">                This function should recurse into</span>
+<span class="sd">                :py:func:`normalize.record.to_json` if required.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">JsonProperty</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_json_name</span> <span class="o">=</span> <span class="n">json_name</span>
