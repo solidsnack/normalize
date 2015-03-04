@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Defining Properties - normalize.property &mdash; normalize 0.7.0 documentation</title>
+    <title>Defining Properties - normalize.property &mdash; normalize 0.7.2 documentation</title>
     
     <link rel="stylesheet" href="_static/default.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.7.0',
+        VERSION:     '0.7.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="normalize 0.7.0 documentation" href="index.html" />
+    <link rel="top" title="normalize 0.7.2 documentation" href="index.html" />
     <link rel="next" title="Defining Records - normalize.record" href="record.html" />
     <link rel="prev" title="An introduction to using normalize" href="intro.html" /> 
   </head>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="intro.html" title="An introduction to using normalize"
              accesskey="P">previous</a> |</li>
-        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.2 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -327,9 +327,7 @@ types</p>
 as defaults to the <tt class="docutils literal"><span class="pre">Property()</span></tt> constructor.</p>
 <p>The typical use of this function is to make types for the API you are
 mapping so that, for instance, any time they use a date you can convert
-it in a consistent way to a <tt class="docutils literal"><span class="pre">datetime.date</span></tt>, or to supply
-<tt class="docutils literal"><span class="pre">default=None</span></tt> because you and prefer subtle bugs caused by stray
-<tt class="docutils literal"><span class="pre">None</span></tt> values to <tt class="docutils literal"><span class="pre">AttributeError</span></tt> exceptions.</p>
+it in a consistent way to a <tt class="docutils literal"><span class="pre">datetime.date</span></tt>.</p>
 <p>It&#8217;s also used by <a class="reference internal" href="#module-normalize.property.types" title="normalize.property.types"><tt class="xref py py-mod docutils literal"><span class="pre">normalize.property.types</span></tt></a> to create all
 of its Property subclasses.</p>
 <dl class="docutils">
@@ -431,9 +429,10 @@ the attribute name in the class it is bound to.</p>
 
 <dl class="method">
 <dt id="normalize.property.json.JsonProperty.to_json">
-<tt class="descname">to_json</tt><big>(</big><em>propval</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.to_json" title="Permalink to this definition">¶</a></dt>
-<dd><p>This function calls the <tt class="docutils literal"><span class="pre">json_out</span></tt> function, if it was
-specified, otherwise passes through.</p>
+<tt class="descname">to_json</tt><big>(</big><em>propval</em>, <em>extraneous=False</em>, <em>to_json_func=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property/json.html#JsonProperty.to_json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.json.JsonProperty.to_json" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function calls the <tt class="docutils literal"><span class="pre">json_out</span></tt> function, if it was specified,
+otherwise continues with JSON conversion of the value in the slot by
+calling <tt class="docutils literal"><span class="pre">to_json_func</span></tt> on it.</p>
 </dd></dl>
 
 <dl class="method">
@@ -591,7 +590,7 @@ are created.</p>
         <li class="right" >
           <a href="intro.html" title="An introduction to using normalize"
              >previous</a> |</li>
-        <li><a href="index.html">normalize 0.7.0 documentation</a> &raquo;</li> 
+        <li><a href="index.html">normalize 0.7.2 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
