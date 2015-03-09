@@ -79,6 +79,7 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">weakref</span>
 
+<span class="kn">import</span> <span class="nn">normalize.empty</span> <span class="kn">as</span> <span class="nn">empty</span>
 <span class="kn">import</span> <span class="nn">normalize.exc</span> <span class="kn">as</span> <span class="nn">exc</span>
 <span class="kn">from</span> <span class="nn">normalize.property.meta</span> <span class="kn">import</span> <span class="n">MetaProperty</span>
 
@@ -101,8 +102,8 @@
 
 <div class="viewcode-block" id="Property.__init__"><a class="viewcode-back" href="../../property.html#normalize.property.Property.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isa</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>  <span class="nb">coerce</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">check</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
                  <span class="n">required</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">traits</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                 <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">empty</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span> <span class="n">empty_attr</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span>
-                 <span class="n">doc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+                 <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">empty_attr</span><span class="o">=</span><span class="n">_none</span><span class="p">,</span>
+                 <span class="n">empty</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Declares a new standard Property.  Note: if you pass arguments which</span>
 <span class="sd">        are not understood by this constructor, or pass extra property traits</span>
 <span class="sd">        to ``traits``, then the call will be redirected to a sub-class; see</span>
@@ -144,18 +145,17 @@
 <span class="sd">                is ``[&quot;safe&quot;]``, and any unknown keyword arguments will add</span>
 <span class="sd">                extra traits on.</span>
 
-<span class="sd">            ``empty=``\ *VAL*\ \|\ *CLASS*\ \|\ *FUNC*</span>
-<span class="sd">                Specify what is returned by the ``empty_attr`` method.</span>
-<span class="sd">                Defaults to ``None``, or the result of calling the constructor</span>
-<span class="sd">                for the type passed to ``isa=`` with no arguments; eg for</span>
-<span class="sd">                ``int`` this returns 0, and for ``str`` this returns the empty</span>
-<span class="sd">                string.  It can also be a function or method; this does NOT set</span>
-<span class="sd">                the slot with its return value; use ``default=`` for that.</span>
-
 <span class="sd">            ``empty_attr=``\ *METHODNAME*</span>
 <span class="sd">                Specify an auxiliary method name which returns the value if the</span>
-<span class="sd">                attribute is set, otherwise the ``empty`` value.  Defaults to</span>
-<span class="sd">                the name of the attribute with a ``0`` appended.</span>
+<span class="sd">                attribute is set, otherwise an ``empty`` proxy value.  Defaults</span>
+<span class="sd">                to the name of the attribute with a ``0`` appended, or ``None``</span>
+<span class="sd">                if the attribute already ends with a number (disabling the</span>
+<span class="sd">                accessor)</span>
+
+<span class="sd">            ``empty=``\ *IGNORED*</span>
+<span class="sd">                For partial compatibility with normalize 0.7.x.  This used to</span>
+<span class="sd">                specify the value returned by the ``empty_attr`` attribute;</span>
+<span class="sd">                now that attribute always returns a Falsy placeholder.</span>
 
 <span class="sd">            ``extraneous=``\ *BOOL*</span>
 <span class="sd">                This Property is considered *denormalized* and does not affect</span>
@@ -205,34 +205,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span> <span class="o">=</span> <span class="nb">coerce</span> <span class="ow">or</span> <span class="n">isa</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">coerce</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">CoerceWithoutType</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">empty</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">None</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)</span> <span class="k">else</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span>
-        <span class="p">)</span> <span class="k">if</span> <span class="n">empty</span> <span class="ow">is</span> <span class="n">_none</span> <span class="k">else</span> <span class="n">empty</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">empty_attr</span> <span class="o">=</span> <span class="n">empty_attr</span>
-        <span class="k">if</span> <span class="n">empty_attr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span> <span class="ow">and</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">,</span> <span class="nb">type</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">empty_is_method</span> <span class="o">=</span> <span class="bp">False</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">get_empty</span><span class="p">(</span><span class="bp">None</span><span class="p">)</span>
-                <span class="k">except</span> <span class="n">exc</span><span class="o">.</span><span class="n">AttributeEmptyFault</span> <span class="k">as</span> <span class="n">aef</span><span class="p">:</span>
-                    <span class="n">warning</span> <span class="o">=</span> <span class="n">exc</span><span class="o">.</span><span class="n">EmptyDefinitionMissing</span><span class="p">(</span>
-                        <span class="n">classname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
-                        <span class="n">exception</span><span class="o">=</span><span class="n">aef</span><span class="o">.</span><span class="n">exception</span><span class="p">,</span>
-                        <span class="n">exc_type_name</span><span class="o">=</span><span class="n">aef</span><span class="o">.</span><span class="n">exc_type_name</span><span class="p">,</span>
-                    <span class="p">)</span>
-                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">warning</span><span class="p">),</span> <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">empty</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">is_method</span><span class="p">,</span> <span class="n">nargs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">func_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">)</span>
-                <span class="k">if</span> <span class="n">nargs</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">EmptySignatureError</span><span class="p">(</span>
-                        <span class="n">func</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">,</span>
-                        <span class="n">module</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="o">.</span><span class="n">__module__</span><span class="p">,</span>
-                        <span class="n">nargs</span><span class="o">=</span><span class="n">nargs</span><span class="p">,</span>
-                    <span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">empty_is_method</span> <span class="o">=</span> <span class="n">is_method</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extraneous</span> <span class="o">=</span> <span class="n">extraneous</span>
 </div>
     <span class="k">def</span> <span class="nf">func_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
@@ -330,24 +303,6 @@
             <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
         <span class="k">return</span> <span class="n">rv</span>
 
-    <span class="k">def</span> <span class="nf">get_empty</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
-        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty_is_method</span><span class="p">:</span>
-                    <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">rv</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span><span class="p">()</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">exc</span><span class="o">.</span><span class="n">AttributeEmptyFault</span><span class="p">(</span>
-                    <span class="n">exception</span><span class="o">=</span><span class="n">e</span><span class="p">,</span>
-                    <span class="n">exc_type_name</span><span class="o">=</span><span class="nb">type</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">__name__</span><span class="p">,</span>
-                    <span class="n">prop_fullname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">fullname</span><span class="p">,</span>
-                    <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="k">return</span> <span class="n">rv</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">empty</span>
-
     <span class="k">def</span> <span class="nf">init_prop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">_Default</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="n">_Default</span><span class="p">:</span>
             <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
@@ -398,12 +353,13 @@
 <span class="k">class</span> <span class="nc">EmptyAuxProp</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">prop</span> <span class="o">=</span> <span class="n">prop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">valuetype</span> <span class="ow">or</span> <span class="nb">any</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">__get__</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prop</span><span class="o">.</span><span class="n">get_empty</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">empty</span><span class="o">.</span><span class="n">placeholder</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">valuetype</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="LazyProperty"><a class="viewcode-back" href="../../property.html#normalize.property.LazyProperty">[docs]</a><span class="k">class</span> <span class="nc">LazyProperty</span><span class="p">(</span><span class="n">Property</span><span class="p">):</span>

@@ -173,7 +173,7 @@
 
 <div class="viewcode-block" id="DiffOptions.__init__"><a class="viewcode-back" href="../../diff.html#normalize.diff.DiffOptions.__init__">[docs]</a>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore_ws</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">ignore_case</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">unicode_normal</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">unchanged</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-                 <span class="n">ignore_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">ignore_empty_slots</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">ignore_empty_items</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">duck_type</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">extraneous</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                  <span class="n">compare_filter</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">fuzzy_match</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Create a new ``DiffOptions`` instance.</span>
@@ -201,6 +201,12 @@
 <span class="sd">                just ``&#39;&#39;`` and ``None``) are treated as if they were not set.</span>
 <span class="sd">                False by default.</span>
 
+<span class="sd">            ``ignore_empty_items=``\ *BOOL*</span>
+<span class="sd">                If true, items are considered to be absent from collections if</span>
+<span class="sd">                they have all ``None``, not set, or ``&#39;&#39;`` in their primary key</span>
+<span class="sd">                fields (all compared fields in the absence of a primary key</span>
+<span class="sd">                definition).  False by default.</span>
+
 <span class="sd">            ``duck_type=``\ *BOOL*</span>
 <span class="sd">                Normally, types must match or the result will always be</span>
 <span class="sd">                :py:attr:`normalize.diff.DiffTypes.MODIFIED` and the comparison</span>
@@ -223,6 +229,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_ws</span> <span class="o">=</span> <span class="n">ignore_ws</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_case</span> <span class="o">=</span> <span class="n">ignore_case</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_slots</span> <span class="o">=</span> <span class="n">ignore_empty_slots</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore_empty_items</span> <span class="o">=</span> <span class="n">ignore_empty_items</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unicode_normal</span> <span class="o">=</span> <span class="n">unicode_normal</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fuzzy_match</span> <span class="o">=</span> <span class="n">fuzzy_match</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unchanged</span> <span class="o">=</span> <span class="n">unchanged</span>
@@ -552,6 +559,13 @@
         <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">x</span>
 
 
+<span class="k">def</span> <span class="nf">_nested_empty</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">_nested_empty</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="k">for</span> <span class="n">y</span> <span class="ow">in</span> <span class="n">x</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">x</span> <span class="ow">is</span> <span class="n">_nothing</span> <span class="ow">or</span> <span class="n">x</span> <span class="ow">is</span> <span class="bp">None</span> <span class="ow">or</span> <span class="n">x</span> <span class="ow">is</span> <span class="s">&#39;&#39;</span>
+
+
 <span class="k">def</span> <span class="nf">_fuzzy_match</span><span class="p">(</span><span class="n">set_a</span><span class="p">,</span> <span class="n">set_b</span><span class="p">):</span>
     <span class="n">seen</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="n">scores</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
@@ -641,6 +655,8 @@
 
         <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">collection_generator</span><span class="p">(</span><span class="n">propval_x</span><span class="p">):</span>
             <span class="n">pk</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">record_id</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="o">**</span><span class="n">id_args</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">ignore_empty_items</span> <span class="ow">and</span> <span class="n">_nested_empty</span><span class="p">(</span><span class="n">pk</span><span class="p">):</span>
+                <span class="k">continue</span>
             <span class="k">if</span> <span class="n">compare_values</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="c"># the primary key being a tuple is taken to imply that</span>
                 <span class="c"># the value type is a Record, and hence descent is</span>

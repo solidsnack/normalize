@@ -75,13 +75,13 @@ documentation.</p>
 <h3><tt class="docutils literal"><span class="pre">Property</span></tt><a class="headerlink" href="#property" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="normalize.property.Property">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">Property</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty=&lt;not set&gt;</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">Property</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>empty=None</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>This is the base class for all property types.  It is a data descriptor,
 so care should be taken before adding any <tt class="docutils literal"><span class="pre">SPECIALMETHODS</span></tt> which might
 change the way it behaves.</p>
 <dl class="method">
 <dt id="normalize.property.Property.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty=&lt;not set&gt;</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>empty=None</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#Property.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.Property.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Declares a new standard Property.  Note: if you pass arguments which
 are not understood by this constructor, or pass extra property traits
 to <tt class="docutils literal"><span class="pre">traits</span></tt>, then the call will be redirected to a sub-class; see
@@ -117,17 +117,16 @@ called and the value it returns used as the default.</dd>
 <dd>Manually specify a list of named Property traits.  The default
 is <tt class="docutils literal"><span class="pre">[&quot;safe&quot;]</span></tt>, and any unknown keyword arguments will add
 extra traits on.</dd>
-<dt><tt class="docutils literal"><span class="pre">empty=</span></tt><em>VAL</em>|<em>CLASS</em>|<em>FUNC</em></dt>
-<dd>Specify what is returned by the <tt class="docutils literal"><span class="pre">empty_attr</span></tt> method.
-Defaults to <tt class="docutils literal"><span class="pre">None</span></tt>, or the result of calling the constructor
-for the type passed to <tt class="docutils literal"><span class="pre">isa=</span></tt> with no arguments; eg for
-<tt class="docutils literal"><span class="pre">int</span></tt> this returns 0, and for <tt class="docutils literal"><span class="pre">str</span></tt> this returns the empty
-string.  It can also be a function or method; this does NOT set
-the slot with its return value; use <tt class="docutils literal"><span class="pre">default=</span></tt> for that.</dd>
 <dt><tt class="docutils literal"><span class="pre">empty_attr=</span></tt><em>METHODNAME</em></dt>
 <dd>Specify an auxiliary method name which returns the value if the
-attribute is set, otherwise the <tt class="docutils literal"><span class="pre">empty</span></tt> value.  Defaults to
-the name of the attribute with a <tt class="docutils literal"><span class="pre">0</span></tt> appended.</dd>
+attribute is set, otherwise an <tt class="docutils literal"><span class="pre">empty</span></tt> proxy value.  Defaults
+to the name of the attribute with a <tt class="docutils literal"><span class="pre">0</span></tt> appended, or <tt class="docutils literal"><span class="pre">None</span></tt>
+if the attribute already ends with a number (disabling the
+accessor)</dd>
+<dt><tt class="docutils literal"><span class="pre">empty=</span></tt><em>IGNORED</em></dt>
+<dd>For partial compatibility with normalize 0.7.x.  This used to
+specify the value returned by the <tt class="docutils literal"><span class="pre">empty_attr</span></tt> attribute;
+now that attribute always returns a Falsy placeholder.</dd>
 <dt><tt class="docutils literal"><span class="pre">extraneous=</span></tt><em>BOOL</em></dt>
 <dd>This Property is considered <em>denormalized</em> and does not affect
 the <tt class="docutils literal"><span class="pre">Record</span></tt> equality operator.  Visitor functions typically
@@ -171,7 +170,7 @@ the value to insert.</p>
 <h3><tt class="docutils literal"><span class="pre">SafeProperty</span></tt><a class="headerlink" href="#safeproperty" title="Permalink to this headline">¶</a></h3>
 <dl class="class">
 <dt id="normalize.property.SafeProperty">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">SafeProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty=&lt;not set&gt;</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SafeProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SafeProperty" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">SafeProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>empty=None</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#SafeProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.SafeProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#normalize.property.Property" title="normalize.property.Property"><tt class="xref py py-class docutils literal"><span class="pre">normalize.property.Property</span></tt></a></p>
 <p>A version of Property which always checks all assignments to
 properties.</p>
@@ -241,7 +240,7 @@ function which provides the initial value on first access; this
 function is called at most once for each instance.</p>
 <dl class="class">
 <dt id="normalize.property.ROProperty">
-<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">ROProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty=&lt;not set&gt;</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.property.</tt><tt class="descname">ROProperty</tt><big>(</big><em>isa=None</em>, <em>coerce=None</em>, <em>check=None</em>, <em>required=False</em>, <em>default=&lt;not set&gt;</em>, <em>traits=None</em>, <em>extraneous=False</em>, <em>empty_attr=&lt;not set&gt;</em>, <em>empty=None</em>, <em>doc=None</em><big>)</big><a class="reference internal" href="_modules/normalize/property.html#ROProperty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.property.ROProperty" title="Permalink to this definition">¶</a></dt>
 <dd><p>A read-only property throws an exception when the attribute slot is
 assigned to</p>
 </dd></dl>

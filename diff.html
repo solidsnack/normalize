@@ -183,13 +183,13 @@ individual difference.</p>
 
 <dl class="class">
 <dt id="normalize.diff.DiffOptions">
-<em class="property">class </em><tt class="descclassname">normalize.diff.</tt><tt class="descname">DiffOptions</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><tt class="descclassname">normalize.diff.</tt><tt class="descname">DiffOptions</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>ignore_empty_items=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Optional data structure to pass diff options down.  Some functions are
 delegated to this object, allowing for further customization of operation,
 forming the <em>DiffOptions sub-class API</em>.</p>
 <dl class="method">
 <dt id="normalize.diff.DiffOptions.__init__">
-<tt class="descname">__init__</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions.__init__" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">__init__</tt><big>(</big><em>ignore_ws=True</em>, <em>ignore_case=False</em>, <em>unicode_normal=True</em>, <em>unchanged=False</em>, <em>ignore_empty_slots=False</em>, <em>ignore_empty_items=False</em>, <em>duck_type=False</em>, <em>extraneous=False</em>, <em>compare_filter=None</em>, <em>fuzzy_match=True</em><big>)</big><a class="reference internal" href="_modules/normalize/diff.html#DiffOptions.__init__"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#normalize.diff.DiffOptions.__init__" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a new <tt class="docutils literal"><span class="pre">DiffOptions</span></tt> instance.</p>
 <p>args:</p>
 <blockquote>
@@ -210,6 +210,11 @@ testing.</dd>
 <dd>If true, slots containing typical &#8216;empty&#8217; values (by default,
 just <tt class="docutils literal"><span class="pre">''</span></tt> and <tt class="docutils literal"><span class="pre">None</span></tt>) are treated as if they were not set.
 False by default.</dd>
+<dt><tt class="docutils literal"><span class="pre">ignore_empty_items=</span></tt><em>BOOL</em></dt>
+<dd>If true, items are considered to be absent from collections if
+they have all <tt class="docutils literal"><span class="pre">None</span></tt>, not set, or <tt class="docutils literal"><span class="pre">''</span></tt> in their primary key
+fields (all compared fields in the absence of a primary key
+definition).  False by default.</dd>
 <dt><tt class="docutils literal"><span class="pre">duck_type=</span></tt><em>BOOL</em></dt>
 <dd><p class="first">Normally, types must match or the result will always be
 <a class="reference internal" href="#normalize.diff.DiffTypes.MODIFIED" title="normalize.diff.DiffTypes.MODIFIED"><tt class="xref py py-attr docutils literal"><span class="pre">normalize.diff.DiffTypes.MODIFIED</span></tt></a> and the comparison
