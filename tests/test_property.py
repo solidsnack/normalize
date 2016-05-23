@@ -263,7 +263,7 @@ class TestProperties(unittest2.TestCase):
         class CustomColl(ListCollection):
             @classmethod
             def coll_to_tuples(cls, values):
-                if isinstance(values, six.binary_type):
+                if isinstance(values, six.string_types):
                     values = values.split(',')
                     for i, v in zip(range(0, len(values)), values):
                         yield i, {'name': v}
