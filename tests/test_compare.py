@@ -314,7 +314,6 @@ class TestRecordComparison(unittest2.TestCase):
         expected_a_to_b = {
             "REMOVED .brother",
         }
-        import ipdb; ipdb.set_trace()
         self.assertDifferences(
             compare_collection_iter(person_a.family, person_b.family),
             expected_a_to_b
